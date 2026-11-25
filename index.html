@@ -402,6 +402,11 @@ textarea{min-height:96px;resize:vertical}
 .cover .seasonv b{color:#a3612f}.cover .seasonv span{font:12px var(--sans);color:var(--sub)}
 .cover .seasonv.fade{animation-delay:4.4s}
 @media(prefers-reduced-motion:reduce){.eggfx{display:none}.tear svg{animation:none}}
+.cover h2.wm svg.tcx,.top h1 svg.tcx{display:inline-block;flex:none;max-height:none;overflow:visible;height:.8em;width:.36em;margin:0 .015em 0 .01em;vertical-align:-.005em;overflow:visible}
+.cover h2.wm svg.tcx .tube,.top h1 svg.tcx .tube{fill:light-dark(#b3362f,#f08a80);filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}
+.cover h2.wm svg.tcx .tube{animation:neonOn 1.1s steps(1,end) 4.2s both,neonHum 3s ease-in-out 5.4s infinite alternate}
+@keyframes neonOn{0%{filter:none}10%{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}18%{filter:none}26%{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}34%{filter:drop-shadow(0 0 2px rgba(255,226,120,.5))}40%,100%{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}}
+@keyframes neonHum{from{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}to{filter:drop-shadow(0 0 3px rgba(255,232,140,1)) drop-shadow(0 0 10px rgba(255,205,60,.95)) drop-shadow(0 0 20px rgba(255,190,40,.65))}}
 @keyframes fadein{to{opacity:1}}
 @keyframes drop{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:none}}
 @keyframes draw{to{stroke-dashoffset:0}}
@@ -422,7 +427,7 @@ textarea{min-height:96px;resize:vertical}
 <body>
 <div class="app">
  <header class="top">
-  <h1 aria-label="StepBible"><span>Step</span>Bible</h1>
+  <h1 aria-label="StepBible"><span>S<svg class="tcx" viewBox="0 0 40 100" aria-hidden="true"><path class="tube" d="M13.5 1.5Q13.5 0 15 0H25Q26.5 0 26.5 1.5V25H37.5Q39 25 39 26.5V35.5Q39 37 37.5 37H26.5V98.5Q26.5 100 25 100H15Q13.5 100 13.5 98.5V37H2.5Q1 37 1 35.5V26.5Q1 25 2.5 25H13.5Z"/></svg>ep</span>Bible</h1>
   <span class="st" id="st">본문 불러오는 중…</span>
  </header>
  <main>
@@ -483,7 +488,7 @@ textarea{min-height:96px;resize:vertical}
   <path class="ed" pathLength="1" style="animation-delay:3.75s" d="M62 206C110 200 160 204 180 214 200 204 250 200 298 206"/>
   <path class="rb" d="M184 214V248L188.5 242 193 248V217Z"/>
  </svg>
- <h2 class="fade wm"><span>Step</span>Bible</h2>
+ <h2 class="fade wm" aria-label="StepBible"><span>S<svg class="tcx" viewBox="0 0 40 100" aria-hidden="true"><path class="tube" d="M13.5 1.5Q13.5 0 15 0H25Q26.5 0 26.5 1.5V25H37.5Q39 25 39 26.5V35.5Q39 37 37.5 37H26.5V98.5Q26.5 100 25 100H15Q13.5 100 13.5 98.5V37H2.5Q1 37 1 35.5V26.5Q1 25 2.5 25H13.5Z"/></svg>ep</span>Bible</h2>
  <p class="tag fade">한 걸음씩, 성경 전체의 흐름으로</p>
  <p class="sub fade">개역한글 · 전체 맥락 이해하기 · 365일 시대순 읽기</p>
  <p class="hint fade">화면을 누르면 시작해요</p>
@@ -1352,7 +1357,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.93</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.98</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
