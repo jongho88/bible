@@ -163,6 +163,11 @@ button.chip{min-height:36px}
 .eraban>span:not(.small){font-size:14px;color:var(--sub)}
 .eraban p{margin:8px 0 10px;font-size:15.5px}
 .eraban .chip{background:var(--bg)}
+.bkint{margin-bottom:6px}
+.bkint summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;color:var(--lapis);font-size:15px;list-style:none}
+.bkint summary::before{content:"▸";margin-right:8px;transition:transform .2s}
+.bkint[open] summary::before{transform:rotate(90deg)}
+.bkint summary::-webkit-details-marker{display:none}
 .introbox{font-family:var(--sans);font-size:15px;line-height:1.6;border-radius:14px;background:var(--panel);padding:14px 16px;margin-bottom:18px}
 .introbox b{color:var(--lapis)}
 .swipehint{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:22px;font-family:var(--sans);font-size:14px;color:var(--rub)}
@@ -868,7 +873,8 @@ function renderReader(){
   let h="";
   const prevK=c>1?b+"-"+(c-1):null,eraStart=(ci===0||CH[ci-1].e!==CH[ci].e)||(prevK&&CHI[prevK]!=null&&CH[CHI[prevK]].e!==CH[ci].e);
   if(eraStart)h+=`<div class="eraban" style="--ec:${e.c}"><span class="small">새 시대가 시작돼요</span><b>${esc(e.t)}</b><span>${esc(e.y)}</span><p>${esc(e.lead)}</p><button class="chip" data-sto="${e.i}">이 시대 이야기 보기</button></div>`;
-  if(c===1&&INTRO[b]){const I=INTRO[b];h+=`<div class="introbox"><b>${BN(b)} 들어가기</b><br>${esc(I[3])}<br><span class="muted small">저자 ${esc(I[0])} · ${esc(I[1])}</span><br><button class="chip" data-ex="intro" style="margin-top:8px">책 해설 전체 보기 →</button></div>`}
+  const dayStart=day&&ci===DAYS[day-1].f;
+  if((c===1||dayStart)&&INTRO[b]){const I=INTRO[b];h+=`<div class="introbox"><b>${c===1?BN(b)+" 들어가기":BN(b)+" 이어 읽기"}</b><br>${esc(I[3])}<br><span class="muted small">저자 ${esc(I[0])} · ${esc(I[1])}</span><br><button class="chip" data-ex="intro" style="margin-top:8px">책 해설 전체 보기 →</button></div>`}
   const vs=TEXT&&TEXT[b]&&TEXT[b][c-1];
   if(!TEXT)h+=`<p class="loading">본문을 불러오는 중이에요…</p>`;
   else if(!vs)h+=`<p class="loading">이 장의 본문이 없어요.</p>`;
@@ -884,13 +890,14 @@ function renderReader(){
   // 설명
   let x="";
   if(c===1)x+=`<div id="ex-intro">${introHTML(b,0)}</div>`;
+  else x+=`<details id="ex-intro" class="bkint"${dayStart?" open":""}><summary>${BN(b)} 책 해설</summary>${introHTML(b,0)}</details>`;
   x+=`<h3>표시된 구절 설명</h3>`+(ns.length?ns.map(n=>`<div class="note" id="n${n.i}"><div class="rf"><button data-jv="${n.a}" style="min-height:0;color:var(--rub);font-weight:700">${BA(b)} ${c}:${n.a}${n.z!==n.a?"–"+n.z:""}</button></div><h4>${esc(n.t)}</h4><p>${linkRefs(esc(n.d))}</p></div>`).join(""):`<p class="small muted">이 ${unit(b)}에는 따로 표시한 구절이 없어요. 아래의 시대 설명을 참고하세요.</p>`);
   const sec=secOf(b,c);if(sec)x+=`<h3>책 안에서의 위치</h3><p class="small" style="margin:0">${BN(b)}의 <b>${esc(sec[1])}</b> 부분이에요 (${esc(sec[0])}${unit(b)}).</p>`;
   x+=`<h3>이 ${unit(b)}의 시대</h3><p class="small" style="margin:0"><b style="color:${e.c}">${esc(e.t)}</b> (${esc(e.y)}) — ${esc(e.lead)}</p>`;
   if(gws.length)x+=`<h3>이 ${unit(b)}의 낱말 풀이</h3>`+gws.map(g=>`<div class="gw"><b>${esc(g)}</b><span>${linkRefs(esc(GD[g]))}</span></div>`).join("");
   const ms=Object.keys(S.memos).filter(m=>m.startsWith(k+"-")&&S.memos[m].t).sort((a,z)=>a.split("-")[2]-z.split("-")[2]);
   if(ms.length)x+=`<h3>내 메모</h3>`+ms.map(m=>`<div class="memo"><div class="rf">${c}:${m.split("-")[2]}</div>${esc(S.memos[m].t)}</div>`).join("");
-  if(c!==1)x+=`<div class="links" style="margin-top:22px"><button class="btn ghost" data-book2="${b}">${BN(b)} 책 해설</button><a class="btn ghost" target="_blank" rel="noopener" href="${BP}">▶ 바이블프로젝트 공식 영상</a></div>`;
+  if(c!==1)x+=`<div class="links" style="margin-top:22px"><a class="btn ghost" target="_blank" rel="noopener" href="${BP}">▶ 바이블프로젝트 공식 영상</a></div>`;
   $("#ex").innerHTML=x;
   // 하단
   if(day){const d=DAYS[day-1],pos=ci-d.f+1,tot=d.t-d.f+1;
@@ -911,7 +918,7 @@ const showEx=id=>{const p2=$("#p2");$("#panes").scrollTo({left:p2.offsetLeft,beh
 $("#exbtn").onclick=()=>showEx();
 $("#reader").addEventListener("click",e=>{const t=e.target;
   if(t.closest("#rdone")){S.done[R.day]=S.done[R.day]?0:1;save("plan");renderReader();return}
-  const ex=t.closest("[data-ex]");if(ex){showEx(ex.dataset.ex==="intro"?"ex-intro":null);return}
+  const ex=t.closest("[data-ex]");if(ex){if(ex.dataset.ex==="intro"){const d=document.getElementById("ex-intro");if(d&&d.tagName==="DETAILS")d.open=true}showEx(ex.dataset.ex==="intro"?"ex-intro":null);return}
   const sto=t.closest("[data-sto]");if(sto){S.story=+sto.dataset.sto;save("plan");closeReader();go("story");return}
   const bk=t.closest("[data-book2]");if(bk){closeReader();openBook(+bk.dataset.book2);return}
   const jv=t.closest("[data-jv]");if(jv){$("#panes").scrollTo({left:0,behavior:"smooth"});const el=document.getElementById("v"+jv.dataset.jv);if(el){el.scrollIntoView({block:"center"});el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash")}return}
@@ -1035,7 +1042,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.12</b> <span class="muted">· 2026년 11월 24일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.13</b> <span class="muted">· 2026년 11월 24일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
