@@ -205,7 +205,14 @@ button.chip{min-height:36px}
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:30;display:none}
 .scrim.on{display:block}
 .sheet{position:fixed;left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:31;background:var(--bg);border-radius:20px;padding:20px 22px 18px;max-width:540px;margin:0 auto;display:none;max-height:85dvh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
-.sheet.on{display:block}
+.sheet.on{display:block;animation:sheetUp .34s cubic-bezier(.2,.85,.25,1)}
+.sheet.closing{animation:sheetDown .22s ease-in forwards}
+.scrim.on{animation:fadeIn .25s ease-out}
+.scrim.closing{animation:fadeOut .22s ease-in forwards}
+@keyframes sheetUp{from{transform:translateY(105%)}to{transform:none}}
+@keyframes sheetDown{from{transform:none}to{transform:translateY(105%)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
 .sheet .sv{font-family:"Gowun Batang",serif;font-size:17px;margin:0 0 12px;line-height:1.7}
 .sheet .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
 .dot{width:40px;height:40px;border-radius:50%;border:2px solid var(--line)}
@@ -972,8 +979,13 @@ function eraSheet(i){const e=ERAS[i];
   $("#sheet").scrollTop=0}
 // 구절 시트
 let sheetOn=false,SV=0;
-function openSheet(h){$("#sheet").innerHTML=h;$("#sheet").classList.add("on");$("#scrim").classList.add("on");sheetOn=true}
-function closeSheet(){$("#sheet").classList.remove("on");$("#scrim").classList.remove("on");sheetOn=false}
+function openSheet(h){clearTimeout(closeT);const sh=$("#sheet"),sc=$("#scrim");sh.classList.remove("closing");sc.classList.remove("closing");sh.innerHTML=h;if(sheetOn){sh.classList.add("on");sc.classList.add("on")}else{sh.classList.remove("on");sc.classList.remove("on");void sh.offsetWidth;sh.classList.add("on");sc.classList.add("on")}sheetOn=true}
+let closeT=0;
+function closeSheet(){if(!sheetOn)return;sheetOn=false;const sh=$("#sheet"),sc=$("#scrim");
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce){sh.classList.remove("on");sc.classList.remove("on");return}
+  sh.classList.add("closing");sc.classList.add("closing");clearTimeout(closeT);
+  closeT=setTimeout(()=>{sh.classList.remove("on","closing");sc.classList.remove("on","closing")},220)}
 $("#scrim").onclick=closeSheet;
 addEventListener("keydown",e=>{if(e.key==="Escape"){if(sheetOn)closeSheet();else if(R)closeReader()}});
 function verseSheet(v){
@@ -1042,7 +1054,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.23</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.24</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
