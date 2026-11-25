@@ -88,11 +88,16 @@ button.chip{min-height:36px}
 .deckbar .sp{flex:1;text-align:center;font-size:14px;color:var(--sub)}
 .tapnote{font-size:13px;color:var(--sub);text-align:center;margin-top:6px}
 /* 읽기표 */
-.prog{display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;background:var(--lapisbg);color:#fff}
-.prog .big{font-family:"Noto Serif KR";font-size:40px;font-weight:700;line-height:1}
-.prog .bar{height:8px;border-radius:9px;background:rgba(255,255,255,.25);margin-top:8px;overflow:hidden}
+.prog{display:flex;flex-direction:column;gap:12px;padding:18px;border-radius:18px;background:var(--lapisbg);color:#fff}
+.prog .ph{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.prog h2{font-size:clamp(24px,6.5vw,28px);color:#fff}
+.prog .pn{flex:none;text-align:right;white-space:nowrap}
+.prog .pn b{font-family:"Noto Serif KR",serif;font-size:30px;font-weight:700}
+.prog .pn span{font-size:15px}
+.prog .bar{height:8px;border-radius:9px;background:rgba(255,255,255,.25);overflow:hidden}
 .prog .bar i{display:block;height:100%;background:#fff;border-radius:9px}
-.prog .btn{background:#fff;color:#23418f;margin-left:auto;flex:none}
+.prog .pf{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.prog .btn{background:#fff;color:#23418f;flex:none}
 .era{margin-top:26px;scroll-margin-top:76px}
 .era>h2{font-size:24px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .era>h2 small{font-family:var(--sans);font-size:14px;color:var(--sub);font-weight:400}
@@ -812,8 +817,10 @@ addEventListener("keydown",e=>{if(R||sheetOn)return;if(cur!=="story"||/INPUT|TEX
 function nextDay(){for(const d of DAYS)if(!S.done[d.n])return d;return null}
 function rPlan(){
   const done=Object.values(S.done).filter(Boolean).length,nd=nextDay();
-  let h=`<div class="wrap"><div class="prog"><div><div class="big">${done}<span style="font-size:18px">/${ND}일</span></div><div class="small" style="opacity:.9">${Math.round(done/ND*100)}% · 하루 약 3장, 1년에 성경 전체</div><div class="bar"><i style="width:${done/ND*100}%"></i></div></div>
-   ${nd?`<button class="btn" data-day="${nd.n}">${nd.n}일차 시작</button>`:""}</div>
+  let h=`<div class="wrap"><div class="prog">
+   <div class="ph"><div><h2>시대순 읽기</h2><div class="small" style="opacity:.9;margin-top:4px">사건이 일어난 순서로, 1년에 성경 전체</div></div><div class="pn"><b>${done}</b><span>/${ND}일</span></div></div>
+   <div class="bar"><i style="width:${done/ND*100}%"></i></div>
+   <div class="pf"><span class="small" style="opacity:.9">${Math.round(done/ND*100)}% · 하루 약 3장</span>${nd?`<button class="btn" data-day="${nd.n}">${nd.n}일차 시작</button>`:`<span class="small">모두 읽었어요!</span>`}</div></div>
    ${S.last?`<p class="small muted" style="margin:10px 2px 0">마지막으로 읽은 곳: <button class="chip" data-go="${S.last.b}.${S.last.c}.0">${BN(S.last.b)} ${S.last.c}${unit(S.last.b)}</button></p>`:""}
    <p class="small muted" style="margin:12px 2px 0">성경 책 순서가 아니라 <b>사건이 일어난 순서</b>로 배치했어요. 선지서는 그 선지자가 활동한 왕의 시대에, 바울서신은 사도행전에서 그 편지를 쓴 장면에 들어가 있어요. 해설이 있는 구절은 본문에서 <span style="color:var(--rub);font-weight:700">붉은 띠</span>로 표시돼요.</p>
    <div class="jump">${PLAN.map(([id])=>`<button class="chip" data-jump="${id}">${esc(ERA[id].t)}</button>`).join("")}</div>`;
@@ -1009,7 +1016,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.19</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.20</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
