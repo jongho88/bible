@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>성경 껴안기</title>
+<meta name="description" content="흐름으로 읽는 개역한글 성경 — 큰 그림, 365일 시대순 읽기, 66권 해설">
+<meta name="theme-color" content="#5a1f24">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="성경 껴안기">
+<meta property="og:title" content="성경 껴안기">
+<meta property="og:description" content="흩어진 이야기가 하나로 모일 때 — 흐름으로 읽는 개역한글 성경">
+<meta property="og:image" content="thumb.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 조용하고 단정한 공부용 성경. 서두르지 않는 말투.
+   IDEA: 성경을 품에 껴안듯 가까이—붉은 글씨(루브릭)로 설명할 곳을 표시하던 옛 필사본 성경.
+   PICTURE: 시대별 색 띠가 이어진 연대표 리본 + 넘기는 이야기 카드, 본문 옆에 밀어서 나오는 주석 칸.
+   COLOUR and TYPE: 흰 바탕, 청금석(라피스) 파랑 주색, 주홍 루브릭 강조. Noto Serif KR 제목, 고운바탕 본문, 화면 글자는 기기 기본 고딕.
+   LAYOUT: 휴대폰 우선 앱 셸—아래 탭 다섯 개, 읽기 화면은 가로로 넘기는 두 칸(넓은 화면에서는 나란히). */
+:root{color-scheme:light dark;--sans:-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",sans-serif;
+--bg:light-dark(#ffffff,#121417);--ink:light-dark(#1c1d21,#e9e9ec);--sub:light-dark(#5d6068,#a3a6ae);--line:light-dark(#e6e6ea,#2a2d33);
+--panel:light-dark(#f4f5f8,#1b1e23);--lapis:light-dark(#23418f,#9db2ff);--lapisbg:light-dark(#23418f,#1d2c5c);--onlapis:#ffffff;
+--rub:light-dark(#c3372c,#ff8373);--rubbg:light-dark(#fdeeec,#3a2220);
+--m1:light-dark(#fff0a3,#5c4f12);--m2:light-dark(#d3f1cf,#1f4a27);--m3:light-dark(#d9e5ff,#22325c);--m4:light-dark(#ffdbe7,#58233b);
+--fs:19px}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);overflow-x:clip}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button,a,input,textarea,select{min-height:44px}
+:focus-visible{outline:3px solid var(--lapis);outline-offset:2px;border-radius:6px}
+a{color:var(--lapis)}
+h1,h2,h3{font-family:"Noto Serif KR",serif;line-height:1.15;text-wrap:balance;margin:0}
+.app{display:flex;flex-direction:column;height:100dvh}
+.top{display:flex;align-items:center;gap:10px;padding:8px max(4vw,14px);border-bottom:1px solid var(--line);background:var(--bg)}
+.top h1{font-size:21px;color:var(--lapis);display:flex;align-items:center;gap:8px}
+.top h1 svg{width:26px;height:26px}
+.top .st{margin-left:auto;font-size:13px;color:var(--sub)}
+main{flex:1;overflow:hidden;position:relative}
+.view{position:absolute;inset:0;overflow-y:auto;display:none;padding-bottom:24px}
+.view.on{display:block}
+.wrap{max-width:860px;margin:0 auto;padding:18px max(4vw,14px)}
+.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line);background:var(--bg);padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;font-size:12.5px;color:var(--sub)}
+.tabs button svg{width:22px;height:22px}
+.tabs button[aria-current=page]{color:var(--lapis);font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 16px;border-radius:999px;background:var(--lapisbg);color:var(--onlapis);font-weight:500}
+.btn.ghost{background:var(--panel);color:var(--ink)}
+a.btn{text-decoration:none}
+.intro .chip,.intro .btn.ghost,.introbox .chip{background:var(--bg)}
+.chip{display:inline-flex;align-items:center;min-height:32px;padding:2px 12px;border-radius:999px;background:var(--panel);font-size:14px}
+button.chip{min-height:36px}
+.muted{color:var(--sub)}
+.small{font-size:14px}
+/* 이야기 */
+.ribbon{display:flex;gap:3px;margin:0}
+.ribbon button{flex:1;min-height:36px;padding:10px 0;display:flex;align-items:center;border-radius:4px}
+.ribbon button i{display:block;width:100%;height:14px;border-radius:3px;opacity:.35;transition:opacity .3s,transform .3s}
+.ribbon button:hover i{opacity:.7}
+.ribbon button.on i{opacity:1;transform:scaleY(1.6)}
+.ribl{display:flex;justify-content:space-between;font-size:13px;color:var(--sub)}
+.deck{position:relative;margin-top:14px}
+.card{border-radius:22px;overflow:hidden;background:var(--panel);cursor:pointer;user-select:none}
+.card .hd{padding:26px 22px 22px;color:#fff;position:relative}
+.card .hd .n{font-size:14px;opacity:.85}
+.card .hd h2{font-size:clamp(32px,7vw,46px);margin:6px 0 8px}
+.card .hd .y{font-size:15px;opacity:.95}
+.card .hd svg{position:absolute;right:14px;bottom:10px;width:92px;height:92px;opacity:.22}
+.card .bd{padding:20px 22px 24px}
+.card .lead{font-family:"Gowun Batang",serif;font-size:19px;font-weight:700;line-height:1.55;margin:0 0 14px}
+.card p{margin:0 0 14px;font-size:16.5px;max-width:66ch}
+.card h3{font-family:var(--sans);font-size:14px;color:var(--sub);margin:18px 0 6px;font-weight:700}
+.evs{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.evs li{font-size:14px;padding:4px 10px;border-radius:8px;background:var(--bg)}
+.why{border-left:3px solid var(--rub);padding:4px 0 4px 12px;margin-top:16px;font-size:15.5px}
+.deckbar{display:flex;align-items:center;gap:8px;margin-top:14px}
+.deckbar .sp{flex:1;text-align:center;font-size:14px;color:var(--sub)}
+.tapnote{font-size:13px;color:var(--sub);text-align:center;margin-top:6px}
+/* 읽기표 */
+.prog{display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;background:var(--lapisbg);color:#fff}
+.prog .big{font-family:"Noto Serif KR";font-size:40px;font-weight:700;line-height:1}
+.prog .bar{height:8px;border-radius:9px;background:rgba(255,255,255,.25);margin-top:8px;overflow:hidden}
+.prog .bar i{display:block;height:100%;background:#fff;border-radius:9px}
+.prog .btn{background:#fff;color:#23418f;margin-left:auto;flex:none}
+.era{margin-top:26px}
+.era>h2{font-size:24px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.era>h2 small{font-family:var(--sans);font-size:14px;color:var(--sub);font-weight:400}
+.era .bar2{height:4px;border-radius:4px;margin:8px 0 6px;width:56px}
+.era .eraln{font-size:15px;color:var(--sub);margin:0 0 8px}
+.days{list-style:none;margin:0;padding:0}
+.days li{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line)}
+.days li button.go{flex:1;display:flex;align-items:center;gap:12px;text-align:left;padding:8px 4px}
+.days .dn{font-size:13px;color:var(--sub);width:46px;flex:none}
+.days .lb{font-size:16px}
+.days .ck{width:44px;height:44px;display:grid;place-items:center;flex:none}
+.days .ck span{width:24px;height:24px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center}
+.days li.done .ck span{background:var(--lapis);border-color:var(--lapis);color:var(--bg)}
+.days li.done .lb{color:var(--sub);text-decoration:line-through;text-decoration-color:var(--line)}
+.days li.today{background:var(--panel)}
+.jump{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px;position:sticky;top:0;background:var(--bg);z-index:2}
+.jump button{flex:none}
+/* 66권 */
+.grp{margin-top:22px}
+.grp h3{font-family:var(--sans);font-size:14px;color:var(--sub);margin-bottom:8px}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.bgrid button{padding:10px 8px;border-radius:12px;background:var(--panel);text-align:left;display:flex;flex-direction:column;gap:2px}
+.bgrid b{font-weight:500;font-size:15.5px}
+.bgrid span{font-size:12.5px;color:var(--sub)}
+.intro{border-radius:18px;background:var(--panel);padding:18px}
+.intro h2{font-size:34px;color:var(--lapis)}
+.intro .tip{border-left:3px solid var(--rub);padding-left:12px;margin:14px 0 0;font-size:15.5px}
+.meta{display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:6px 12px;margin:14px 0 0;font-size:15.5px}
+.meta dt{color:var(--sub)}.meta dd{margin:0}
+.msg{font-family:"Gowun Batang",serif;font-size:18px;font-weight:700;margin:14px 0 0;line-height:1.6}
+.outline{list-style:none;padding:0;margin:8px 0 0}
+.outline li{display:flex;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.outline li b{font-weight:500;color:var(--lapis);width:5.5em;flex:none;white-space:nowrap}
+.chgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;margin-top:10px}
+.chgrid button{border-radius:10px;background:var(--panel);font-size:15px}
+.chgrid button.rd{background:var(--lapisbg);color:#fff}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+/* 리더 */
+.reader{position:fixed;inset:0;background:var(--bg);z-index:20;display:none;flex-direction:column}
+.reader.on{display:flex}
+.rhd{display:flex;align-items:center;gap:4px;padding:6px 8px;border-bottom:1px solid var(--line)}
+.rhd h2{flex:1;font-size:19px;text-align:center}
+.rhd button{width:44px;height:44px;display:grid;place-items:center;border-radius:10px}
+.rhd button svg{width:22px;height:22px}
+.rhd button.speaking{color:var(--rub)}
+.ectx{display:flex;align-items:center;gap:8px;padding:6px 14px;font-size:13.5px;color:var(--sub);border-bottom:1px solid var(--line)}
+.ectx i{width:10px;height:10px;border-radius:3px;flex:none}
+.ectx button{min-height:32px;margin-left:auto;color:var(--lapis);font-size:13.5px}
+.panes{flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.panes::-webkit-scrollbar{display:none}
+.pane{flex:0 0 100%;overflow-y:auto;scroll-snap-align:start;padding:16px max(5vw,16px) 40px}
+.pane .in{max-width:680px;margin:0 auto}
+#txt{font-family:"Gowun Batang",serif;font-size:var(--fs);line-height:1.95}
+#txt .v{margin:0;padding:3px 8px;border-radius:8px;cursor:pointer;position:relative}
+#txt .v sup{font-family:var(--sans);font-size:.58em;color:var(--sub);margin-right:5px;vertical-align:.4em}
+#txt .v.nt{background:var(--rubbg);box-shadow:inset 3px 0 0 var(--rub)}
+#txt .v.nt sup{color:var(--rub);font-weight:700}
+#txt .v.k1{background:var(--m1)}#txt .v.k2{background:var(--m2)}#txt .v.k3{background:var(--m3)}#txt .v.k4{background:var(--m4)}
+#txt .v.k1.nt,#txt .v.k2.nt,#txt .v.k3.nt,#txt .v.k4.nt{box-shadow:inset 3px 0 0 var(--rub)}
+#txt .v .mm{display:inline-block;margin-left:4px;color:var(--lapis);font-family:var(--sans);font-size:.7em;vertical-align:.15em}
+#txt .gl{color:var(--lapis);text-decoration:underline dotted;text-underline-offset:4px;cursor:help}
+#txt .v.flash{animation:fl 1.6s}
+@keyframes fl{0%,40%{outline:3px solid var(--rub)}100%{outline:3px solid transparent}}
+.introbox{font-family:var(--sans);font-size:15px;line-height:1.6;border-radius:14px;background:var(--panel);padding:14px 16px;margin-bottom:18px}
+.introbox b{color:var(--lapis)}
+.swipehint{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:22px;font-family:var(--sans);font-size:14px;color:var(--rub)}
+#ex h3{font-family:var(--sans);font-size:14px;color:var(--sub);margin:22px 0 8px;font-weight:700}
+#ex h3:first-child{margin-top:0}
+.note{border-radius:14px;padding:12px 14px;background:var(--rubbg);margin-bottom:10px;border-left:3px solid var(--rub)}
+.note .rf{font-size:13px;color:var(--rub);font-weight:700}
+.note h4{margin:2px 0 4px;font-size:16.5px;font-family:"Noto Serif KR"}
+.note p{margin:0;font-size:15.5px}
+.note.flash{animation:fl 1.6s}
+.gw{display:flex;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.gw b{color:var(--lapis);font-weight:500;flex:none;width:6.5em}
+.memo{border-radius:12px;background:var(--panel);padding:10px 12px;margin-bottom:8px;font-size:15px;white-space:pre-wrap}
+.memo .rf{font-size:13px;color:var(--lapis)}
+.rft{display:flex;align-items:center;gap:8px;padding:6px 10px calc(6px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.rft .mid{flex:1;text-align:center;font-size:14px;color:var(--sub)}
+.rft .btn{padding:0 14px}
+@media(min-width:900px){
+ .panes{overflow:hidden}
+ .pane{flex:1 1 60%}
+ .pane+.pane{flex:1 1 40%;border-left:1px solid var(--line);background:var(--panel)}
+ .pane+.pane .note{background:var(--bg)}
+ .pane+.pane .btn.ghost,.pane+.pane .chip{background:var(--bg)}
+ .swipehint{display:none}
+ #exbtn{display:none}
+}
+/* 시트·팝업 */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:30;display:none}
+.scrim.on{display:block}
+.sheet{position:fixed;left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:31;background:var(--bg);border-radius:20px;padding:20px 22px 18px;max-width:540px;margin:0 auto;display:none;max-height:85dvh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+.sheet.on{display:block}
+.sheet .sv{font-family:"Gowun Batang",serif;font-size:17px;margin:0 0 12px;line-height:1.7}
+.sheet .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+.dot{width:40px;height:40px;border-radius:50%;border:2px solid var(--line)}
+.dot.on{border:3px solid var(--ink)}
+textarea,input[type=search],input[type=text]{width:100%;font:16px/1.5 var(--sans);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+textarea{min-height:96px;resize:vertical}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
+.toast.on{opacity:1}
+/* 검색·기록 */
+.res{list-style:none;padding:0;margin:0}
+.res li button{display:block;width:100%;text-align:left;padding:10px 2px;border-bottom:1px solid var(--line)}
+.res .rf{font-size:13px;color:var(--lapis);font-weight:700}
+.res .tx{font-family:"Gowun Batang",serif;font-size:16.5px}
+.res mark{background:var(--m1);color:inherit;border-radius:3px}
+.sh{font-family:var(--sans);font-size:14px;color:var(--sub);margin:22px 0 4px;font-weight:700}
+.stat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat div{background:var(--panel);border-radius:14px;padding:12px}
+.stat b{display:block;font-family:"Noto Serif KR";font-size:28px;color:var(--lapis)}
+.segs{display:flex;gap:6px;flex-wrap:wrap}
+.segs button[aria-pressed=true]{background:var(--lapisbg);color:#fff}
+.loading{padding:40px 0;text-align:center;color:var(--sub)}
+/* 표지: 금박 테두리 액자 안에서, 흩어진 성경 지식이 붉은 실로 모여 한 권의 책이 된다 */
+.cover{--gold:#c9a24e;--title:light-dark(#5a1f24,#e2c27a);position:fixed;inset:0;z-index:50;background:var(--bg);color:var(--ink);padding:clamp(10px,2.4vw,18px);cursor:pointer}
+.cover.off{display:none}
+.frame{position:relative;height:100%;border:1.5px solid var(--gold);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(4px,1.2vh,10px);padding:clamp(20px,5vh,48px) clamp(18px,5vw,40px) clamp(40px,7vh,56px);text-align:center}
+.frame::before{content:"";position:absolute;inset:5px;border:1px solid var(--gold);border-radius:10px;opacity:.55;pointer-events:none}
+.cover svg{width:min(100%,520px);max-height:46vh;height:auto;overflow:visible;flex:none}
+.cover .ln path,.cover .ln circle{fill:none;stroke:light-dark(var(--c),color-mix(in srgb,var(--c) 60%,white));stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw .9s ease-out forwards;animation-delay:var(--d,0s)}
+.cover .ic{transform-box:fill-box;transform-origin:center;animation:gather 1.5s cubic-bezier(.6,0,.2,1) 1.1s both}
+.cover .thr{fill:none;stroke:var(--rub);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.1s ease-in-out 2.5s forwards}
+.cover .bk{fill:none;stroke:#b08d52;stroke-width:2;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.2s ease-in-out 3.2s forwards}
+.cover .cv{fill:light-dark(#5a1f24,#3a1418);stroke:var(--gold);stroke-width:3;stroke-linejoin:round;opacity:0;animation:fadein .9s ease-out 3.1s forwards}
+.cover .pgf{fill:light-dark(#fffdf7,#1d1f26);opacity:0;animation:fadein .9s ease-out 3.1s forwards}
+.cover .ed{fill:none;stroke:var(--gold);stroke-width:1.3;stroke-dasharray:1;stroke-dashoffset:1;animation:draw .8s ease-out 3.6s forwards}
+.cover .rb{fill:var(--gold);opacity:0;transform-box:fill-box;transform-origin:top;animation:drop .7s cubic-bezier(.3,1.4,.5,1) 3.9s forwards}
+.cover h2{font-size:clamp(40px,9vw,64px);color:var(--title);margin-top:clamp(4px,1.5vh,12px)}
+.cover .tag{font-family:"Gowun Batang",serif;font-size:clamp(16px,4vw,20px);margin:0}
+.cover .sub{font-size:clamp(12.5px,3.2vw,14px);color:var(--sub);margin:0}
+.cover .btn{margin-top:clamp(8px,2vh,16px);padding:0 30px;font-weight:700;background:var(--title);color:var(--bg)}
+.cover .ft{position:absolute;left:0;right:0;bottom:clamp(14px,2.4vh,20px);font-size:12px;color:var(--sub)}
+.cover .fade{animation:rise .8s ease-out both}
+.cover h2.fade{animation-delay:3.9s}.cover .tag.fade{animation-delay:4.1s}.cover .sub.fade{animation-delay:4.2s}.cover .btn.fade{animation-delay:4.35s}
+@media(max-height:640px){.cover .ft{display:none}.frame{padding-bottom:20px}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes gather{from{transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1.3)}to{transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes drop{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:none}}
+@keyframes fadein{to{opacity:1}}
+@keyframes drop{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:none}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes gather{from{transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1.3)}to{transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.cover *{animation:none!important;stroke-dashoffset:0!important;opacity:1!important;transform:none!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+ <header class="top">
+  <h1><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="4" width="22" height="25" rx="3" fill="#23418f"/><rect x="8" y="4" width="2" height="25" fill="#c3372c"/><path d="M18 9v12M14 13h8" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><button id="cov" style="min-height:0;font:inherit;color:inherit" aria-label="표지 보기">성경 껴안기</button></h1>
+  <span class="st" id="st">본문 불러오는 중…</span>
+ </header>
+ <main>
+  <section class="view" id="v-story"></section>
+  <section class="view" id="v-plan"></section>
+  <section class="view" id="v-books"></section>
+  <section class="view" id="v-search"></section>
+  <section class="view" id="v-me"></section>
+ </main>
+ <nav class="tabs" aria-label="메뉴">
+  <button data-t="story"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="13" height="15" rx="2"/><path d="M8 3h11a1 1 0 0 1 1 1v14"/></svg>큰 그림</button>
+  <button data-t="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h3M4 12h3M4 18h3M10 6h10M10 12h10M10 18h10"/></svg>시대순 읽기</button>
+  <button data-t="books"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4v16H5zM10 4h4v16h-4zM15.5 5l3.5-.8 3 15-3.5.8z"/></svg>66권 해설</button>
+  <button data-t="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>검색</button>
+  <button data-t="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg>내 기록</button>
+ </nav>
+</div>
+
+<div class="reader" id="reader" role="dialog" aria-modal="true" aria-labelledby="rt">
+ <div class="rhd">
+  <button id="rclose" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <h2 id="rt"></h2>
+  <button id="rtts" aria-label="소리로 듣기" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
+  <button id="rfont" aria-label="글자 크기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 19 8 5l5 14M4.8 14h6.4M14 19l3.5-9 3.5 9M15 16h5"/></svg></button>
+  <button id="exbtn" aria-label="설명 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M13 4v16M15.5 9h3M15.5 13h3"/></svg></button>
+ </div>
+ <div class="ectx" id="ectx"></div>
+ <div class="panes" id="panes">
+  <div class="pane" id="p1"><div class="in" id="txt"></div></div>
+  <div class="pane" id="p2"><div class="in" id="ex"></div></div>
+ </div>
+ <div class="rft">
+  <button class="btn ghost" id="rprev">‹ 이전 장</button>
+  <div class="mid" id="rmid"></div>
+  <button class="btn ghost" id="rnext">다음 장 ›</button>
+ </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+<div class="cover" id="cover" role="dialog" aria-label="표지"><div class="frame">
+ <svg viewBox="0 0 360 232" aria-hidden="true">
+  <path class="cv" d="M180 74C146 60 72 58 16 70V196C72 186 146 188 180 204 214 188 288 186 344 196V70C288 58 214 60 180 74Z"/>
+  <path class="pgf" d="M180 68C146 52 76 50 26 64V186C76 174 146 176 180 192 214 176 284 174 334 186V64C284 50 214 52 180 68Z"/>
+  <g transform="translate(58 116)"><g class="ic ln" style="--c:#4f8a5f;--x:20px;--y:-110px;--r:-35deg;--d:0.00s"><title>나무 · 창조</title><circle pathLength="1" cx="0" cy="-5" r="8"/><path pathLength="1" d="M0 3V12M-4 12H4"/></g></g>
+<g transform="translate(92 114)"><g class="ic ln" style="--c:#c99a2e;--x:180px;--y:-140px;--r:28deg;--d:0.09s"><title>별 · 아브라함</title><path pathLength="1" d="M0-10 2.9-3.1 10-3.1 4.3 1.3 6.5 8.5 0 4.1-6.5 8.5-4.3 1.3-10-3.1-2.9-3.1Z"/></g></g>
+<g transform="translate(126 118)"><g class="ic ln" style="--c:#a3612f;--x:-90px;--y:170px;--r:40deg;--d:0.18s"><title>돌판 · 율법</title><path pathLength="1" d="M-11 11V-3A5 5 0 0 1-1-3V11ZM1 11V-3A5 5 0 0 1 11-3V11Z"/></g></g>
+<g transform="translate(158 116)"><g class="ic ln" style="--c:#3d5fa8;--x:150px;--y:130px;--r:-30deg;--d:0.27s"><title>왕관 · 다윗</title><path pathLength="1" d="M-11 7V-7L-5.5 0 0-9 5.5 0 11-7V7Z"/></g></g>
+<g transform="translate(204 118)"><g class="ic ln" style="--c:#2f7f86;--x:-170px;--y:-60px;--r:22deg;--d:0.36s"><title>성전</title><path pathLength="1" d="M-12-2 0-10 12-2ZM-9-2V9M-3-2V9M3-2V9M9-2V9M-12 10H12"/></g></g>
+<g transform="translate(238 116)"><g class="ic ln" style="--c:#7a5a96;--x:60px;--y:210px;--r:-42deg;--d:0.45s"><title>두루마리 · 선지자</title><path pathLength="1" d="M-7-10H9V7M-10-7A3 3 0 0 1-4-7V10A3 3 0 0 1-10 10ZM-1-4H5M-1 0H5M-1 4H3"/></g></g>
+<g transform="translate(272 112)"><g class="ic ln" style="--c:#b3362f;--x:-230px;--y:60px;--r:18deg;--d:0.54s"><title>십자가</title><path pathLength="1" d="M0-12V12M-7-5H7"/></g></g>
+<g transform="translate(306 114)"><g class="ic ln" style="--c:#d0702b;--x:-40px;--y:-150px;--r:35deg;--d:0.63s"><title>불꽃 · 성령</title><path pathLength="1" d="M0 11C-8 6-7-3 0-11 1-4 8-1 6 5 5 9 2 11 0 11ZM0 11C-3 8-2 3 1 0 2 4 4 6 3 9"/></g></g>
+
+  <path class="thr" pathLength="1" d="M34 140C70 126 96 146 130 136S168 126 180 136 222 148 256 134 312 128 328 140"/>
+  <path class="bk" pathLength="1" d="M180 68C146 52 76 50 26 64V186C76 174 146 176 180 192 214 176 284 174 334 186V64C284 50 214 52 180 68ZM180 68V192"/>
+  <path class="ed" pathLength="1" d="M24 189C76 178 146 180 180 196 214 180 284 178 336 189"/>
+  <path class="ed" pathLength="1" style="animation-delay:3.75s" d="M20 192C76 182 146 184 180 200 214 184 284 182 340 192"/>
+  <path class="rb" d="M184 196V228L188.5 222 193 228V200Z"/>
+ </svg>
+ <h2 class="fade">성경 껴안기</h2>
+ <p class="tag fade">흩어진 이야기가 하나로 모일 때</p>
+ <p class="sub fade">개역한글 · 창조에서 새 창조까지 · 365일 시대순 읽기</p>
+ <button class="btn fade" id="coverGo">펼치기</button>
+ <div class="ft">성경전서 개역한글판 (대한성서공회)</div>
+</div></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+// 66권: [이름, 약칭, osis, usfm, 장수, 분류]
+const BOOKS=[
+["창세기","창","gen","gen",50,"율법서"],["출애굽기","출","exod","exo",40,"율법서"],["레위기","레","lev","lev",27,"율법서"],["민수기","민","num","num",36,"율법서"],["신명기","신","deut","deu",34,"율법서"],
+["여호수아","수","josh","jos",24,"역사서"],["사사기","삿","judg","jdg",21,"역사서"],["룻기","룻","ruth","rut",4,"역사서"],["사무엘상","삼상","1sam","1sa",31,"역사서"],["사무엘하","삼하","2sam","2sa",24,"역사서"],
+["열왕기상","왕상","1kgs","1ki",22,"역사서"],["열왕기하","왕하","2kgs","2ki",25,"역사서"],["역대상","대상","1chr","1ch",29,"역사서"],["역대하","대하","2chr","2ch",36,"역사서"],["에스라","스","ezra","ezr",10,"역사서"],
+["느헤미야","느","neh","neh",13,"역사서"],["에스더","에","esth","est",10,"역사서"],["욥기","욥","job","job",42,"시가서"],["시편","시","ps","psa",150,"시가서"],["잠언","잠","prov","pro",31,"시가서"],
+["전도서","전","eccl","ecc",12,"시가서"],["아가","아","song","sng",8,"시가서"],["이사야","사","isa","isa",66,"대선지서"],["예레미야","렘","jer","jer",52,"대선지서"],["예레미야애가","애","lam","lam",5,"대선지서"],
+["에스겔","겔","ezek","ezk",48,"대선지서"],["다니엘","단","dan","dan",12,"대선지서"],["호세아","호","hos","hos",14,"소선지서"],["요엘","욜","joel","jol",3,"소선지서"],["아모스","암","amos","amo",9,"소선지서"],
+["오바댜","옵","obad","oba",1,"소선지서"],["요나","욘","jonah","jon",4,"소선지서"],["미가","미","mic","mic",7,"소선지서"],["나훔","나","nah","nam",3,"소선지서"],["하박국","합","hab","hab",3,"소선지서"],
+["스바냐","습","zeph","zep",3,"소선지서"],["학개","학","hag","hag",2,"소선지서"],["스가랴","슥","zech","zec",14,"소선지서"],["말라기","말","mal","mal",4,"소선지서"],
+["마태복음","마","matt","mat",28,"복음서"],["마가복음","막","mark","mrk",16,"복음서"],["누가복음","눅","luke","luk",24,"복음서"],["요한복음","요","john","jhn",21,"복음서"],["사도행전","행","acts","act",28,"역사서(신약)"],
+["로마서","롬","rom","rom",16,"바울서신"],["고린도전서","고전","1cor","1co",16,"바울서신"],["고린도후서","고후","2cor","2co",13,"바울서신"],["갈라디아서","갈","gal","gal",6,"바울서신"],["에베소서","엡","eph","eph",6,"바울서신"],
+["빌립보서","빌","phil","php",4,"바울서신"],["골로새서","골","col","col",4,"바울서신"],["데살로니가전서","살전","1thess","1th",5,"바울서신"],["데살로니가후서","살후","2thess","2th",3,"바울서신"],["디모데전서","딤전","1tim","1ti",6,"바울서신"],
+["디모데후서","딤후","2tim","2ti",4,"바울서신"],["디도서","딛","titus","tit",3,"바울서신"],["빌레몬서","몬","phlm","phm",1,"바울서신"],["히브리서","히","heb","heb",13,"일반서신"],["야고보서","약","jas","jas",5,"일반서신"],
+["베드로전서","벧전","1pet","1pe",5,"일반서신"],["베드로후서","벧후","2pet","2pe",3,"일반서신"],["요한일서","요일","1john","1jn",5,"일반서신"],["요한이서","요이","2john","2jn",1,"일반서신"],["요한삼서","요삼","3john","3jn",1,"일반서신"],
+["유다서","유","jude","jud",1,"일반서신"],["요한계시록","계","rev","rev",22,"예언서(신약)"]
+];
+
+// 큰 그림 카드
+const ERAS=[
+{id:"s1",t:"창조와 타락",y:"연대를 알 수 없는 태초",c:"#5b8c6e",lead:"좋게 지어진 세상, 그리고 그 세상이 무너지기 시작한 이야기",
+p:["성경은 \"태초에 하나님이 천지를 창조하시니라\"로 시작해요. 하나님은 혼돈을 질서로 바꾸고 사람을 '하나님의 형상'으로 지으셔서, 세상을 함께 돌보는 동역자로 세우셨어요. 에덴은 하나님과 사람이 함께 사는 동산이었어요.",
+"그런데 사람은 '선악을 스스로 정하겠다'는 길을 택해요(선악과). 그 결과 하나님과의 관계, 사람 사이의 관계, 땅과의 관계가 모두 깨져요. 가인이 아벨을 죽이고, 폭력이 땅에 가득해져 홍수가 오고, 홍수 뒤에도 사람들은 바벨에서 하늘에 닿는 탑을 쌓아요.",
+"창세기 1–11장은 '세상에 무엇이 잘못되었는가'라는 질문을 던지는 부분이에요. 성경의 나머지 전체는 하나님이 이 문제를 어떻게 해결하시는가에 대한 대답이에요. 그 첫 실마리가 3장 15절, 여자의 후손이 뱀의 머리를 상하게 하리라는 약속이에요."],
+who:"아담, 하와, 가인, 아벨, 노아",ev:["천지 창조","에덴과 타락","가인과 아벨","노아의 홍수","바벨탑"],bk:[1],why:"모든 이야기의 '문제'가 여기서 시작돼요. 요한계시록 21–22장이 이 장면들을 되돌려 놓으며 끝나요."},
+{id:"s2",t:"족장 시대",y:"BC 2000–1800년경",c:"#b07a3a",lead:"한 가족을 불러 온 세상을 복되게 하시려는 계획",
+p:["하나님은 바벨탑 바로 다음 장에서 메소포타미아 우르(갈대아) 출신의 아브라함을 부르세요. '네 고향을 떠나라. 큰 민족을 이루고 복을 주리니, 땅의 모든 족속이 너로 말미암아 복을 얻을 것이다'(창 12:1–3). 이 약속(땅, 자손, 복)이 성경 전체를 끌고 가는 엔진이에요.",
+"아브라함은 아들 이삭을 낳고, 이삭은 야곱을 낳아요. 야곱은 속임수가 많은 사람이었지만 하나님과 씨름한 뒤 '이스라엘'이라는 새 이름을 받아요. 그의 열두 아들이 이스라엘 열두 지파의 조상이 돼요.",
+"형들에게 팔려 간 요셉이 이집트의 총리가 되고, 큰 흉년 때 온 가족이 이집트로 내려가요. 창세기는 요셉의 고백 '당신들은 나를 해하려 하였으나 하나님은 그것을 선으로 바꾸사'(50:20)로 끝나요. 욥기는 연대가 분명하지 않지만 족장 시대의 분위기를 지닌 책이라 흔히 이 시기에 함께 읽어요."],
+who:"아브라함, 사라, 이삭, 리브가, 야곱, 요셉",ev:["아브라함을 부르심","언약과 할례","이삭을 바침","야곱이 이스라엘이 됨","요셉, 이집트 총리","가족의 이집트 이주"],bk:[1,18],why:"하나님이 세상을 고치시는 방법은 '한 가족을 통해 모든 민족을 복되게 하는 것'이에요. 신약은 예수님을 이 약속의 성취로 소개해요(마 1:1, 갈 3:8)."},
+{id:"s3",t:"출애굽",y:"BC 1446년 또는 1270년경 (학설이 갈려요)",c:"#c0533a",lead:"노예였던 백성을 하나님이 구해 내신 사건",
+p:["요셉이 죽고 수백 년이 지나자, 요셉을 모르는 새 왕(바로)이 이스라엘을 노예로 부리고 남자 아기를 죽이라고 명령해요. 그때 태어난 모세는 바로의 궁에서 자라지만, 결국 광야로 도망쳐 40년을 목자로 살아요.",
+"불타는 떨기나무에서 하나님이 모세를 부르시고 자신의 이름 '여호와(스스로 있는 자)'를 알려 주세요. 열 가지 재앙은 이집트의 신들을 하나씩 무너뜨리는 대결이었고, 마지막 재앙 때 어린양의 피를 바른 집은 죽음이 '넘어갔어요'. 이것이 유월절이에요.",
+"이스라엘은 홍해를 건너 자유를 얻어요. 이후 구약은 하나님을 소개할 때마다 '너를 애굽 땅 종 되었던 집에서 인도하여 낸 하나님'이라고 말해요. 구약의 복음은 출애굽이에요."],
+who:"모세, 아론, 미리암, 바로",ev:["노예 생활","모세의 탄생과 부르심","열 가지 재앙","첫 유월절","홍해를 건넘"],bk:[2],why:"신약은 예수님의 죽음을 '새 출애굽'으로 설명해요. 최후의 만찬이 유월절 식사였고, 예수님은 '유월절 양'으로 불려요."},
+{id:"s4",t:"시내산과 광야",y:"출애굽 후 40년",c:"#a3612f",lead:"구원받은 백성이 어떻게 살 것인가—언약, 성막, 그리고 40년",
+p:["시내산에서 하나님은 이스라엘과 언약을 맺으세요. '너희는 내게 대하여 제사장 나라가 되리라'(출 19:6). 십계명과 율법은 구원받기 위한 조건이 아니라, 이미 구원받은 백성이 세상 앞에서 하나님을 보여 주며 사는 방식이에요.",
+"하나님은 '내가 그들 중에 거하리라' 하시며 이동식 성전인 성막을 짓게 하세요. 레위기는 거룩하신 하나님과 죄 있는 사람이 어떻게 함께 살 수 있는지(제사, 정결, 속죄일)를 다뤄요. 하지만 언약을 맺자마자 백성은 금송아지를 만들어요.",
+"가나안 앞에서 열두 정탐꾼 중 열 명이 '그 땅 사람들은 거인이라 못 들어간다'고 하자 백성은 이집트로 돌아가자고 해요. 그 불신 때문에 그 세대는 40년 동안 광야를 떠돌다 죽고, 다음 세대가 남아요. 신명기는 요단강 앞에서 모세가 그 새 세대에게 남긴 고별 설교예요."],
+who:"모세, 아론, 여호수아, 갈렙",ev:["시내산 언약과 십계명","금송아지","성막 완성","정탐꾼 사건","광야 40년","모세의 고별 설교와 죽음"],bk:[2,3,4,5],why:"레위기의 제사와 성막을 알아야 히브리서와 '하나님의 어린양' 같은 신약의 표현이 이해돼요."},
+{id:"s5",t:"가나안 정복",y:"BC 1400년 또는 1230년경부터",c:"#8a6d2f",lead:"약속의 땅에 들어가다",
+p:["모세가 죽은 뒤 여호수아가 백성을 이끌고 요단강을 건너요. 여리고 성은 무기가 아니라 일곱 날 동안의 예배 행렬로 무너져요. 땅은 군사력의 결과가 아니라 하나님의 선물이라는 뜻이에요.",
+"여호수아서 후반부는 열두 지파에게 땅을 나누는 기록이에요. 아브라함에게 하신 '땅'의 약속이 이루어지는 장면이죠. 하지만 정복은 완전하지 않았고, 가나안 사람들과 그들의 신이 땅에 그대로 남아요.",
+"여호수아는 죽기 전에 '너희 섬길 자를 오늘 택하라. 오직 나와 내 집은 여호와를 섬기겠노라'(24:15)고 도전해요. 땅을 얻은 뒤에도 누구를 섬길지는 매 세대의 선택이었어요."],
+who:"여호수아, 라합, 갈렙",ev:["요단강을 건넘","여리고 함락","아이 성 패배와 아간","땅 분배","세겜 언약 갱신"],bk:[6],why:"'약속은 이루어진다'는 것과 '그러나 신실함은 매 세대의 몫'이라는 긴장이 다음 시대를 결정해요."},
+{id:"s6",t:"사사 시대",y:"약 300여 년",c:"#7d5a8c",lead:"\"그때에 이스라엘에 왕이 없으므로 사람마다 자기 소견에 옳은 대로 행하였더라\"",
+p:["여호수아 세대가 죽자 다음 세대는 하나님을 잊고 가나안의 신 바알과 아세라를 섬겨요. 그러면 주변 민족이 쳐들어와 괴롭히고, 백성이 부르짖으면 하나님이 '사사'(재판관이자 군사 지도자)를 세워 구원하세요. 그리고 평화가 오면 다시 잊어요.",
+"이 순환이 드보라, 기드온, 입다, 삼손 등을 거치며 반복되는데, 갈수록 사사들 자신도 흠이 많아지고 나라는 점점 더 깊이 무너져요. 마지막 장들은 끔찍한 내전과 도덕적 붕괴를 보여 주며 '왕이 없으므로'라는 말로 끝나요.",
+"그 어두운 시대 한가운데 룻기가 있어요. 모압 여인 룻의 신실함과 보아스의 친절을 통해, 하나님은 조용히 다윗 왕의 가문을 준비하세요."],
+who:"드보라, 기드온, 삼손, 룻, 보아스, 나오미",ev:["범죄–압제–부르짖음–구원의 순환","기드온의 300 용사","삼손","룻과 보아스"],bk:[7,8],why:"'좋은 왕이 필요하다'는 문제 제기가 다음 시대(왕정)로 이어지고, 결국 '참된 왕' 메시야에 대한 기대로 자라요."},
+{id:"s7",t:"통일 왕국",y:"BC 1050–930년경",c:"#3d5fa8",lead:"사울, 다윗, 솔로몬—세 왕 120년",
+p:["마지막 사사 사무엘 때 백성이 '열방과 같이 우리에게도 왕을 세워 달라'고 요구해요. 첫 왕 사울은 겉으로는 훌륭했지만 하나님 말씀보다 자기 판단을 앞세우다 버림받아요. 하나님은 '중심을 보시고' 목동 다윗을 택하세요.",
+"다윗은 예루살렘을 수도로 삼고 나라를 하나로 묶어요. 하나님은 다윗에게 '네 후손의 왕위를 영원히 견고하게 하리라'(삼하 7장)고 약속하세요. 이것이 '다윗 언약'이고, 훗날 메시야를 '다윗의 자손'이라 부르는 이유예요. 그러나 다윗도 밧세바 사건으로 큰 죄를 짓고 집안에 비극이 이어져요. 시편의 많은 시가 이 시대에 나왔어요.",
+"다윗의 아들 솔로몬은 지혜로 유명했고 예루살렘 성전을 지어요(잠언, 전도서, 아가가 솔로몬과 연결돼요). 하지만 말년에 많은 이방 아내를 따라 우상을 섬기고, 무거운 세금과 노역으로 백성의 불만이 쌓여요. 역대상·하는 이 시대를 성전과 예배 중심으로 다시 쓴 역사예요."],
+who:"사무엘, 사울, 다윗, 요나단, 밧세바, 나단, 솔로몬",ev:["사울이 첫 왕이 됨","다윗과 골리앗","다윗 언약","밧세바 사건과 회개","솔로몬의 성전 건축"],bk:[9,10,13,14,19,20,21,22],why:"다윗 언약을 알아야 복음서가 왜 예수님을 '다윗의 자손'이라고 부르는지 보여요."},
+{id:"s8",t:"왕국 분열",y:"BC 930–722년",c:"#2f7f86",lead:"한 나라가 둘로—북이스라엘과 남유다",
+p:["솔로몬의 아들 르호보암이 세금을 더 무겁게 하겠다고 하자, 북쪽 10지파가 여로보암을 왕으로 세우고 떨어져 나가요. 이제 북쪽은 '이스라엘'(수도 사마리아), 남쪽은 '유다'(수도 예루살렘, 다윗 왕조)예요. 여로보암은 백성이 예루살렘에 가지 못하게 벧엘과 단에 금송아지를 세웠고, 이것이 북이스라엘 내내 '여로보암의 죄'로 불려요.",
+"아합 왕과 왕비 이세벨 때 바알 숭배가 국가 종교가 되자, 선지자 엘리야가 갈멜산에서 바알 선지자들과 대결해요. 뒤를 이어 엘리사가 활동해요. 이 시기의 선지자들(요나, 아모스, 호세아)은 북이스라엘의 번영 뒤에 숨은 불의와 우상숭배를 고발해요.",
+"선지서는 성경 뒤쪽에 따로 모여 있지만, 실제로는 열왕기 이야기 한가운데에서 외친 메시지예요. 북이스라엘은 결국 BC 722년 앗수르 제국에 멸망하고, 주민들은 흩어지고 다른 민족이 이주해 와요. 그 후손이 신약의 사마리아인이에요."],
+who:"르호보암, 여로보암, 아합, 이세벨, 엘리야, 엘리사, 요나, 아모스, 호세아",ev:["왕국 분열","금송아지 제단","갈멜산 대결","엘리사의 사역","북이스라엘 멸망(BC 722)"],bk:[11,12,14,29,30,32,28],why:"선지서를 이 시대 안에 넣어 읽으면, 선지자들이 '누구에게, 왜' 그렇게 말했는지가 선명해져요."},
+{id:"s9",t:"남유다 홀로",y:"BC 722–586년",c:"#4b6b3a",lead:"히스기야와 요시야의 개혁, 그리고 예루살렘의 멸망",
+p:["북이스라엘이 망한 뒤 남유다만 남아요. 히스기야 왕은 우상을 없애고 개혁을 하며, BC 701년 앗수르 산헤립의 침공 때 기도로 위기를 넘겨요. 이 시대 선지자가 이사야와 미가예요. 그러나 그 아들 므낫세는 유다 역사상 가장 악한 왕이 돼요.",
+"요시야 왕 때 성전에서 율법책이 발견되어 대대적인 개혁이 일어나지만, 이미 나라 깊이 스민 죄를 되돌리지 못해요. 나훔(앗수르 멸망 예고), 스바냐, 하박국, 그리고 '눈물의 선지자' 예레미야가 이 시대에 활동해요.",
+"새 강대국 바벨론이 일어나 BC 605년, 597년, 586년 세 차례 유다를 치고 사람들을 끌고 가요. BC 586년 예루살렘과 성전이 불타요. 다윗 왕조, 성전, 땅—하나님의 약속처럼 보였던 것이 모두 사라진 순간이에요. 예레미야애가가 그 폐허에서 나온 노래예요."],
+who:"히스기야, 이사야, 미가, 므낫세, 요시야, 예레미야, 시드기야, 느부갓네살",ev:["산헤립의 침공과 구원(BC 701)","므낫세의 악정","요시야의 개혁(BC 622)","바벨론의 침공","예루살렘 멸망(BC 586)"],bk:[12,14,23,33,34,35,36,24,25,31],why:"'왜 하나님의 백성이 망했는가'에 대한 답이 열왕기이고, '그래도 끝이 아니다'라는 답이 선지서예요(새 언약, 렘 31장)."},
+{id:"s10",t:"바벨론 포로기",y:"BC 586–539년",c:"#6b4f7f",lead:"이방 땅에서 다시 묻는다—하나님은 여기에도 계신가",
+p:["유다 사람들은 바벨론으로 끌려가요. 성전도 왕도 없이 낯선 땅에서 '여호와의 노래를 어찌 부를꼬'(시 137편) 하며 울었어요. 많은 학자들은 이 시기에 이스라엘이 자기 역사(창세기~열왕기)를 정리하며 '우리가 왜 망했는가'를 깊이 돌아봤다고 봐요.",
+"제사장이자 선지자인 에스겔은 포로지 그발 강가에서 하나님의 영광을 보고, 마른 뼈가 살아나는 환상으로 회복을 약속받아요. 다니엘과 세 친구는 바벨론 궁정에서 신앙을 지키며, 제국들이 흥망해도 하나님이 진짜 왕이시라는 것을 보여 줘요.",
+"이 시기에 회당 중심의 예배, 율법 낭독과 연구 전통이 자라났다고 보는 견해가 많아요. 성전 없이도 말씀으로 모이는 신앙이 이때 단련돼요."],
+who:"에스겔, 다니엘, 사드락·메삭·아벳느고, 느부갓네살, 벨사살",ev:["포로로 끌려감","에스겔의 환상","풀무불과 사자굴","바벨론의 몰락(BC 539)"],bk:[26,27,19],why:"다니엘 7장의 '인자 같은 이'는 예수님이 가장 자주 쓰신 자기 호칭의 배경이에요."},
+{id:"s11",t:"귀환과 재건",y:"BC 539–430년경",c:"#b8862b",lead:"돌아왔지만, 아직 완전히 회복되지는 않은 시대",
+p:["BC 539년 페르시아 왕 고레스가 바벨론을 무너뜨리고 유대인들이 고향에 돌아가 성전을 다시 지어도 된다는 칙령을 내려요(스 1장). 스룹바벨이 이끈 첫 귀환자들이 성전 기초를 놓지만 반대에 부딪혀 공사가 멈추고, 학개와 스가랴의 격려로 BC 516년에 완공해요.",
+"에스더 이야기는 그 사이, 고향에 돌아가지 않고 페르시아에 남은 유대인들이 멸절 위기에서 구원받는 이야기예요. 그 뒤 학자 에스라가 돌아와(BC 458) 율법을 가르치고, 느헤미야가 돌아와(BC 445) 무너진 예루살렘 성벽을 52일 만에 재건해요.",
+"그러나 귀환 공동체는 작고 가난했고, 다윗의 왕도 없었고, 여전히 페르시아의 지배를 받았어요. 말라기는 다시 형식적이 된 예배를 꾸짖으며 '여호와의 날 전에 엘리야를 보내리라'는 약속으로 구약을 닫아요. 시편 마지막 권(107–150편)에는 귀환의 기쁨과 예배의 노래가 많아요."],
+who:"고레스, 스룹바벨, 학개, 스가랴, 에스더, 모르드개, 에스라, 느헤미야, 말라기",ev:["고레스 칙령(BC 539)","1차 귀환과 성전 재건(BC 516 완공)","에스더와 부림절","에스라의 귀환과 율법 낭독","느헤미야의 성벽 재건"],bk:[15,37,38,17,16,39,19],why:"구약은 '돌아왔지만 아직 기다린다'는 열린 결말로 끝나요. 신약은 그 기다림에 대한 답으로 시작해요."},
+{id:"s12",t:"신구약 중간기",y:"BC 430–BC 5년경 (약 400년)",c:"#7a7a7a",lead:"성경 기록은 없지만, 복음서의 무대가 만들어진 400년",
+p:["말라기 이후 신약까지 약 400년은 성경에 기록이 없어요. 하지만 이 시기를 모르면 복음서가 낯설어요. BC 333년경 알렉산더 대왕이 페르시아를 무너뜨리면서 헬라(그리스) 문화와 언어가 온 세계로 퍼져요. 그래서 신약이 헬라어로 쓰였고, 구약의 헬라어 번역본(70인역)도 이때 나와요.",
+"알렉산더 사후 이집트의 프톨레마이오스 왕조와 시리아의 셀류쿠스 왕조가 유대 땅을 번갈아 지배해요. BC 167년 셀류쿠스의 안티오쿠스 4세가 성전에 제우스 제단을 세우고 돼지를 바치자, 마카비 가문이 반란을 일으켜 성전을 되찾아요(이를 기념하는 절기가 요한복음 10:22의 '수전절'). 이후 유대인의 하스몬 왕조가 약 100년 다스려요.",
+"BC 63년 로마가 예루살렘을 점령하고, 로마가 세운 에돔 계열의 헤롯 대왕이 유대의 왕이 돼요. 이 시기에 바리새인(율법 철저 준수), 사두개인(제사장 귀족), 에세네파, 열심당 같은 무리와 회당 제도가 자리 잡고, 사람들은 로마를 몰아낼 메시야를 간절히 기다려요."],
+who:"알렉산더, 안티오쿠스 4세, 유다 마카비, 폼페이우스, 헤롯 대왕",ev:["헬라 제국(BC 333)","70인역 번역","안티오쿠스의 성전 모독(BC 167)","마카비 혁명과 수전절","로마의 점령(BC 63)","헤롯 대왕의 성전 확장"],bk:[],why:"바리새인, 사두개인, 세리, 사마리아인, 회당, 헤롯… 복음서에 나오는 사람들과 제도가 모두 이 400년 동안 생겼어요."},
+{id:"s13",t:"예수의 생애",y:"BC 6–4년경 탄생 ~ AD 30년경",c:"#b3362f",lead:"기다리던 왕이 오셨다—그러나 아무도 예상하지 못한 방식으로",
+p:["예수님은 헤롯 대왕 말기에 다윗의 고향 베들레헴에서 태어나 갈릴리 나사렛에서 자라세요. 서른 살쯤 세례 요한에게 세례를 받고 광야에서 시험을 이기신 뒤 '때가 찼고 하나님의 나라가 가까왔으니 회개하고 복음을 믿으라'고 선포하며 사역을 시작하세요.",
+"열두 제자를 부르시고, 병자를 고치고, 귀신을 쫓고, 죄인·세리와 함께 먹으시며, 비유로 하나님 나라를 가르치세요. 사람들은 로마를 무너뜨릴 군사 메시야를 기대했지만, 예수님은 섬기고 고난받는 종의 길을 말씀하세요(막 10:45). 이 때문에 종교 지도자들과 충돌해요.",
+"유월절에 예루살렘에 들어가신 예수님은 제자들과 마지막 만찬을 나누며 '새 언약'을 세우시고, 체포되어 로마 총독 빌라도 아래 십자가에 못 박혀 죽으세요. 그리고 사흘째 되는 날 부활하셔서 제자들에게 나타나세요. 복음서는 네 권이에요. 마가가 가장 짧고 빠르고, 마태는 유대인 독자에게, 누가는 이방인 독자에게, 요한은 '예수님이 누구신가'에 집중해요."],
+who:"마리아, 요셉, 세례 요한, 베드로, 요한, 막달라 마리아, 가야바, 빌라도",ev:["탄생","세례와 광야 시험","갈릴리 사역","베드로의 고백","예루살렘 입성","최후의 만찬","십자가와 부활"],bk:[40,41,42,43],why:"구약의 모든 줄기(아브라함의 복, 출애굽, 다윗의 왕, 성전, 고난받는 종)가 한 사람 안에서 만나요."},
+{id:"s14",t:"초대교회",y:"AD 30–46년경",c:"#c4672b",lead:"성령이 오시고, 복음이 예루살렘 밖으로 퍼지다",
+p:["부활하신 예수님은 40일 동안 제자들에게 나타나신 뒤 승천하시며 '예루살렘과 온 유대와 사마리아와 땅끝까지 내 증인이 되리라'(행 1:8)고 말씀하세요. 오순절에 성령이 임하고, 베드로의 설교로 하루에 3천 명이 세례를 받아요.",
+"예루살렘 교회는 서로 물건을 나누며 함께 살았지만, 곧 박해가 시작돼요. 스데반이 첫 순교자가 되고, 신자들이 흩어지면서 오히려 복음이 사마리아와 주변으로 퍼져요. 교회를 박해하던 바리새인 사울이 다메섹 길에서 예수님을 만나 회심해요.",
+"베드로가 로마 백부장 고넬료의 집에서 복음을 전할 때 이방인에게도 성령이 임해요. 수리아 안디옥에 유대인과 이방인이 함께하는 교회가 생기고, 거기서 처음으로 '그리스도인'이라는 이름이 붙어요. 야고보서는 이 시기 흩어진 유대인 신자들에게 쓴 초기 편지로 보는 견해가 많아요."],
+who:"베드로, 요한, 스데반, 빌립, 사울(바울), 바나바, 고넬료, 야고보",ev:["승천","오순절 성령 강림","스데반의 순교","사울의 회심","고넬료의 회심","안디옥 교회"],bk:[44,59],why:"이방인이 유대인이 되지 않고도 하나님의 백성이 된다—아브라함 언약 '모든 족속'의 성취가 눈앞에서 일어나요."},
+{id:"s15",t:"바울의 선교와 편지",y:"AD 46–67년경",c:"#a04a6b",lead:"사도행전이 지도라면, 바울서신은 그 지도 위에서 쓴 편지",
+p:["안디옥 교회는 바울과 바나바를 선교사로 보내요. 1차 선교(행 13–14장)에서 오늘날 튀르키예의 갈라디아 지역에 교회를 세우고, 이방인 신자도 할례를 받아야 하느냐는 논쟁 끝에 AD 49년경 예루살렘 회의(행 15장)가 '은혜로 구원'을 확인해요. 갈라디아서가 이 논쟁 한복판에서 쓰인 편지예요.",
+"2차 선교(행 16–18장) 때 바울은 유럽으로 건너가 빌립보, 데살로니가, 고린도에 교회를 세우고, 고린도에서 데살로니가전후서를 써요. 3차 선교(행 19–20장) 때 에베소에 오래 머물며 고린도전서를 쓰고, 이어 고린도후서와 로마서를 써요.",
+"예루살렘에서 체포된 바울은 가이사랴를 거쳐 로마로 이송되고, 로마에서 갇힌 동안 에베소서, 빌립보서, 골로새서, 빌레몬서(옥중서신)를 써요. 풀려난 뒤 디모데전서·디도서를, 다시 갇혀 순교를 앞두고 디모데후서를 썼다고 전통적으로 봐요. 바울은 네로 황제 때 로마에서 순교했다고 전해져요."],
+who:"바울, 바나바, 실라, 디모데, 디도, 누가, 브리스길라와 아굴라",ev:["1차 선교","예루살렘 회의(AD 49)","2차 선교—유럽으로","3차 선교—에베소","예루살렘 체포","로마 압송과 옥중서신"],bk:[44,48,52,53,46,47,45,49,50,51,57,54,56,55],why:"각 편지를 사도행전의 어느 장면에서 썼는지 알면, 편지가 왜 그 문제를 다루는지가 보여요."},
+{id:"s16",t:"박해 속의 교회, 그리고 완성",y:"AD 60–95년경",c:"#3b4a8c",lead:"끝까지 신실하라—어린양이 이기신다",
+p:["AD 64년 로마 대화재 이후 네로 황제가 그리스도인들을 박해하고, 베드로와 바울이 이 무렵 순교했다고 전해져요. 베드로전후서, 유다서, 히브리서는 박해와 거짓 가르침 속에 있는 교회를 붙들어 주는 편지예요. 히브리서는 옛 제사 제도로 돌아가려는 유대인 신자들에게 예수님이 더 좋은 대제사장이심을 설명해요.",
+"AD 66년 유대인이 로마에 반란을 일으키고, AD 70년 로마 장군 디도가 예루살렘과 성전을 완전히 파괴해요. 예수님이 예언하신 일이에요(막 13장). 이후 기독교와 유대교는 점점 다른 길을 걷게 돼요.",
+"1세기 말, 사도 요한은 요한복음과 요한서신을 쓰고, 도미티아누스 황제 때 밧모섬에 유배되어 요한계시록을 받았다고 전해져요. 계시록은 황제 숭배를 강요받던 일곱 교회에게 '역사의 진짜 왕은 죽임당하신 어린양'이라고 말하며, 새 하늘과 새 땅—창세기의 에덴이 회복된 모습으로 성경을 닫아요."],
+who:"베드로, 요한, 유다, 네로, 디도 장군, 도미티아누스",ev:["네로의 박해(AD 64)","베드로·바울의 순교(전승)","예루살렘 성전 파괴(AD 70)","요한의 밧모섬 유배","새 하늘과 새 땅"],bk:[60,61,65,58,62,63,64,66],why:"창세기 1–3장에서 잃어버린 것(하나님의 임재, 생명나무)이 요한계시록 21–22장에서 회복되며 이야기가 완성돼요."},
+{id:"s17",t:"한 문장으로 보면",y:"창세기에서 요한계시록까지",c:"#23418f",lead:"하나님은 무너진 세상을 포기하지 않으시고, 아브라함의 가족과 다윗의 왕을 거쳐 예수 안에서 모든 것을 새롭게 하신다",
+p:["성경 66권은 한 사람이 한 번에 쓴 책이 아니라, 약 1500년 동안 40여 명이 쓴 글이 모인 '도서관'이에요. 그런데도 하나의 줄거리가 흘러요. 창조 → 타락 → 약속(아브라함) → 구원(출애굽) → 언약과 성막 → 땅 → 왕(다윗) → 실패와 포로 → 귀환과 기다림 → 예수 → 성령과 교회 → 새 창조.",
+"이 흐름을 붙잡고 읽으면, 어느 책을 펴든 '지금 이야기의 어디쯤인가'를 물을 수 있어요. 그리고 그 질문이 바로 '맥'을 잡는 방법이에요. 이제 시대순 읽기표로 가서 이 순서대로 읽어 보세요."],
+who:"",ev:[],bk:[],why:""}
+];
+// 책 해설: [저자, 기록 시기, 배경, 핵심 메시지, 구조("범위 내용|..."), 핵심 구절("장:절;..."), 읽기 팁]
+const INTRO={
+1:["모세(전통)","출애굽 이후 광야 시기(전통). 최종 편집 시기는 견해가 다양해요","창조부터 요셉이 이집트에서 죽기까지","하나님이 좋게 지으신 세상이 죄로 무너지자, 아브라함의 가족을 통해 온 세상을 다시 복 주시려는 계획을 시작하신다","1–11 창조와 세상의 시작|12–25 아브라함|25–36 이삭과 야곱|37–50 요셉","1:1;1:27;3:15;12:1-3;15:6;50:20","모든 이야기의 시작이에요. 문제(죄)와 해결의 약속(아브라함)이 함께 나와요."],
+2:["모세(전통)","광야 시기(전통)","이집트 노예 생활부터 시내산에서 성막을 완성하기까지","하나님은 억압받는 백성을 구원하시고, 언약을 맺어 그들 가운데 거하신다","1–18 이집트에서 구원|19–24 시내산 언약과 율법|25–40 성막","3:14;12:13;14:13;19:5-6;20:1-17;34:6-7","구원 → 언약 → 임재의 순서를 기억하세요. 계명보다 구원이 먼저예요."],
+3:["모세(전통)","시내산에 머문 약 1년","성막이 완성된 직후, 시내산 아래","거룩하신 하나님과 죄 있는 백성이 어떻게 함께 살 수 있는가—제사, 정결, 거룩한 삶","1–7 다섯 가지 제사|8–10 제사장 위임|11–15 정결법|16 속죄일|17–27 거룩한 삶","16:30;17:11;19:2;19:18","제사 규정이 지루하게 느껴지면 '하나님 곁에 가까이 가는 법'이라는 질문을 붙들고 읽어 보세요. 히브리서의 열쇠예요."],
+4:["모세(전통)","광야 40년","시내산 출발부터 모압 평지까지 약 38년","불평과 불신으로 광야에서 한 세대가 무너지지만, 하나님은 약속을 포기하지 않고 다음 세대를 이끄신다","1–10 시내산에서 출발 준비|11–25 광야의 불평과 반역|26–36 새 세대 준비","6:24-26;14:18;21:8-9","이름은 두 번의 인구조사(1장, 26장)에서 왔어요. 두 인구조사 사이에 한 세대가 지나가요."],
+5:["모세(마지막 장의 죽음 기록은 후대)","광야 40년 끝","요단강을 건너기 직전 모압 평지","모세의 고별 설교. 새 세대에게 율법을 다시 풀어 주며 '하나님을 사랑하고 순종하라, 그것이 생명이다'","1–4 지난 역사 회고|5–26 율법 재해석(십계명, 쉐마)|27–30 복과 저주, 언약 갱신|31–34 여호수아 계승과 모세의 죽음","6:4-5;8:3;18:15;30:19-20","예수님은 광야 시험 때 세 번 모두 신명기로 답하셨어요(마 4장)."],
+6:["여호수아와 후대 편집(전통)","정복 이후","요단을 건너 가나안 정복과 땅 분배","하나님은 아브라함에게 약속한 땅을 주셨다. 남은 질문은 이스라엘이 신실할 것인가","1–5 요단 건너기|6–12 정복|13–21 땅 분배|22–24 언약 갱신","1:9;21:45;24:15","13–21장의 지명 목록은 빠르게 넘겨도 괜찮아요. '약속이 하나도 빠짐없이 이루어졌다'(21:45)가 요점이에요."],
+7:["사무엘(유대 전통)","왕정 초기","여호수아 죽음 이후 왕이 세워지기 전 약 300여 년","하나님을 잊은 백성이 반복해서 무너지고, 하나님은 그때마다 사사를 세워 구원하신다. 그러나 점점 더 깊이 타락한다","1–2 서론: 순환의 구조|3–16 사사들(드보라, 기드온, 입다, 삼손)|17–21 도덕적 붕괴","2:16;17:6;21:25","사사들을 영웅으로만 읽지 마세요. 뒤로 갈수록 사사들도 무너져요. 그게 이 책의 메시지예요."],
+8:["미상","다윗 시대 이후","사사 시대 흉년 때, 베들레헴과 모압","어두운 사사 시대에도 평범한 사람들의 신실함 속에서 하나님이 일하시고, 다윗 왕의 가문이 준비된다","1 나오미의 상실|2–3 룻과 보아스|4 기업 무를 자와 다윗의 족보","1:16;4:14-17","'기업 무를 자'(친족이 땅과 가문을 되찾아 주는 제도)를 알면 이야기가 선명해져요."],
+9:["미상(사무엘, 나단, 갓의 기록 포함—대상 29:29)","왕국 분열 이후 편집","사사 시대 끝부터 사울의 죽음(BC 1010년경)까지","이스라엘이 왕을 갖게 되는 과정. 겉모습의 왕(사울)과 마음의 왕(다윗)이 대비된다","1–7 사무엘|8–15 사울 왕|16–31 다윗의 등장과 도피","2:1-10;8:7;15:22;16:7","다윗이 사울을 피해 다니던 시절의 시편(57, 59, 142편 등)과 함께 읽으면 좋아요."],
+10:["미상(사무엘상과 한 권)","왕국 분열 이후 편집","다윗의 통치 약 40년(BC 1010–970년경)","하나님은 다윗과 영원한 왕조의 언약을 맺으시지만, 다윗의 죄는 집안과 나라에 큰 상처를 남긴다","1–10 다윗의 성공과 다윗 언약|11–12 밧세바 사건|13–20 집안의 비극과 압살롬의 반역|21–24 부록","7:12-16;12:7;22:2-3","7장(다윗 언약)이 성경 전체에서 손꼽히는 중요한 장이에요."],
+11:["미상(유대 전통: 예레미야)","바벨론 포로기(BC 6세기)","솔로몬(BC 970년경)부터 북이스라엘 아합 시대까지","왕들이 언약에 신실한가에 따라 나라가 흥망한다. 솔로몬의 영광과 타락, 왕국 분열, 엘리야","1–11 솔로몬과 성전|12–16 분열과 초기 왕들|17–22 엘리야와 아합","3:9;8:27;18:21","북왕국과 남왕국 왕이 번갈아 나와서 헷갈려요. '유다 왕'인지 '이스라엘 왕'인지 표시하며 읽으세요."],
+12:["미상(열왕기상과 한 권)","바벨론 포로기","엘리사 시대부터 BC 586년 예루살렘 멸망까지","북이스라엘(BC 722)과 남유다(BC 586)가 우상숭배로 망한다. 마지막 장의 여호야긴 석방은 다윗 가문의 희미한 소망을 남긴다","1–8 엘리사|9–17 북이스라엘 멸망까지|18–25 남유다 홀로, 그리고 멸망","17:7-8;22:13;25:27-30","대부분의 선지서가 이 책의 시대에 속해요. 읽기표에서 선지서가 중간중간 끼어드는 이유예요."],
+13:["에스라(유대 전통)","포로 귀환 이후(BC 5세기경)","아담부터 다윗까지의 족보와 다윗 통치","귀환한 백성에게 '우리는 누구인가'를 다시 묻는다. 다윗 왕조와 성전 예배가 이스라엘 정체성의 중심","1–9 족보|10–29 다윗과 성전 준비","17:11-14;29:11","1–9장 족보는 '포로 후에도 우리는 아담과 아브라함에 이어진 백성'이라는 선언이에요. 훑어 읽어도 괜찮아요."],
+14:["에스라(유대 전통)","포로 귀환 이후","솔로몬부터 고레스 칙령까지","남유다 왕들을 예배와 회개 중심으로 평가하며 '겸비하고 기도하면 회복된다'는 소망을 준다","1–9 솔로몬과 성전|10–36 유다 왕들, 멸망, 고레스 칙령","7:14;36:22-23","히브리어 성경에서는 맨 마지막 책이에요. '올라갈지어다'로 끝나요."],
+15:["에스라(전통)","BC 5세기","포로 귀환(BC 538)과 성전 재건(BC 516), 에스라의 귀환(BC 458)","하나님은 약속대로 백성을 돌아오게 하신다. 성전과 말씀을 중심으로 공동체를 다시 세운다","1–6 스룹바벨의 귀환과 성전 재건|7–10 에스라의 귀환과 개혁","1:1-3;7:10","6장과 7장 사이에 약 58년이 흘러요. 그 사이가 에스더 이야기 시대예요."],
+16:["느헤미야(1인칭 회고록)","BC 5세기 후반","BC 445년, 페르시아 왕의 술 맡은 관원 느헤미야의 귀환","기도와 실행으로 예루살렘 성벽을 재건하고, 말씀으로 공동체를 새롭게 한다","1–7 성벽 재건|8–10 말씀 낭독과 언약 갱신|11–13 정착과 개혁","1:4;4:14;8:8","구약 역사 기록의 마지막 장면이에요."],
+17:["미상","페르시아 시대","페르시아 왕 아하수에로(크세르크세스 1세, BC 486–465) 때 수산 궁","하나님의 이름은 한 번도 나오지 않지만, 우연처럼 보이는 일들을 통해 백성을 멸절 위기에서 지키신다","1–2 에스더가 왕비가 됨|3–5 하만의 음모|6–10 반전과 부림절","4:14","'마침', '그 밤에' 같은 우연의 순간을 찾아보며 읽으세요."],
+18:["미상","미상(배경은 족장 시대 분위기)","우스 땅의 의인 욥","의인의 고난 앞에서 '하나님은 정의로우신가', '사람은 대가 없이 하나님을 섬길 수 있는가'를 묻는다","1–2 하늘 회의와 시련|3–31 세 친구와의 논쟁|32–37 엘리후|38–42 하나님의 응답과 회복","1:21;19:25;38:4;42:5","친구들의 말은 그럴듯하지만 결국 하나님께 책망받아요(42:7). 누구의 말인지 확인하며 읽으세요."],
+19:["다윗(73편) 외 아삽, 고라 자손, 솔로몬, 모세 등","모세 시대부터 포로 귀환 이후까지 약 1000년","이스라엘의 기도와 찬양 모음","기쁨·슬픔·분노·회개, 모든 감정을 하나님께 가져가는 기도의 책. 다섯 권으로 나뉘며 찬양으로 끝난다","1–41 1권|42–72 2권|73–89 3권|90–106 4권|107–150 5권","1:1-2;23:1;51:10;119:105;150:6","이 앱의 읽기표에서는 시편을 시대별로 나눠 배치했어요(1–72편 다윗 시대, 73–89편 포로기, 90편 모세, 107–150편 귀환기). 정확한 시기는 시마다 달라요."],
+20:["솔로몬 중심, 아굴(30장)과 르무엘(31장)","솔로몬 시대(BC 10세기)~히스기야 때 편집(25:1)","왕실과 가정의 지혜 교육","여호와를 경외하는 것이 지혜의 시작. 말, 돈, 일, 관계를 지혜롭게 사는 법","1–9 아버지의 교훈|10–29 솔로몬의 잠언 모음|30–31 아굴과 르무엘, 현숙한 여인","1:7;3:5-6;4:23","잠언은 약속이 아니라 '대체로 그렇다'는 지혜의 관찰이에요. 한 달 31일에 맞춰 하루 한 장씩 읽는 사람도 많아요."],
+21:["'전도자'(코헬렛), 전통적으로 솔로몬","견해가 다양해요","인생의 의미를 탐구하는 지혜자","해 아래 모든 것은 안개처럼 덧없다. 그러니 하나님이 주신 일상을 누리고 하나님을 경외하라","1–2 모든 것이 헛됨|3–11 때와 한계, 그리고 누림|12 결론","1:2;3:1;12:13","결론(12:13)을 먼저 읽고 시작하면 덜 막막해요."],
+22:["솔로몬(전통)","솔로몬 시대(전통)","신랑과 신부의 사랑 노래","남녀의 사랑과 결혼을 하나님이 주신 선물로 노래한다. 유대교와 교회는 하나님과 백성의 사랑으로도 읽어 왔다","1–3 그리움과 만남|4–5 결혼과 기쁨|6–8 성숙한 사랑","2:16;8:6-7","화자가 계속 바뀌어요(신부, 신랑, 친구들). 누가 말하는지 생각하며 읽으세요."],
+23:["이사야(BC 8세기). 40–66장의 기록 시기는 학자마다 견해가 달라요","BC 740–680년경 사역","앗수르의 위협 속 남유다(웃시야~히스기야)","거룩하신 하나님의 심판과 구원. 1–39장은 앗수르 시대의 경고, 40–66장은 포로 이후의 위로와 새 창조를 바라본다","1–12 유다와 예루살렘|13–35 열방 심판|36–39 히스기야 이야기|40–55 위로와 고난받는 종|56–66 새 하늘과 새 땅","6:8;7:14;9:6;40:31;53:5;65:17","신약에서 가장 많이 인용되는 선지서예요. 36–39장은 열왕기하 18–20장과 거의 같은 내용이에요."],
+24:["예레미야(서기관 바룩이 받아 적음)","BC 627–580년경","요시야~시드기야 왕, 예루살렘 멸망 전후","멸망을 막을 수 없다고 40년간 외친 '눈물의 선지자'. 심판 너머 새 언약을 약속한다","1–25 유다에 대한 경고|26–45 예레미야의 고난과 멸망 이야기|46–51 열방|52 예루살렘 함락","1:5;29:11;31:31-34","연대순이 아니라 주제별로 엮여 있어서, 각 장 첫 줄의 왕 이름을 확인하면 시기를 알 수 있어요."],
+25:["예레미야(전통)","BC 586년 직후","불탄 예루살렘","무너진 도시를 위한 다섯 편의 조가. 절망 한가운데 '여호와의 자비가 무궁하시다'는 고백","1–2 무너진 도시|3 고난 속의 소망|4–5 회복을 구하는 기도","3:22-23","1–4장은 각 절이 히브리어 알파벳 순서로 시작하는 시예요."],
+26:["에스겔(제사장)","BC 593–571년경","바벨론 그발 강가의 포로민 가운데(BC 597년 2차 포로 때 끌려감)","하나님의 영광이 범죄한 성전을 떠나지만, 포로지에도 오시고 결국 새 마음과 새 성전으로 돌아오신다","1–24 예루살렘 멸망 예고|25–32 열방 심판|33–39 회복(마른 뼈)|40–48 새 성전 환상","36:26;37:5;48:35","'그들이 나를 여호와인 줄 알리라'가 계속 반복돼요. 하나님의 영광이 떠나고(10장) 돌아오는(43장) 흐름을 따라가 보세요."],
+27:["다니엘(전통)","BC 6세기(전통). 일부 학자는 BC 2세기로 봐요","바벨론과 페르시아 궁정(BC 605년 1차 포로 때 끌려감)","제국들이 흥망해도 하나님이 역사의 진짜 왕이시다. 이방 땅에서 신실하게 사는 법","1–6 궁정 이야기(풀무불, 사자굴)|7–12 묵시 환상(네 짐승, 인자)","2:44;3:17-18;7:13-14","2:4–7:28은 히브리어가 아니라 아람어로 쓰였어요. 요한계시록의 이미지 상당수가 여기서 와요."],
+28:["호세아","BC 750–715년경","멸망 직전의 북이스라엘","바람난 아내를 다시 사랑하는 호세아처럼, 하나님은 우상을 따라간 이스라엘을 포기하지 않으신다","1–3 호세아의 결혼|4–14 이스라엘의 죄와 하나님의 사랑","6:6;11:8;14:4","'에브라임'은 북이스라엘을 가리키는 다른 이름이에요."],
+29:["요엘","연대가 불확실해요(BC 9세기~포로 후까지 견해 다양)","메뚜기 재앙이 휩쓴 유다","메뚜기 재앙을 '여호와의 날'의 경고로 읽고 회개를 촉구한다. 회개하면 성령을 부어 주신다","1:1–2:17 재앙과 회개 촉구|2:18–3:21 회복과 성령의 약속","2:13;2:28","연대가 불분명해서 이 앱에서는 분열왕국 초기에 두었어요."],
+30:["아모스(드고아의 목자)","BC 760년경","여로보암 2세 때 번영하던 북이스라엘","부유함 뒤의 불의와 위선적 예배를 고발한다. 하나님은 제사보다 정의를 원하신다","1–2 열방과 이스라엘 심판|3–6 고발|7–9 다섯 환상과 회복","5:24;8:11","남유다 출신 목자가 북이스라엘에 가서 외친 메시지예요."],
+31:["오바댜","BC 586년 직후(다수 견해)","예루살렘이 멸망할 때 함께 약탈한 에돔","형제 나라(에서의 후손) 에돔의 교만과 배신에 대한 심판, 그리고 '나라가 여호와께 속하리라'","1–14 에돔 심판|15–21 여호와의 날과 회복","1:15;1:21","구약에서 가장 짧은 책. 야곱과 에서(창 25–33장)의 이야기가 배경이에요."],
+32:["요나","배경은 BC 8세기(왕하 14:25)","앗수르의 수도 니느웨","원수까지 불쌍히 여기시는 하나님, 그리고 그 자비가 싫은 선지자","1–2 도망과 큰 물고기|3 니느웨의 회개|4 요나의 분노","2:9;4:11","하나님의 질문으로 끝나요. 그 질문에 독자가 답하도록 열어 둔 책이에요."],
+33:["미가","BC 735–700년경","이사야와 같은 시대, 남유다와 북이스라엘","지도자들의 부패를 고발하고 베들레헴에서 나올 왕을 약속한다","1–2 심판|3–5 지도자 고발과 메시야 약속|6–7 하나님의 소송과 소망","5:2;6:8;7:18","6:8은 선지서 메시지의 요약으로 자주 꼽혀요."],
+34:["나훔","BC 663–612년 사이","니느웨 멸망(BC 612) 직전","요나 때 회개했던 니느웨가 다시 잔인해지자 하나님이 심판하신다","1 심판자 하나님|2–3 니느웨 멸망","1:7","요나서의 후속편처럼 읽으면 좋아요."],
+35:["하박국","BC 609–598년경","바벨론이 떠오르던 때","'왜 악이 그대로 있습니까?' 선지자의 질문과 하나님의 답. 결론은 '의인은 믿음으로 살리라'","1–2 두 번의 질문과 답|3 기도와 찬양","2:4;3:17-18","선지자가 백성에게 말하는 책이 아니라 하나님께 따지는 책이에요."],
+36:["스바냐(히스기야 왕의 후손, 1:1)","요시야 왕 시대(BC 640–609)","요시야 개혁 전후의 유다","여호와의 날의 심판과 남은 자의 기쁨","1:1–3:8 심판|3:9–20 회복","3:17","3:17은 구약에서 하나님이 '노래하시는' 드문 장면이에요."],
+37:["학개","BC 520년","귀환 후 성전 공사가 16년간 멈춘 예루살렘","자기 집보다 하나님의 집을 먼저 세우라. 작아 보여도 나중 영광이 더 크리라","1 성전 재건 촉구|2 나중 영광의 약속","1:4;2:9","에스라 5–6장과 함께 읽으세요. 이 격려로 BC 516년 성전이 완공돼요."],
+38:["스가랴","BC 520–480년경","학개와 같은 시기의 예루살렘","여덟 환상과 메시야 예언으로 성전 재건 공동체를 격려한다","1–6 여덟 밤 환상|7–8 금식에 대한 질문|9–14 오실 왕과 그날","4:6;9:9;12:10","복음서의 수난 이야기에 자주 인용돼요(9:9, 11:12–13, 12:10, 13:7)."],
+39:["말라기","BC 450–430년경","성전 재건 후 다시 무관심해진 귀환 공동체","형식적 예배, 이혼, 십일조 문제를 문답식으로 고발하고, 엘리야를 보내시겠다고 약속한다","1–2 제사장과 백성의 죄|3–4 여호와의 날과 엘리야","3:1;3:10;4:5-6","백성이 '어떻게…?' 하고 되묻고 하나님이 답하는 형식이 반복돼요. 이후 약 400년 동안 선지자가 없어요."],
+40:["마태(세리 출신 제자, 전통)","AD 60~80년대(견해 다양)","유대인 독자","예수님은 구약이 기다린 다윗의 자손 메시야요 새 모세다. 하나님 나라(천국)를 가르치고 제자 삼으라고 보내신다","1–4 탄생과 준비|5–7 산상수훈|8–20 갈릴리 사역과 가르침|21–28 예루살렘, 십자가, 부활","1:1;5:17;16:16;28:19-20","'이는 선지자로 하신 말씀을 이루려 하심이라'가 자주 나와요. 다섯 개의 긴 설교(5–7, 10, 13, 18, 24–25장)가 뼈대예요."],
+41:["마가 요한(베드로의 통역자, 전통)","AD 60년대(가장 먼저 쓰인 복음서로 보는 견해가 많아요)","로마의 이방인 신자들, 박해 상황","바쁘게 움직이시는 하나님의 아들. 그러나 그 왕은 섬기고 고난받는 길로 오신다","1–8 갈릴리, 능력의 사역|8:27–10 예루살렘 가는 길과 제자도|11–16 수난과 부활","1:1;8:29;10:45","'곧'이라는 말이 계속 나와요. 가장 짧아서 처음 읽기 좋은 복음서예요."],
+42:["누가(의사, 바울의 동역자)","AD 60~80년대","데오빌로와 이방인 독자","차례대로 조사해 쓴 예수님 이야기. 가난한 자, 여성, 죄인, 이방인에게 오신 구원자","1–2 탄생|3–9 갈릴리 사역|9:51–19 예루살렘으로 가는 여정|19–24 예루살렘, 십자가, 부활","4:18-19;15:20;19:10","사도행전과 한 세트예요(누가-행전). 비유가 가장 많아요."],
+43:["사도 요한(전통)","AD 90년대(전통)","에베소 지역, 유대인과 헬라인 독자","예수님은 육신이 되신 말씀. 일곱 표적과 '나는 ~이다' 선언으로 그분이 누구신지 보여 주어 믿고 생명을 얻게 한다","1 서문|2–12 표적의 책|13–17 다락방 강화|18–21 수난과 부활","1:14;3:16;11:25;14:6;20:31","다른 세 복음서와 구성이 많이 달라요. 기록 목적이 20:31에 직접 나와요."],
+44:["누가","AD 60년대 초~80년대","예수님 승천(AD 30년경)부터 바울의 로마 연금(AD 60–62년경)까지","부활하신 예수님이 성령으로 교회를 통해 일하신다. 복음이 예루살렘에서 로마까지","1–7 예루살렘|8–12 유대와 사마리아, 이방인에게|13–20 바울의 세 차례 선교|21–28 체포와 로마","1:8;2:38;4:12","읽기표에서 사도행전을 쪼개 그 사이에 바울서신을 넣었어요. 편지를 쓴 그 장면에서 편지를 읽게 돼요."],
+45:["바울","AD 57년경, 고린도에서(행 20:2–3)","아직 가 보지 못한 로마 교회. 유대인과 이방인 신자 사이 갈등","복음은 유대인과 이방인 모두를 위한 하나님의 의. 믿음으로 의롭게 되고, 성령으로 살며, 한 몸이 된다","1–4 모두 죄인, 믿음으로 의롭게|5–8 새 생명과 성령|9–11 이스라엘의 미래|12–16 함께 사는 삶","1:16-17;3:23-24;5:8;8:1;8:28;12:1-2","바울 신학을 가장 체계적으로 설명한 편지예요. 9–11장은 '그럼 이스라엘은?'이라는 질문에 대한 답이에요."],
+46:["바울","AD 54–55년경, 에베소에서","부유하고 복잡한 항구 도시 고린도의 교회","분열, 음행, 소송, 결혼, 우상 제물, 예배, 은사, 부활 문제에 답하며 십자가와 사랑으로 교회를 바로 세운다","1–4 분열|5–7 윤리와 결혼|8–10 우상 제물|11–14 예배와 은사, 사랑|15–16 부활","1:18;10:31;13:13;15:3-4","'너희가 쓴 말에 대하여는'(7:1)부터 교회가 보낸 질문에 하나씩 답해요."],
+47:["바울","AD 55–56년경, 마게도냐에서","바울의 사도권을 의심하는 고린도 교회","약함 속에 나타나는 하나님의 능력. 바울의 가장 개인적인 편지","1–7 사역의 변호와 화해|8–9 예루살렘 헌금|10–13 거짓 사도들에 대한 변론","4:7;5:17;12:9","바울의 감정이 가장 많이 드러나는 편지예요."],
+48:["바울","AD 48–55년경(견해 다양)","이방인 신자에게 할례를 요구하는 사람들이 들어온 갈라디아 교회들","율법의 행위가 아니라 그리스도를 믿음으로 의롭게 된다. 성령을 따라 자유롭게 살라","1–2 바울의 복음은 하나님께 받은 것|3–4 믿음으로 의롭게|5–6 자유와 성령의 열매","2:20;3:28;5:22-23","바울의 편지 중 유일하게 감사 인사 없이 바로 책망으로 들어가요. 사도행전 15장과 함께 읽으세요."],
+49:["바울(옥중)","AD 60–62년경, 로마","에베소와 주변 교회들","하나님은 그리스도 안에서 유대인과 이방인을 한 몸으로 만드셨다. 그 부르심에 합당하게 살라","1–3 그리스도 안에서 받은 것|4–6 합당한 삶, 가정, 영적 전쟁","2:8-10;2:14;4:1-3;6:10-11","앞 3장은 '무엇을 받았나', 뒤 3장은 '그러니 어떻게 살까'예요. 옥중서신(엡·빌·골·몬)의 하나."],
+50:["바울(옥중)","AD 60–62년경","바울을 후원한 유럽 첫 교회(행 16장)","어떤 형편에서도 그리스도 안에서 기뻐하라. 그리스도의 낮아지심을 본받으라","1 갇힘 속의 기쁨|2 그리스도의 마음|3 참된 의|4 감사와 평강","2:5-8;3:13-14;4:4;4:13","감사 편지예요. 바울이 갇혀 있다는 걸 기억하며 읽으세요."],
+51:["바울(옥중)","AD 60–62년경","바울이 직접 세우지 않은 골로새 교회, 혼합 철학의 유혹","그리스도가 만물보다 뛰어나시다. 다른 것을 더할 필요가 없다","1–2 그리스도의 탁월하심|3–4 위의 것을 찾는 삶","1:15-17;3:1-2","에베소서와 내용이 많이 겹쳐요. 빌레몬서와 같은 때 보냈어요(4:9)."],
+52:["바울","AD 50–51년경, 고린도에서","개척 직후 박해받는 젊은 교회(행 17장)","믿음과 사랑을 칭찬하고, 먼저 죽은 성도와 주님의 재림에 대해 위로한다","1–3 감사와 회고|4–5 거룩한 삶과 재림","4:16-17;5:16-18","바울의 가장 이른 편지 중 하나예요."],
+53:["바울","전서를 보낸 직후","박해가 심해지고 재림에 대한 오해가 생긴 교회","주의 날이 이미 왔다는 오해를 바로잡고, 게으르지 말고 일하라","1 박해 속 위로|2 불법의 사람|3 성실한 삶","2:15;3:10","전서와 붙여 읽으세요."],
+54:["바울","AD 62–64년경(전통)","에베소 교회를 맡은 젊은 동역자 디모데","거짓 가르침에 맞서 교회의 예배와 지도자, 공동체 질서를 세우라","1 거짓 교사|2–3 예배와 감독·집사|4–6 목회자의 삶","1:15;4:12;6:10","목회서신(딤전·딤후·딛)의 하나. 사도행전 이후의 일이라 행전에는 나오지 않아요."],
+55:["바울","AD 64–67년경, 로마 감옥","순교를 앞둔 바울의 마지막 편지","고난을 부끄러워하지 말고 말씀을 전하라. 나는 선한 싸움을 다 싸웠다","1–2 고난을 함께 받으라|3–4 말씀을 전파하라, 그리고 작별","3:16-17;4:7-8","바울의 유언 같은 편지예요. 4장의 개인적인 부탁들까지 읽어 보세요."],
+56:["바울","AD 63–65년경","그레데 섬 교회를 맡은 디도","바른 교훈과 선한 일. 은혜가 사람을 바꾼다","1 장로 세우기|2 각 세대의 삶|3 선한 일","2:11-14;3:5","짧지만 복음 요약(2:11–14, 3:4–7)이 두 번 나와요."],
+57:["바울(옥중)","AD 60–62년경","도망친 노예 오네시모와 그 주인 빌레몬","복음 안에서는 노예도 '사랑받는 형제'. 용서와 화해를 부탁하는 짧은 편지","1 오네시모를 형제로 받아 달라는 부탁","1:16","골로새서와 같은 때 보낸 편지예요. 오네시모는 골로새서 4:9에도 나와요."],
+58:["미상","AD 60년대(성전 파괴 이전으로 보는 견해가 많아요)","박해 속에서 옛 유대교로 돌아가려는 유대인 신자들","예수님은 천사, 모세, 레위 제사장보다 뛰어난 대제사장이시고 단번의 제사로 새 언약을 이루셨다. 그러니 믿음으로 끝까지 가라","1–4 천사와 모세보다 뛰어나심|5–10 멜기세덱을 따르는 대제사장과 새 언약|11–13 믿음과 인내","4:15-16;8:10;11:1;12:1-2","레위기와 창세기 14장(멜기세덱)을 알면 훨씬 잘 보여요."],
+59:["야고보(예수님의 동생, 예루살렘 교회 지도자)","AD 40년대 후반~60년대 초","흩어진 유대인 신자들","행함이 따르는 살아 있는 믿음. 시험, 말, 부자와 가난한 자","1 시험과 말씀|2 믿음과 행함|3 혀|4–5 교만, 부, 인내와 기도","1:22;2:17;5:16","신약의 잠언 같은 책이에요. 산상수훈과 닮은 말이 많아요."],
+60:["베드로","AD 60년대 초, 로마('바벨론', 5:13)","소아시아에 흩어진 신자들, 사회적 박해","나그네로 사는 하나님 백성. 고난 중에 소망을 품고 선을 행하라","1:1–2:10 산 소망과 새 정체성|2:11–4:19 세상 속의 삶|5 장로들과 끝인사","1:3;2:9;5:7","'고난'이라는 말이 계속 나와요. 박해받는 교회를 떠올리며 읽으세요."],
+61:["베드로(일부 학자는 이견)","AD 64–68년경(전통)","거짓 교사와 재림에 대한 조롱","하나님의 약속은 더디지 않다. 은혜와 지식에서 자라라","1 성장|2 거짓 교사|3 주의 날","1:21;3:9","2장은 유다서와 내용이 많이 겹쳐요."],
+62:["사도 요한(전통)","AD 90년대","예수님이 육체로 오신 것을 부인하는 거짓 가르침","빛 가운데 행함, 서로 사랑함, 예수님을 바르게 믿음이 참 신자의 표지","1–2 빛과 사귐|3–4 사랑|5 믿음과 영생의 확신","1:9;4:8;5:13","요한복음과 단어가 많이 겹쳐요(빛, 생명, 사랑, 진리)."],
+63:["요한('장로')","AD 90년대","'택하심을 받은 부녀와 그의 자녀'(교회를 가리킨다는 견해가 많아요)","진리 안에서 사랑하고, 거짓 교사를 집에 맞아들이지 말라","1 진리와 사랑","1:6","요한일서를 아주 짧게 줄인 편지 같아요."],
+64:["요한('장로')","AD 90년대","가이오에게 보낸 개인 편지","순회 전도자를 대접한 가이오를 칭찬하고, 교만한 디오드레베를 책망한다","1 대접과 진리","1:4","초대교회에서 순회 전도자를 어떻게 맞았는지 보여 주는 편지예요."],
+65:["유다(야고보의 형제, 예수님의 동생)","AD 60~80년대","교회에 몰래 들어온 방탕한 교사들","믿음의 도를 위해 힘써 싸우라. 하나님이 너희를 지키신다","1 경고와 송영","1:3;1:24-25","마지막 송영(24–25절)이 신약에서 가장 아름다운 축도 중 하나예요."],
+66:["요한","AD 95년경, 도미티아누스 황제 때(전통)","로마 황제 숭배 압력 아래 있던 소아시아 일곱 교회","죽임당한 어린양이 역사의 진짜 왕이시다. 끝까지 신실하라. 하나님은 모든 것을 새롭게 하신다","1–3 일곱 교회에 보내는 편지|4–5 보좌와 어린양|6–16 일곱 인·나팔·대접|17–20 바벨론의 몰락과 승리|21–22 새 하늘과 새 땅","1:8;5:12;21:4-5;22:20","상징 대부분이 구약(다니엘, 에스겔, 스가랴, 출애굽기)에서 와요. 미래 일정표를 찾기보다 '누가 진짜 왕인가'를 보세요."]
+};
+
+// 구절 설명: [책, 장, "절", 제목, 설명]
+const NOTES=[
+[1,1,"1","태초에","성경의 첫 문장이에요. 세상이 우연이 아니라 하나님의 뜻으로 시작되었다는 선언이에요. 고대 근동 신화들은 신들의 싸움으로 세상이 생겼다고 했지만, 창세기는 한 분 하나님이 말씀으로 질서 있게 지으셨다고 말해요."],
+[1,1,"26-28","하나님의 형상","'형상'은 고대 왕이 자기 영토에 세운 왕의 조각상을 뜻하기도 했어요. 사람은 하나님을 대신해 세상을 돌보는 대리 통치자로 지음받았다는 뜻이에요."],
+[1,2,"2-3","일곱째 날","일을 멈추고 창조를 누리는 날이에요. 훗날 안식일 계명(출 20:8–11)의 뿌리가 돼요."],
+[1,3,"15","첫 복음","뱀(악)과 여자의 후손 사이의 싸움, 그리고 후손이 뱀의 머리를 상하게 하리라는 약속. 교회는 전통적으로 이것을 메시야에 대한 첫 약속으로 읽어 왔어요."],
+[1,6,"5-8","홍수의 이유","폭력과 악이 땅에 가득해 창조가 무너진 상태예요. 홍수는 세상을 창조 이전의 물로 되돌렸다가 노아와 함께 새로 시작하는 '재창조' 이야기예요."],
+[1,11,"4-9","바벨탑","사람들이 '이름을 내고' 하늘에 닿으려 한 교만이에요. 바로 다음 장에서 하나님은 아브라함에게 '네 이름을 창대케 하리라'고 하세요. 스스로 높아지는 길과 하나님이 높여 주시는 길이 대비돼요."],
+[1,12,"1-3","아브라함 언약","성경 전체의 열쇠 구절이에요. 땅, 큰 민족, 복—그리고 '땅의 모든 족속이 너로 말미암아 복을 얻을 것이라'. 이스라엘을 부르신 목적은 결국 온 세상의 회복이에요."],
+[1,15,"6","믿음과 의","아브라함이 하나님의 약속을 믿자 그것이 의로 여겨졌어요. 바울은 로마서 4장과 갈라디아서 3장에서 이 구절로 '믿음으로 의롭게 됨'을 설명해요."],
+[1,15,"9-17","쪼갠 고기 사이로","고대의 계약은 동물을 쪼개고 그 사이를 지나며 '어기면 이렇게 되리라'고 맹세했어요. 그런데 여기서는 하나님(타는 횃불)만 지나가세요. 하나님 혼자 언약의 책임을 지신다는 뜻이에요."],
+[1,22,"1-14","이삭을 바치라","가나안 종교는 실제로 아이를 제물로 바쳤지만, 하나님은 아이 대신 숫양을 준비하세요(여호와 이레). 신약은 이 장면을 아들을 내어 주신 하나님(요 3:16, 롬 8:32)과 연결해요."],
+[1,28,"12-15","야곱의 사다리","하늘과 땅을 잇는 통로예요. 예수님은 요한복음 1:51에서 자신이 바로 그 사다리라고 말씀하세요."],
+[1,32,"24-30","이스라엘이라는 이름","'하나님과 겨루다'라는 뜻이에요. 붙잡고 놓지 않던 야곱의 새 이름이 민족 전체의 이름이 돼요."],
+[1,50,"20","요셉의 고백","사람의 악한 의도 속에서도 하나님이 선을 이루신다는 창세기의 결론이에요."],
+[2,3,"14","스스로 있는 자","하나님의 이름 '여호와(YHWH)'의 뜻을 풀어 준 구절이에요. '나는 나다', '있게 하는 자' 등으로 풀이돼요."],
+[2,12,"1-14","유월절","어린양의 피를 문에 바른 집은 죽음이 '넘어갔어요'. 신약은 예수님을 '유월절 양'(고전 5:7)이라 부르고, 최후의 만찬도 유월절 식사였어요."],
+[2,14,"21-31","홍해","노예에서 해방된 결정적 사건이에요. 이후 구약 전체에서 '하나님이 누구신가'를 말할 때 계속 돌아가는 기준점이에요."],
+[2,19,"5-6","제사장 나라","이스라엘은 세상 앞에서 하나님을 보여 주는 '제사장 나라'로 부름받았어요. 베드로전서 2:9가 이 말을 교회에 그대로 적용해요."],
+[2,20,"1-17","십계명","출애굽(구원)이 먼저, 계명이 나중이에요. 구원받는 조건이 아니라 구원받은 백성이 사는 방식이에요. 앞부분은 하나님과의 관계, 뒷부분은 이웃과의 관계예요."],
+[2,25,"8-9","성막","'내가 그들 중에 거하리라'. 에덴에서 잃어버린 하나님의 임재가 이동식 천막 안에서 다시 시작돼요."],
+[2,32,"1-6","금송아지","언약을 맺자마자 깨뜨린 사건이에요. 이스라엘이 반복하는 실패 패턴의 시작이에요."],
+[2,34,"6-7","하나님의 자기소개","자비, 은혜, 노하기를 더디함, 인자와 진실. 구약에서 가장 많이 다시 인용되는 하나님의 성품 목록이에요(민 14:18, 시 103:8, 욜 2:13, 욘 4:2 등)."],
+[3,16,"1-34","속죄일","1년에 한 번 대제사장이 지성소에 들어가 백성의 죄를 속하는 날이에요. 두 염소 중 하나는 제물로, 하나는 죄를 지고 광야로 보내요. 히브리서 9–10장이 이 의식으로 예수님의 죽음을 설명해요."],
+[3,17,"11","피와 생명","'육체의 생명은 피에 있다'. 왜 제사에 피가 필요한지 설명하는 구절이에요."],
+[3,19,"18","네 이웃을 사랑하라","예수님이 '둘째 큰 계명'으로 인용하신 말씀(마 22:39)이 레위기에 있어요. 레위기는 제사만이 아니라 일상의 거룩함을 다뤄요."],
+[4,14,"1-35","정탐꾼 사건","가나안 앞에서 백성이 믿지 못하고 이집트로 돌아가자고 해요. 그 결과 그 세대가 40년 광야에서 죽고 다음 세대가 들어가요."],
+[4,21,"4-9","놋뱀","뱀에 물린 사람이 장대에 달린 놋뱀을 보면 살았어요. 예수님은 요한복음 3:14에서 자신의 십자가를 이것에 비유하세요."],
+[5,6,"4-9","쉐마","'이스라엘아 들으라(쉐마)'. 유대인이 지금도 매일 외우는 신앙고백이에요. 예수님은 이것을 첫째 되는 계명이라고 하셨어요(막 12:29–30)."],
+[5,18,"15-19","나와 같은 선지자","모세 같은 선지자를 세우시겠다는 약속이에요. 사도행전 3:22에서 베드로가 예수님께 적용해요."],
+[5,30,"15-20","생명과 사망","신명기의 결론이에요. 이후 여호수아~열왕기는 이스라엘이 이 선택 앞에서 어떻게 살았는지를 보여 줘요."],
+[6,6,"1-21","여리고","싸움이 아니라 예배 행렬로 무너진 성이에요. 땅은 군사력이 아니라 하나님의 선물이라는 뜻이에요. '바치다(진멸)'는 고대 전쟁 관습의 언어라 해석에 신중함이 필요한 대목이에요."],
+[6,24,"15","나와 내 집은","여호수아의 고별 도전이에요. 땅에 들어간 뒤에도 누구를 섬길지는 매 세대의 선택이에요."],
+[7,2,"10-19","사사기의 순환","범죄 → 압제 → 부르짖음 → 사사를 통한 구원 → 평화 → 다시 범죄. 이 순환이 갈수록 나빠지는 나선형이라는 게 사사기의 핵심이에요."],
+[7,21,"25","왕이 없으므로","사사기의 마지막 문장이에요. '좋은 왕이 필요하다'는 문제 제기가 바로 다음 시대(사무엘서)로 이어져요."],
+[8,4,"17","룻과 다윗","이방 여인(모압) 룻이 다윗 왕의 증조모가 돼요. 마태복음 1장 예수님의 족보에도 룻이 나와요."],
+[9,8,"4-7","왕을 달라","백성이 '열방과 같이' 왕을 요구해요. 하나님이 왕이신데 사람 왕을 구한 것이 문제였어요."],
+[9,16,"7","중심을 보시는 하나님","외모가 아닌 마음. 막내 목동 다윗이 선택되는 장면이에요."],
+[9,17,"45-47","다윗과 골리앗","무기보다 하나님의 이름을 의지한 싸움이에요. 이 사건 이후 다윗이 백성의 마음을 얻어요."],
+[10,7,"12-16","다윗 언약","다윗의 후손이 영원한 왕위를 갖고 하나님의 집을 세우리라는 약속이에요. '메시야(기름부음 받은 왕)' 기대의 뿌리이고, 신약은 예수님을 '다윗의 자손'이라 불러요."],
+[10,11,"1-27","밧세바 사건","가장 위대한 왕의 가장 큰 실패예요. 이 뒤로 다윗 집안에 칼이 끊이지 않아요(12:10). 시편 51편이 이때의 회개 시예요."],
+[11,3,"9","지혜를 구함","솔로몬이 부귀 대신 듣는 마음(지혜)을 구해요. 잠언과 전도서의 배경이 되는 장면이에요."],
+[11,8,"27","성전 봉헌 기도","하늘도 하나님을 담을 수 없는데 사람이 지은 성전이 어찌 담겠느냐는 고백이에요. 성전은 하나님을 가두는 집이 아니라 기도가 모이는 곳이에요."],
+[11,11,"1-13","솔로몬의 타락","많은 이방 아내와 우상숭배. 그 결과 왕국이 둘로 나뉠 것이 예고돼요."],
+[11,12,"16-33","왕국 분열","북쪽 10지파(이스라엘, 여로보암)와 남쪽(유다, 르호보암)으로 갈라져요. 여로보암이 벧엘과 단에 세운 금송아지는 북이스라엘 내내 '여로보암의 죄'로 불려요."],
+[11,18,"20-40","갈멜산의 엘리야","바알(비와 폭풍의 신) 숭배가 국가 종교가 된 때, 3년 가뭄 끝에 불로 응답하신 사건이에요. 누가 진짜 비를 주는 신인가를 겨룬 대결이에요."],
+[12,17,"6-23","북이스라엘 멸망","BC 722년 앗수르가 사마리아를 함락하고 주민을 흩어 보내요. 이 장은 그 이유를 정리한 해설이에요. 이때 이주해 와 섞인 사람들이 훗날 사마리아인의 기원이 돼요."],
+[12,22,"8-13","율법책 발견","요시야 왕 때 성전 수리 중 율법책(대개 신명기로 봐요)이 발견되고 대대적 개혁이 일어나요. 하지만 이미 늦었다는 예언도 함께 나와요."],
+[12,25,"1-21","예루살렘 멸망","BC 586년 바벨론이 성전을 불태우고 백성을 끌고 가요. 다윗 왕조, 성전, 땅을 모두 잃은 구약 최대의 위기예요."],
+[12,25,"27-30","여호야긴의 석방","열왕기는 포로가 된 다윗 가문의 왕이 감옥에서 풀려나는 장면으로 끝나요. 다윗 언약이 아직 끝나지 않았다는 작은 불씨예요."],
+[14,36,"22-23","고레스의 칙령","역대하(히브리어 성경의 마지막 책)는 '올라갈지어다'로 끝나요. 에스라 1장이 같은 칙령으로 시작해요."],
+[15,1,"1-4","고레스 칙령","BC 539년 페르시아 왕 고레스가 바벨론을 무너뜨리고 유대인의 귀환과 성전 재건을 허락해요. 이사야 44:28–45:1이 고레스를 이름으로 언급해요."],
+[16,8,"1-8","율법을 낭독하고 풀어 줌","에스라가 율법을 낭독하고 레위인들이 뜻을 해석해 줘요. 성경을 '설명하며 읽는' 전통의 출발점이에요."],
+[17,4,"14","이때를 위함","에스더서에는 '하나님'이라는 단어가 한 번도 안 나와요. 그런데도 우연처럼 보이는 일들 뒤에서 하나님이 일하신다는 걸 보여 줘요."],
+[18,1,"6-12","하늘 회의","'사단'은 히브리어로 '고발자'라는 뜻이에요. 욥기는 '왜 고난받는가'보다 '고난 중에도 하나님을 신뢰할 수 있는가'를 묻는 책이에요."],
+[18,38,"1-7","폭풍 속의 응답","하나님은 욥의 질문에 직접 답하지 않고 창조의 신비를 보여 주세요. 욥은 설명이 아니라 만남으로 회복돼요."],
+[19,1,"1-6","두 길","시편 전체의 문이에요. 1편(말씀)과 2편(메시야 왕)이 함께 시편의 서문 역할을 해요."],
+[19,22,"1-18","내 하나님이여 어찌하여","예수님이 십자가에서 이 시의 첫 줄을 외치셨어요(마 27:46). 손발이 찔리고 옷을 제비 뽑는 장면까지 겹쳐요. 이 시는 결국 찬양으로 끝나요."],
+[19,23,"1-6","목자 시편","고대 근동에서 '목자'는 왕을 뜻하는 말이기도 했어요. 다윗 자신이 목자 출신 왕이었어요."],
+[19,51,"1-19","다윗의 회개","표제에 따르면 밧세바 사건 후 나단 선지자의 책망을 받고 지은 시예요(삼하 12장)."],
+[19,137,"1-6","바벨론 강변에서","포로로 끌려간 사람들의 슬픔이에요. 그 상황을 알고 읽으면 뒷부분의 격한 분노도 이해가 돼요."],
+[20,1,"7","여호와를 경외함","잠언 전체의 주제 문장이에요. '경외'는 무서워함이 아니라 하나님을 하나님으로 존중하는 태도예요."],
+[21,1,"2","헛되고 헛되니","'헛됨(헤벨)'은 '입김, 안개'라는 뜻이에요. 모든 것이 금방 사라진다는 관찰이고, 결론은 12:13 '하나님을 경외하고 그 명령을 지키라'예요."],
+[23,6,"1-8","이사야의 소명","웃시야 왕이 죽던 해(BC 740년경) 성전에서 거룩하신 하나님을 만나요. '내가 여기 있나이다 나를 보내소서'."],
+[23,7,"14","임마누엘","원래는 앗수르 위기 때 아하스 왕에게 주신 표징이에요. 마태복음 1:23은 이 말씀이 예수님의 탄생에서 완전히 이루어졌다고 읽어요."],
+[23,9,"6-7","한 아기가 났고","다윗의 왕위에 앉을 영원한 왕에 대한 예언이에요."],
+[23,40,"1-11","위로하라","이사야 40장부터 분위기가 바뀌어 포로 된 백성에게 귀환과 위로를 선포해요. 세례 요한이 '광야의 외치는 자의 소리'로 이 구절을 자신에게 적용해요."],
+[23,53,"1-12","고난받는 종","남의 죄를 대신 지고 고난받는 '여호와의 종'이에요. 사도행전 8장에서 빌립이 이 본문으로 에디오피아 내시에게 예수님을 전해요."],
+[24,29,"10-14","칠십 년","바벨론 포로 기간이 70년이 될 것이라는 예언이에요. 다니엘이 9장에서 이 구절을 읽고 기도해요. 포로지에 보낸 편지 속 말씀이라는 걸 기억하세요."],
+[24,31,"31-34","새 언약","돌판이 아니라 마음에 새긴 언약이에요. 예수님이 최후의 만찬에서 '내 피로 세우는 새 언약'이라 하셨고, 히브리서 8장이 이 본문을 그대로 인용해요."],
+[25,3,"22-23","아침마다 새로우니","예루살렘이 불탄 폐허 한가운데서 나온 고백이에요."],
+[26,1,"1-28","그발 강가의 환상","포로로 끌려간 에스겔에게 하나님의 영광이 바퀴 달린 보좌로 나타나요. 하나님은 예루살렘 성전에 갇힌 분이 아니라 포로지에도 오시는 분이에요."],
+[26,37,"1-14","마른 뼈","절망한 포로민에게 주신 부활과 회복의 환상이에요. '생기, 바람, 영'이 히브리어로 같은 단어(루아흐)예요."],
+[27,7,"13-14","인자 같은 이","짐승 같은 제국들 뒤에 '인자 같은 이'가 하나님께 영원한 나라를 받아요. 예수님이 가장 자주 쓰신 자기 호칭 '인자'가 여기서 와요."],
+[28,1,"2","음란한 아내","호세아의 결혼 자체가 메시지예요. 우상을 따라간 이스라엘을 하나님이 여전히 사랑하신다는 것을 몸으로 보여 줘요."],
+[29,2,"28-32","성령을 부어 주리라","베드로가 오순절 설교(행 2:16–21)에서 이 예언이 이루어졌다고 선포해요."],
+[30,5,"21-24","공법을 물같이","부자들의 착취와 겉치레 예배를 고발한 아모스의 핵심 구절이에요. 북이스라엘이 가장 부유하던 여로보암 2세 때예요."],
+[32,4,"1-11","요나의 분노","요나가 니느웨에 가기 싫었던 이유는 그들이 이스라엘을 괴롭힌 앗수르였기 때문이에요. 책은 '하나님이 원수까지 아끼신다'는 질문으로 끝나요."],
+[33,5,"2","베들레헴","메시야가 다윗의 고향 베들레헴에서 나온다는 예언이에요. 마태복음 2:6에서 인용돼요."],
+[33,6,"8","선한 것","정의, 인자, 겸손. 선지자들의 메시지를 한 줄로 요약한 구절로 자주 꼽혀요."],
+[35,2,"4","믿음으로 살리라","하박국이 '왜 악한 바벨론을 쓰시느냐'고 따진 뒤 받은 답이에요. 바울(롬 1:17, 갈 3:11)과 히브리서(10:38)가 인용해요."],
+[37,2,"3-9","나중 영광","재건된 성전이 초라해 울던 백성에게 '이 전의 나중 영광이 이전 영광보다 크리라'고 약속해요."],
+[38,9,"9","나귀 타신 왕","예수님의 예루살렘 입성(마 21:5)에서 이루어진 예언이에요."],
+[39,4,"5-6","엘리야를 보내리라","구약의 마지막 약속이에요. 약 400년 뒤 신약은 세례 요한을 '엘리야'로 소개하며 시작해요(마 11:14, 눅 1:17)."],
+[40,1,"1","족보로 시작하는 이유","마태는 예수님을 '다윗의 자손, 아브라함의 자손'으로 소개해요. 구약의 두 큰 약속이 이분 안에서 이어진다는 선언이에요."],
+[40,2,"1-2","헤롯 왕","로마가 세운 유대의 왕 헤롯 대왕이에요. 에돔 계열이라 유대인들은 정통 왕으로 여기지 않았고, 권력에 대한 집착이 심했어요. 그래서 '유대인의 왕'이 태어났다는 소식에 소동이 일어나요."],
+[40,5,"1-12","산상수훈","모세가 산에서 율법을 받았듯 예수님도 산에서 하나님 나라 백성의 삶을 가르치세요. 마태복음 5–7장이에요."],
+[40,16,"13-20","베드로의 고백","가이사랴 빌립보(황제 숭배 신전이 있던 곳)에서 '주는 그리스도시요 살아계신 하나님의 아들'이라 고백해요. 복음서의 전환점이에요."],
+[40,28,"18-20","모든 족속으로 제자를","아브라함에게 하신 '모든 족속이 복을 얻으리라'(창 12:3)가 이렇게 이어져요."],
+[41,1,"15","하나님 나라","예수님 메시지의 핵심이에요. 하나님이 왕으로 다스리시는 일이 예수님 안에서 시작됐다는 선포예요."],
+[41,10,"45","대속물","'많은 사람의 대속물로'—이사야 53장의 고난받는 종과 연결돼요. 마가복음 전체의 요약 구절로 꼽혀요."],
+[42,4,"16-21","나사렛 설교","예수님이 이사야 61장을 읽고 그 말씀이 오늘 이루어졌다고 하세요. 가난한 자, 포로, 눈먼 자를 향한 사명 선언이에요."],
+[42,15,"11-32","탕자 비유","잃은 양, 잃은 동전, 잃은 아들 세 비유 묶음이에요. 바리새인들이 '죄인들과 먹는다'고 불평한 데 대한 대답이에요(15:1–2). 실제 주인공은 기다리는 아버지와 불평하는 맏아들이에요."],
+[43,1,"1-14","태초에 말씀이","창세기 1:1을 일부러 떠올리게 하는 시작이에요. '말씀이 육신이 되어 우리 가운데 거하시매'의 '거하다'는 '장막(성막)을 치다'라는 뜻이에요."],
+[43,1,"29","하나님의 어린양","유월절 양과 이사야 53장의 양을 함께 떠올리게 하는 세례 요한의 소개예요."],
+[43,3,"14-16","하나님이 세상을 이처럼","바리새인이자 산헤드린 의원인 니고데모와의 대화 끝에 나와요. 바로 앞의 놋뱀 이야기(민 21장)와 함께 읽어야 해요."],
+[43,20,"21-23","숨을 내쉬며","부활하신 예수님이 제자들에게 숨을 내쉬며 성령을 받으라 하세요. 창세기 2:7에서 흙으로 지은 사람에게 생기를 불어넣으신 장면과 겹쳐요—새 창조의 시작이에요."],
+[44,1,"8","땅끝까지","사도행전의 목차 같은 구절이에요. 예루살렘(1–7장) → 유대와 사마리아(8–12장) → 땅끝(13–28장) 순서로 진행돼요."],
+[44,2,"1-13","오순절","유월절 50일 뒤의 추수 절기예요. 바벨탑(창 11장)에서 흩어졌던 언어들이 성령 안에서 다시 서로 알아듣게 돼요."],
+[44,9,"1-19","사울의 회심","교회를 박해하던 바리새인 사울이 다메섹 길에서 부활하신 예수님을 만나요. 그가 바로 바울이에요."],
+[44,10,"34-48","고넬료","로마 백부장 가정에 성령이 임하면서 '이방인도 유대인이 되지 않고 그대로 하나님의 백성이 될 수 있다'는 것이 확인돼요."],
+[44,15,"1-29","예루살렘 회의","AD 49년경, 이방인 신자도 할례와 율법을 지켜야 하는가를 두고 열린 회의예요. 결론은 '은혜로 구원'. 갈라디아서가 바로 이 논쟁 한복판에서 쓰인 편지예요."],
+[45,1,"16-17","복음의 핵심","로마서의 주제 문장이에요. '복음'은 원래 황제의 승전 소식에 쓰던 말인데, 바울은 로마 한가운데로 '진짜 왕'의 소식을 보내요."],
+[45,3,"23-24","모두 죄를 범하였으매","유대인이든 이방인이든 똑같이 죄 아래 있고, 똑같이 은혜로 의롭게 된다는 로마서 1–3장의 결론이에요."],
+[45,8,"18-23","피조물의 탄식","구원은 영혼만이 아니라 창조 세계 전체의 회복이에요. 요한계시록 21장의 새 하늘 새 땅과 연결돼요."],
+[46,13,"1-13","사랑장","결혼식 구절로 유명하지만, 원래는 은사 자랑으로 분열된 고린도 교회를 향한 책망이에요(12–14장 맥락)."],
+[46,15,"3-8","가장 오래된 신앙고백","바울이 '받은 것'을 전한다고 해요. 예수님의 죽음·장사·부활·나타나심을 정리한 초대교회의 고백으로, 부활 후 20여 년 안에 이미 굳어진 내용이에요."],
+[48,2,"16","믿음으로 의롭다 하심","갈라디아 교회에 '이방인도 할례를 받아야 한다'는 주장이 들어온 상황이에요. 바울의 답은 율법의 행위가 아니라 그리스도를 믿음으로."],
+[49,2,"8-10","은혜로 구원","구원은 선물이고, 선한 일은 그 결과라는 순서예요. 2:14에서 유대인과 이방인 사이의 '막힌 담'이 헐렸다는 말씀으로 이어져요."],
+[50,1,"12-14","감옥에서 쓴 기쁨","빌립보서는 바울이 갇힌 상태에서 썼는데도 '기쁨'이라는 말이 가장 많이 나오는 편지예요."],
+[50,2,"5-11","그리스도 찬가","초대교회가 부르던 찬송으로 보는 학자가 많아요. 자기를 비우고 낮아지신 예수님을 하나님이 높이셨다는 내용이에요."],
+[52,4,"13-18","주의 강림","데살로니가 교인들은 재림 전에 죽은 성도들이 어떻게 되는지 걱정했어요. 바울이 그 질문에 답한 부분이에요."],
+[58,8,"6-13","더 좋은 언약","히브리서는 예레미야 31장의 새 언약을 그대로 인용해, 예수님이 옛 제사 제도를 완성하셨다고 설명해요."],
+[58,11,"1-40","믿음의 사람들","구약 인물들을 시대순으로 훑는 '믿음 장'이에요. 구약 줄거리를 복습하기에 좋아요."],
+[59,2,"14-26","믿음과 행함","바울과 모순처럼 보이지만, 야고보는 '말뿐인 믿음'을, 바울은 '행위로 구원받으려는 시도'를 겨냥해요. 둘 다 아브라함을 예로 들어요."],
+[60,2,"9","택하신 족속","출애굽기 19:6의 '제사장 나라'가 이방인을 포함한 교회에 적용돼요."],
+[62,4,"7-10","하나님은 사랑","요한일서의 핵심이에요. 그 사랑의 증거는 아들을 보내신 것이에요."],
+[66,1,"9-20","밧모섬의 요한","로마의 박해 속에 유배된 요한이 일곱 교회에 보내는 편지예요. 요한계시록은 미래 일정표라기보다 박해받는 교회에게 '진짜 왕이 누구인가'를 보여 주는 책이에요."],
+[66,5,"6-10","죽임당한 어린양","'유다 지파의 사자'를 보라는 말을 듣고 돌아보니 죽임당한 어린양이 서 있어요. 승리가 십자가를 통해 온다는 계시록의 중심 장면이에요."],
+[66,13,"1-18","짐승","다니엘 7장의 짐승 이미지를 가져와 하나님을 대적하는 제국 권력을 그려요. 1세기 독자에게는 로마 황제 숭배가 먼저 떠올랐을 거예요."],
+[66,21,"1-5","새 하늘과 새 땅","하나님의 장막이 사람들과 함께 있다—성막과 성전이 바라보던 목표가 완성돼요. 창세기 1–2장에서 시작한 이야기가 여기서 끝나요."],
+[66,22,"1-5","생명나무","에덴에서 막혔던 생명나무가 다시 열려요(창 3:24). 성경 전체가 하나의 큰 원을 그리며 닫혀요."]
+];
+
+// 낱말 풀이: [낱말, 뜻, 본문 자동 표시 여부(0이면 표시 안 함)]
+const GLOSS=[
+["가라사대","'말씀하시되'의 옛말이에요.",1],["가로되","'말하되'의 옛말이에요.",1],["하나님의 신","개역한글에서 '하나님의 영(성령)'을 가리켜요. 개역개정은 '하나님의 영'으로 고쳤어요.",1],
+["궁창","하늘의 둥근 천장, 창공이에요.",1],["열조","여러 대의 조상들이에요.",1],["권속","한 집안의 식구들이에요.",1],["장자","맏아들. 상속에서 두 몫을 받는 특권(장자권)이 있었어요.",1],
+["기업","사업이 아니라 하나님이 나누어 주신 땅과 유산(상속 재산)을 말해요.",1],["기업 무를","가난해서 판 땅이나 끊어질 가문을 가까운 친족이 대신 값을 치르고 되찾아 주는 제도예요(레 25장, 룻 3–4장).",1],
+["할례","남자 아이의 포피를 베는 의식이에요. 아브라함 언약의 표징이었어요(창 17장).",1],["번제","제물 전체를 태워 드리는 제사로, 온전한 헌신을 뜻해요.",1],["소제","곡식으로 드리는 제사예요.",1],
+["화목제","하나님과의 평화를 기뻐하며 드리는 제사로, 일부를 드린 사람이 함께 먹었어요.",1],["속죄제","죄를 씻기 위해 드리는 제사예요.",1],["속건제","남에게 끼친 손해를 배상하며 드리는 제사예요.",1],
+["전제","포도주를 부어 드리는 제사예요.",1],["요제","제물을 앞뒤로 흔들어 드리는 예식이에요.",1],["거제","제물을 들어 올려 드리는 예물이에요.",1],
+["회막","'만남의 장막'. 하나님이 백성과 만나시는 곳으로, 성막과 같은 뜻으로 쓰여요.",1],["성막","광야에서 들고 다닌 이동식 성전이에요.",1],["증거궤","십계명 돌판이 든 상자. 법궤, 언약궤라고도 해요. 하나님 임재의 상징이었어요.",1],["언약궤","십계명 돌판이 든 상자. 하나님 임재의 상징이었어요.",1],["법궤","언약궤의 다른 이름이에요.",1],
+["속죄소","언약궤의 금 뚜껑이에요. 속죄일에 그 위에 피를 뿌렸어요(시은좌).",1],["지성소","성막과 성전의 가장 안쪽 방. 대제사장만 1년에 한 번 들어갔어요.",1],["에봇","제사장이 입던 조끼 모양의 예복이에요.",1],
+["우림과 둠밈","대제사장이 하나님의 뜻을 물을 때 쓰던 도구로, 정확한 모양은 알려져 있지 않아요.",1],["레위인","성막과 성전을 섬기도록 구별된 레위 지파 사람들이에요. 땅을 기업으로 받지 않았어요.",1],
+["나실인","특별한 서원을 한 사람. 포도주를 마시지 않고, 머리를 자르지 않고, 시체를 가까이하지 않았어요(민 6장). 삼손이 대표적이에요.",1],
+["희년","50년마다 돌아오는 해. 팔았던 땅이 원래 주인에게 돌아가고 종이 풀려났어요(레 25장).",1],["안식년","7년마다 땅을 쉬게 하는 해예요.",1],
+["유월절","출애굽 때 죽음이 이스라엘 집을 '넘어간' 일을 기념하는 봄 절기예요.",1],["무교절","유월절에 이어 누룩 없는 빵을 7일간 먹는 절기예요.",1],["칠칠절","유월절 후 50일째의 밀 추수 절기. 신약의 오순절이에요.",1],["오순절","유월절 후 50일째 절기. 사도행전 2장에서 이날 성령이 임했어요.",1],
+["초막절","가을 추수 후 7일간 초막에 살며 광야 생활을 기념하는 절기예요. 장막절이라고도 해요.",1],["속죄일","7월 10일, 대제사장이 지성소에 들어가 온 백성의 죄를 속하던 날이에요(레 16장).",1],["수전절","BC 164년 마카비 가문이 더럽혀진 성전을 되찾아 다시 봉헌한 일을 기념하는 절기예요(요 10:22). 오늘날의 하누카예요.",1],
+["규빗","팔꿈치에서 손끝까지의 길이로 약 45cm예요.",1],["세겔","무게와 돈의 단위로 약 11.4g이에요.",1],["달란트","무게와 돈의 단위로 약 34kg. 은 1달란트는 노동자의 약 20년 품삯에 해당하는 큰돈이에요.",1],
+["데나리온","로마의 은화로, 노동자 하루 품삯이에요.",1],["에바","곡식의 부피 단위로 약 22리터예요.",1],["호멜","곡식의 부피 단위로 10에바, 약 220리터예요.",1],
+["선견자","선지자의 옛 이름이에요(삼상 9:9).",1],["사사","재판관이자 위기 때 백성을 구한 군사 지도자예요.",1],["바알","비와 폭풍을 주관한다고 믿은 가나안의 신이에요. 농사짓는 이스라엘에게 가장 큰 유혹이었어요.",1],
+["아세라","가나안의 여신. 나무 기둥 형태로 세워 섬겼어요.",1],["산당","높은 언덕에 만든 제단. 대부분 우상숭배와 섞인 예배 장소였어요.",1],["몰렉","아이를 불에 태워 바치던 암몬의 신이에요.",1],
+["이방","이스라엘(유대인)이 아닌 다른 민족을 말해요.",1],["서기관","율법을 필사하고 해석하던 전문가예요.",1],["바리새인","율법과 전통을 철저히 지키려 한 평신도 중심의 운동이에요. 회당에서 영향력이 컸어요.",1],
+["사두개인","성전을 장악한 제사장 귀족층이에요. 모세오경만 인정하고 부활과 천사를 믿지 않았어요.",1],["세리","로마를 위해 세금을 걷던 유대인. 동족에게 매국노이자 죄인으로 취급받았어요.",1],
+["사마리아인","북이스라엘 멸망 후 남은 사람들과 이주민의 후손이에요. 유대인과 서로 상종하지 않을 만큼 사이가 나빴어요.",1],
+["공회","유대인의 최고 의회(산헤드린). 대제사장이 의장이었어요.",1],["회당","포로기 이후 생긴 유대인의 모임 장소. 율법을 읽고 가르치고 기도했어요.",1],["랍비","'나의 선생님'이라는 뜻이에요.",1],
+["호산나","'이제 구원하소서'라는 뜻의 외침이에요.",1],["할렐루야","'여호와를 찬양하라'는 뜻이에요.",1],["셀라","시편에 나오는 음악 기호로, 잠시 멈추거나 반주를 넣으라는 뜻으로 추정해요.",1],
+["인자","두 가지 뜻이 있어요. 시편·선지서의 '인자(仁慈)'는 변치 않는 사랑(헤세드)이고, 다니엘서와 복음서의 '인자(人子)'는 '사람의 아들'로 예수님의 자기 호칭이에요(단 7:13).",1],
+["임마누엘","'하나님이 우리와 함께 계시다'는 뜻이에요(사 7:14, 마 1:23).",1],["메시야","'기름부음 받은 자'. 헬라어로 그리스도예요. 왕과 제사장은 기름부음으로 세워졌어요.",1],
+["그리스도","'기름부음 받은 자', 히브리어 메시야의 헬라어예요. 이름이 아니라 칭호예요.",0],["여호와","하나님의 고유한 이름(YHWH)이에요. 유대인은 이 이름을 함부로 부르지 않아 '주(아도나이)'로 읽었어요.",0],
+["만군의 여호와","하늘의 군대를 거느리신 주님이라는 뜻이에요.",1],["복음","'좋은 소식'. 원래 왕의 승리나 즉위를 알리는 소식에 쓰던 말이에요.",0],
+["천국","마태복음은 유대인 독자를 배려해 '하나님' 이름 대신 '하늘'을 써서 '천국'이라 해요. 다른 복음서의 '하나님 나라'와 같은 뜻이에요.",1],
+["궤휼","간사하게 속이는 것이에요.",1],["긍휼","불쌍히 여겨 돕는 마음이에요.",1],["환난","큰 고난과 재앙이에요.",1],["패역","거스르고 반역하는 것이에요.",1],
+["강퍅","마음이 굳어 완고한 것이에요.",1],["훼파","헐어서 부수는 것이에요.",1],["진멸","완전히 멸하여 하나님께 바치는 것(헤렘). 고대 전쟁의 관습어예요.",1],["도말","지워 없애는 것이에요.",1],
+["범사","모든 일이에요.",1],["외식하는 자","위선자. 원래 무대 위에서 가면을 쓴 배우를 가리키던 말이에요.",1],["문둥병","개역한글의 표현으로, 오늘날의 한센병만이 아니라 여러 악성 피부병을 포함한 말이에요.",1],
+["사단","개역한글의 표기로 '사탄'이에요. 히브리어로 '고발자, 대적자'라는 뜻이에요.",1],["음부","죽은 자들이 가는 곳(스올, 하데스)이에요.",1],["무교병","누룩을 넣지 않은 빵이에요.",1],
+["아멘","'진실로, 그렇게 되기를'이라는 뜻이에요.",0],["열방","여러 나라, 이방 민족들이에요.",1],["유업","하나님이 약속하신 상속, 받을 몫이에요.",1],["화목","끊어진 관계가 다시 평화롭게 회복되는 것이에요.",0],
+["의롭다 하심","하나님이 죄인을 '의롭다'고 선언하시는 것(칭의)이에요.",1],["백부장","로마 군대에서 약 100명을 거느린 장교예요.",1],["분봉왕","나라를 나누어 다스린 지방 통치자예요. 헤롯 대왕의 아들들이 그랬어요.",1]
+];
+
+// 시대순 읽기표: [이야기 카드 id, [[책, 시작장, 끝장], ...]]
+const PLAN=[
+["s1",[[1,1,11]]],
+["s2",[[18,1,42],[1,12,50]]],
+["s3",[[2,1,18]]],
+["s4",[[2,19,40],[3,1,27],[4,1,36],[5,1,34],[19,90,90]]],
+["s5",[[6,1,24]]],
+["s6",[[7,1,21],[8,1,4]]],
+["s7",[[9,1,31],[13,1,10],[10,1,24],[13,11,29],[19,1,72],[19,91,106],[11,1,11],[14,1,9],[20,1,31],[22,1,8],[21,1,12]]],
+["s8",[[11,12,22],[14,10,20],[12,1,14],[14,21,25],[32,1,4],[29,1,3],[30,1,9],[12,15,17],[14,26,28],[28,1,14]]],
+["s9",[[23,1,39],[33,1,7],[12,18,20],[14,29,32],[23,40,66],[12,21,23],[14,33,35],[34,1,3],[36,1,3],[35,1,3],[24,1,29],[12,24,25],[14,36,36],[24,30,52],[25,1,5],[31,1,1]]],
+["s10",[[26,1,48],[27,1,12],[19,73,89]]],
+["s11",[[15,1,6],[37,1,2],[38,1,14],[17,1,10],[15,7,10],[16,1,13],[39,1,4],[19,107,150]]],
+["s13",[[40,1,28],[41,1,16],[42,1,24],[43,1,21]]],
+["s14",[[44,1,12],[59,1,5]]],
+["s15",[[44,13,14],[48,1,6],[44,15,17],[52,1,5],[53,1,3],[44,18,19],[46,1,16],[47,1,13],[45,1,16],[44,20,28],[49,1,6],[50,1,4],[51,1,4],[57,1,1],[54,1,6],[56,1,3],[55,1,4]]],
+["s16",[[60,1,5],[61,1,3],[65,1,1],[58,1,13],[62,1,5],[63,1,1],[64,1,1],[66,1,22]]]
+];
+{
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const BP="https://bibleproject.com/Korean/";
+const BN=b=>BOOKS[b-1][0], BA=b=>BOOKS[b-1][1];
+const unit=b=>b===19?"편":"장";
+const ERA={};ERAS.forEach((e,i)=>{e.i=i;ERA[e.id]=e});
+
+// 책 이름 찾기
+const ALIAS={};
+BOOKS.forEach((k,i)=>{[k[0],k[1],k[2],k[3]].forEach(a=>ALIAS[a.toLowerCase().replace(/\s/g,"")]=i+1)});
+ALIAS["시편"]=19;ALIAS["아가서"]=22;ALIAS["애가"]=25;
+const ABBRS=BOOKS.map(k=>k[1]).sort((a,b)=>b.length-a.length);
+function parseRef(q){
+  const m=q.trim().match(/^([1-3]?\s?[가-힣A-Za-z]+)\s*(\d+)(?:\s*(?::|장|편)\s*(\d+)?)?\s*절?$/);
+  if(!m)return null;const b=ALIAS[m[1].toLowerCase().replace(/\s/g,"")];if(!b)return null;
+  const c=+m[2];if(c<1||c>BOOKS[b-1][4])return null;return {b,c,v:m[3]?+m[3]:0};
+}
+const refTxt=(b,c,v)=>`${BA(b)} ${c}${v?":"+v:unit(b)}`;
+const RE_REF=new RegExp(`(?<![가-힣])(${ABBRS.join("|")}) ?(\\d+):(\\d+)(?:[–-]\\d+)?`,"g");
+function linkRefs(h){return h.replace(RE_REF,(all,a,c,v)=>{const b=ALIAS[a];if(!b||+c>BOOKS[b-1][4])return all;return `<button class="rl" data-go="${b}.${c}.${v}" style="min-height:0;color:var(--lapis);text-decoration:underline;text-underline-offset:3px">${all}</button>`})}
+
+// 시대순 읽기표 → 365일
+const CH=[],CHI={};
+PLAN.forEach(([e,segs])=>segs.forEach(([b,s,t])=>{for(let c=s;c<=t;c++){CHI[b+"-"+c]=CH.length;CH.push({b,c,e})}}));
+const ND=365,DAYS=[];
+for(let i=0;i<ND;i++){const f=Math.floor(i*CH.length/ND),t=Math.floor((i+1)*CH.length/ND)-1;DAYS.push({n:i+1,f,t,e:CH[f].e})}
+CH.forEach((x,i)=>{x.d=DAYS.findIndex(d=>i>=d.f&&i<=d.t)+1});
+function dayLabel(d){const parts=[];let cur=null;for(let i=d.f;i<=d.t;i++){const x=CH[i];if(cur&&cur.b===x.b&&cur.e2===x.c-1){cur.e2=x.c}else{cur={b:x.b,s:x.c,e2:x.c};parts.push(cur)}}
+  return parts.map(p=>`${BA(p.b)} ${p.s}${p.e2!==p.s?"–"+p.e2:""}`).join(" · ")}
+
+// 설명, 낱말
+const NI={};NOTES.forEach((n,i)=>{const [a,z]=n[2].split("-").map(Number);(NI[n[0]+"-"+n[1]]||=[]).push({i,b:n[0],c:n[1],a,z:z||a,t:n[3],d:n[4]})});
+const GH=GLOSS.filter(g=>g[2]).map(g=>g[0]).sort((a,b)=>b.length-a.length);
+const GRE=new RegExp(GH.map(t=>t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g");
+const GD={};GLOSS.forEach(g=>GD[g[0]]=g[1]);
+
+// 저장
+const LS="mac-bible-v1";
+let S={marks:{},memos:{},done:{},fs:19,last:null,story:0};
+try{Object.assign(S,JSON.parse(localStorage.getItem(LS)||"{}"))}catch(e){}
+let DB=null,BASE="",sync="이 기기의 브라우저에만 저장돼요";
+const W={},D={},T={};
+function payload(n){return n==="marks"?{m:S.marks}:n==="memos"?{m:S.memos}:{done:S.done,last:S.last,fs:S.fs,story:S.story}}
+async function push(n){if(!DB)return;if(W[n]){D[n]=1;return}W[n]=1;
+  try{await DB.doc(BASE+"/"+n).set(payload(n))}catch(e){if(e&&(e.code==="invalid_argument"||e.code==="revoked"||e.code==="not_granted")){DB=null;sync="이 기기의 브라우저에만 저장돼요";}}
+  W[n]=0;if(D[n]){D[n]=0;push(n)}}
+function save(n){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}if(DB){clearTimeout(T[n]);T[n]=setTimeout(()=>push(n),1200)}}
+async function initDb(){
+  if(!window.claude||!claude.use)return;
+  try{const [db,user]=await Promise.all([claude.use("db"),claude.use("user")]);
+    const uid=user?await user.id():null;if(!db||!uid)return;
+    BASE="data/users/"+uid;
+    const get=n=>Promise.race([db.doc(BASE+"/"+n).get(),new Promise((_,r)=>setTimeout(()=>r({code:"timeout"}),10000))]);
+    const [a,b,c]=await Promise.all([get("marks"),get("memos"),get("plan")]);
+    if(a.exists){S.marks=Object.assign({},a.data().m||{},S.marks)}
+    if(b.exists){const rm=b.data().m||{};for(const k in rm){if(!S.memos[k]||(rm[k].at||0)>(S.memos[k].at||0))S.memos[k]=rm[k]}}
+    if(c.exists){const d=c.data();Object.assign(S.done,d.done||{});if(!S.last&&d.last)S.last=d.last;if(d.fs&&!localStorage.getItem(LS))S.fs=d.fs}
+    DB=db;sync="계정에 저장돼요—다른 기기에서도 이어서 볼 수 있어요";
+    try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
+    push("marks");push("memos");push("plan");render();
+  }catch(e){}
+}
+
+// 본문
+let TEXT=null,NV=0;
+const st=$("#st");
+fetch("bible.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(a=>{TEXT={};a.forEach(([b,c,v])=>{(TEXT[b]||=[])[c-1]=v;NV+=v.length});
+  st.textContent=`개역한글 · ${NV.toLocaleString()}절`;if(R)renderReader();if(cur==="search")doSearch()}).catch(()=>{st.textContent="본문을 불러오지 못했어요"});
+
+const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),1800)};
+const readSet=()=>{const s=new Set();for(const d in S.done)if(S.done[d]){const x=DAYS[d-1];if(x)for(let i=x.f;i<=x.t;i++)s.add(CH[i].b+"-"+CH[i].c)}return s};
+const memoOn=k=>S.memos[k]&&S.memos[k].t;
+
+// 화면 전환
+const VIEWS=["story","plan","books","search","me"];let cur="story";
+function go(v){if(!VIEWS.includes(v))v="story";cur=v;document.querySelectorAll(".view").forEach(x=>x.classList.toggle("on",x.id==="v-"+v));
+  document.querySelectorAll(".tabs button").forEach(b=>{if(b.dataset.t===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  if(location.hash!=="#"+v)history.replaceState(null,"","#"+v);render()}
+function render(){({story:rStory,plan:rPlan,books:rBooks,search:rSearch,me:rMe})[cur]()}
+document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b){if(b.dataset.t==="books")bookSel=0;go(b.dataset.t)}});
+addEventListener("hashchange",()=>go(location.hash.slice(1)));
+
+// 큰 그림
+function rStory(){
+  const i=Math.max(0,Math.min(ERAS.length-1,S.story|0)),e=ERAS[i];
+  const pe=PLAN.find(p=>p[0]===e.id);
+  $("#v-story").innerHTML=`<div class="wrap">
+   <div class="ribbon" role="group" aria-label="시대 바로 가기">${ERAS.map((x,j)=>`<button data-si="${j}" class="${j===i?"on":""}" title="${esc(x.t)}" aria-label="${j+1}. ${esc(x.t)}"${j===i?' aria-current="true"':""}><i style="background:${x.c}"></i></button>`).join("")}</div>
+   <div class="ribl"><span>창조</span><span>${i+1} / ${ERAS.length} · 색 칸을 누르면 그 시대로</span><span>새 창조</span></div>
+   <div class="deck"><article class="card" id="card" aria-live="polite">
+    <div class="hd" style="background:${e.c}"><div class="n">${i+1}장면</div><h2>${esc(e.t)}</h2><div class="y">${esc(e.y)}</div></div>
+    <div class="bd"><p class="lead">${esc(e.lead)}</p>${e.p.map(p=>`<p>${linkRefs(esc(p))}</p>`).join("")}
+     ${e.who?`<h3>주요 인물</h3><p class="small" style="margin:0">${esc(e.who)}</p>`:""}
+     ${e.ev.length?`<h3>핵심 사건</h3><ul class="evs">${e.ev.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}
+     ${e.bk.length?`<h3>이 시대의 책</h3><div class="links" style="margin-top:0">${[...new Set(e.bk)].map(b=>`<button class="chip" data-book="${b}">${BN(b)}</button>`).join("")}</div>`:""}
+     ${e.why?`<div class="why">${linkRefs(esc(e.why))}</div>`:""}
+     ${pe?`<div class="links"><button class="btn" data-era="${e.id}">이 시대 읽기표 보기</button></div>`:e.id==="s17"?`<div class="links"><button class="btn" data-t2="plan">시대순 읽기 시작하기</button></div>`:""}
+    </div></article></div>
+   <div class="deckbar"><button class="btn ghost" id="sp" ${i?"":"disabled"}>‹ 이전</button><span class="sp">카드를 탭하면 다음 이야기</span><button class="btn" id="sn" ${i<ERAS.length-1?"":"disabled"}>다음 ›</button></div>
+   <p class="tapnote">왼쪽 가장자리를 탭하면 이전, 나머지를 탭하면 다음으로 넘어가요.<br>키보드 ← → 도 돼요.</p></div>`;
+}
+function stepStory(d){const n=Math.max(0,Math.min(ERAS.length-1,(S.story|0)+d));if(n===S.story)return;S.story=n;save("plan");rStory();$("#v-story").scrollTop=0}
+$("#v-story").addEventListener("click",e=>{
+  const t=e.target;
+  const si=t.closest("[data-si]");if(si){stepStory(+si.dataset.si-(S.story|0));return}
+  if(t.closest("#sp"))return stepStory(-1);if(t.closest("#sn"))return stepStory(1);
+  const bk=t.closest("[data-book]");if(bk){openBook(+bk.dataset.book);return}
+  const er=t.closest("[data-era]");if(er){go("plan");setTimeout(()=>document.getElementById("era-"+er.dataset.era)?.scrollIntoView({block:"start"}),30);return}
+  if(t.closest("[data-t2]"))return go("plan");
+  if(t.closest("[data-go]"))return;
+  const c=t.closest("#card");if(!c)return;
+  if(getSelection&&String(getSelection()).length)return;
+  const r=c.getBoundingClientRect();stepStory(e.clientX-r.left<r.width*.28?-1:1);
+});
+addEventListener("keydown",e=>{if(R||sheetOn)return;if(cur!=="story"||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;if(e.key==="ArrowRight")stepStory(1);if(e.key==="ArrowLeft")stepStory(-1)});
+
+// 시대순 읽기
+function nextDay(){for(const d of DAYS)if(!S.done[d.n])return d;return null}
+function rPlan(){
+  const done=Object.values(S.done).filter(Boolean).length,nd=nextDay();
+  let h=`<div class="wrap"><div class="prog"><div><div class="big">${done}<span style="font-size:18px">/${ND}일</span></div><div class="small" style="opacity:.9">${Math.round(done/ND*100)}% · 하루 약 3장, 1년에 성경 전체</div><div class="bar"><i style="width:${done/ND*100}%"></i></div></div>
+   ${nd?`<button class="btn" data-day="${nd.n}">${nd.n}일차 읽기</button>`:""}</div>
+   ${S.last?`<p class="small muted" style="margin:10px 2px 0">마지막으로 읽은 곳: <button class="chip" data-go="${S.last.b}.${S.last.c}.0">${BN(S.last.b)} ${S.last.c}${unit(S.last.b)}</button></p>`:""}
+   <p class="small muted" style="margin:12px 2px 0">성경 책 순서가 아니라 <b>사건이 일어난 순서</b>로 배치했어요. 선지서는 그 선지자가 활동한 왕의 시대에, 바울서신은 사도행전에서 그 편지를 쓴 장면에 들어가 있어요. 해설이 있는 구절은 본문에서 <span style="color:var(--rub);font-weight:700">붉은 띠</span>로 표시돼요.</p>
+   <div class="jump">${PLAN.map(([id])=>`<button class="chip" data-jump="${id}">${esc(ERA[id].t)}</button>`).join("")}</div>`;
+  PLAN.forEach(([id])=>{const e=ERA[id];const ds=DAYS.filter(d=>d.e===id);
+    h+=`<section class="era" id="era-${id}"><h2>${esc(e.t)} <small>${esc(e.y)}</small></h2><div class="bar2" style="background:${e.c}"></div><p class="eraln">${esc(e.lead)} <button class="chip" data-story="${e.i}" style="min-height:30px">이야기 보기</button></p>
+    <ul class="days">${ds.map(d=>`<li class="${S.done[d.n]?"done":""}${nd&&nd.n===d.n?" today":""}"><button class="ck" data-ck="${d.n}" aria-label="${d.n}일차 완료 표시" aria-pressed="${!!S.done[d.n]}"><span>${S.done[d.n]?"✓":""}</span></button><button class="go" data-day="${d.n}"><span class="dn">${d.n}일차</span><span class="lb">${dayLabel(d)}</span></button></li>`).join("")}</ul></section>`});
+  $("#v-plan").innerHTML=h+`<p class="small muted" style="margin-top:28px">시대 배치는 널리 쓰이는 연대기 통독 순서를 따랐지만, 요엘·욥기·일부 시편처럼 연대가 분명하지 않은 책은 학자마다 견해가 달라요.</p></div>`;
+}
+$("#v-plan").addEventListener("click",e=>{const t=e.target;
+  const ck=t.closest("[data-ck]");if(ck){const n=+ck.dataset.ck;S.done[n]=S.done[n]?0:1;save("plan");const y=$("#v-plan").scrollTop;rPlan();$("#v-plan").scrollTop=y;return}
+  const d=t.closest("[data-day]");if(d){const x=DAYS[+d.dataset.day-1];openReader(CH[x.f].b,CH[x.f].c,{day:x.n});return}
+  const j=t.closest("[data-jump]");if(j){document.getElementById("era-"+j.dataset.jump)?.scrollIntoView({block:"start",behavior:"smooth"});return}
+  const s=t.closest("[data-story]");if(s){S.story=+s.dataset.story;save("plan");go("story");return}
+});
+
+// 66권
+let bookSel=0;
+function openBook(b){bookSel=b;if(cur!=="books")go("books");else rBooks();$("#v-books").scrollTop=0}
+function introHTML(b,full){
+  const I=INTRO[b];if(!I)return"";
+  const o=I[4].split("|").map(x=>{const k=x.indexOf(" ");return `<li><b>${esc(x.slice(0,k))}${unit(b)}</b><span>${esc(x.slice(k+1))}</span></li>`}).join("");
+  const keys=I[5].split(";").map(r=>{const [c,v]=r.split(":");return `<button class="chip" data-go="${b}.${c}.${parseInt(v)}">${c}:${esc(v)}</button>`}).join("");
+  const era=CHI[b+"-1"]!=null?ERA[CH[CHI[b+"-1"]].e]:null;
+  const yt=BP;
+  return `<div class="intro">${full?`<p class="small muted" style="margin:0 0 4px">${esc(BOOKS[b-1][5])} · ${BOOKS[b-1][4]}${unit(b)}${era?` · <span style="color:${era.c};font-weight:700">${esc(era.t)}</span>`:""}</p><h2>${BN(b)}</h2>`:`<h3 style="font-size:20px;color:var(--lapis)">${BN(b)} 해설</h3>`}
+   <p class="msg">${esc(I[3])}</p>
+   <dl class="meta"><dt>저자</dt><dd>${esc(I[0])}</dd><dt>기록 시기</dt><dd>${esc(I[1])}</dd><dt>배경</dt><dd>${esc(I[2])}</dd></dl>
+   <h3 style="font-family:var(--sans);font-size:14px;color:var(--sub);margin:16px 0 0">구조</h3><ul class="outline">${o}</ul>
+   <h3 style="font-family:var(--sans);font-size:14px;color:var(--sub);margin:16px 0 6px">핵심 구절</h3><div class="links" style="margin-top:0">${keys}</div>
+   <p class="tip">${linkRefs(esc(I[6]))}</p>
+   <div class="links"><a class="btn ghost" href="${yt}" target="_blank" rel="noopener">▶ 바이블프로젝트 공식 한국어 영상</a></div></div>`;
+}
+function rBooks(){
+  const v=$("#v-books");
+  if(bookSel){const b=bookSel,rs=readSet();const day=CHI[b+"-1"]!=null?CH[CHI[b+"-1"]].d:0;
+    v.innerHTML=`<div class="wrap"><button class="btn ghost" id="bback">‹ 66권 목록</button><div style="margin-top:12px">${introHTML(b,1)}</div>
+     <h3 style="font-family:var(--sans);font-size:14px;color:var(--sub);margin:20px 0 0">${unit(b)} 골라 읽기 ${day?`<span class="muted" style="font-weight:400">· 시대순 읽기표 ${day}일차에 시작</span>`:""}</h3>
+     <div class="chgrid">${Array.from({length:BOOKS[b-1][4]},(_,i)=>`<button class="${rs.has(b+"-"+(i+1))?"rd":""}" data-go="${b}.${i+1}.0">${i+1}</button>`).join("")}</div>
+     <p class="small muted">파란 칸은 읽기표에서 완료한 ${unit(b)}이에요.</p></div>`;return}
+  const groups=[];BOOKS.forEach((k,i)=>{let g=groups.find(x=>x.n===k[5]&&x.t===(i<39?"구약":"신약"));if(!g)groups.push(g={n:k[5],t:i<39?"구약":"신약",b:[]});g.b.push(i+1)});
+  v.innerHTML=`<div class="wrap"><h2 style="font-size:30px">66권 해설</h2><p class="muted" style="margin:6px 0 0">스터디 바이블처럼 각 책의 저자, 시기, 배경, 구조, 핵심 구절을 정리했어요. 책을 누르면 해설과 함께 ${"장"}을 골라 읽을 수 있어요.</p>
+   ${groups.map(g=>`<div class="grp"><h3>${g.t} · ${esc(g.n)}</h3><div class="bgrid">${g.b.map(b=>{const e=CHI[b+"-1"]!=null?ERA[CH[CHI[b+"-1"]].e]:null;return `<button data-book="${b}"><b>${BN(b)}</b><span>${e?esc(e.t):""}</span></button>`}).join("")}</div></div>`).join("")}
+   <p class="small muted" style="margin-top:22px">영상 버튼은 바이블프로젝트 공식 한국어 페이지(<a href="https://bibleproject.com/Korean/" target="_blank" rel="noopener">bibleproject.com/Korean</a>)로 바로 연결돼요. 유튜브 검색을 거치지 않아서 다른 채널 영상이 섞이지 않아요. 페이지의 '구약', '신약' 목록에서 책 이름을 고르세요.</p></div>`;
+}
+$("#v-books").addEventListener("click",e=>{const t=e.target;if(t.closest("#bback")){bookSel=0;rBooks();return}const bk=t.closest("[data-book]");if(bk)openBook(+bk.dataset.book)});
+
+// 공통: 구절 바로가기
+document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(!g)return;e.preventDefault();e.stopPropagation();const [b,c,v]=g.dataset.go.split(".").map(Number);closeSheet();openReader(b,c,{v})},true);
+
+// 리더
+let R=null,TTS=null,speaking=false;
+function openReader(b,c,o={}){
+  const k=b+"-"+c;let day=o.day||0;
+  if(!day&&R&&R.day){const x=DAYS[R.day-1];const i=CHI[k];if(i>=x.f&&i<=x.t)day=R.day}
+  R={b,c,day,v:o.v||0};S.last={b,c};save("plan");
+  $("#reader").classList.add("on");renderReader();
+  $("#panes").scrollLeft=0;$("#p1").scrollTop=0;$("#p2").scrollTop=0;
+  if(R.v)setTimeout(()=>{const el=document.getElementById("v"+R.v);if(el){el.scrollIntoView({block:"center"});el.classList.add("flash")}},60);
+}
+function closeReader(){stopTts();$("#reader").classList.remove("on");R=null;render()}
+function secOf(b,c){const I=INTRO[b];if(!I)return null;let hit=null;
+  I[4].split("|").forEach(x=>{const k=x.indexOf(" "),r=x.slice(0,k),[a,z]=r.split("–");const s=parseInt(a),e=z?parseInt(z.includes(":")?z.split(":")[0]:z):s;if(c>=s&&c<=e)hit=[r,x.slice(k+1)]});return hit}
+function chapterNotes(b,c){return NI[b+"-"+c]||[]}
+function renderReader(){
+  const {b,c,day}=R,k=b+"-"+c,ns=chapterNotes(b,c),ci=CHI[k],e=ERA[CH[ci].e];
+  $("#rt").textContent=`${BN(b)} ${c}${unit(b)}`;
+  $("#ectx").innerHTML=`<i style="background:${e.c}"></i><span>${esc(e.t)} · ${esc(e.y)}</span><button data-sto="${e.i}">이 시대 이야기</button>`;
+  // 본문
+  let h="";
+  if(c===1&&INTRO[b]){const I=INTRO[b];h+=`<div class="introbox"><b>${BN(b)} 들어가기</b><br>${esc(I[3])}<br><span class="muted small">저자 ${esc(I[0])} · ${esc(I[1])}</span><br><button class="chip" data-ex="intro" style="margin-top:8px">책 해설 전체 보기 →</button></div>`}
+  const vs=TEXT&&TEXT[b]&&TEXT[b][c-1];
+  if(!TEXT)h+=`<p class="loading">본문을 불러오는 중이에요…</p>`;
+  else if(!vs)h+=`<p class="loading">이 장의 본문이 없어요.</p>`;
+  else{const seen=new Set();
+    vs.forEach((t,i)=>{const v=i+1,vk=k+"-"+v,n=ns.some(x=>v>=x.a&&v<=x.z),mk=S.marks[vk];
+      let s=esc(t).replace(GRE,m=>{if(seen.has(m))return m;seen.add(m);return `<span class="gl" data-gl="${esc(m)}">${m}</span>`});
+      h+=`<p class="v${n?" nt":""}${mk?" k"+mk:""}" id="v${v}" data-v="${v}"><sup>${v}</sup>${s}${memoOn(vk)?`<span class="mm" aria-label="메모 있음">✎</span>`:""}</p>`});
+    h+=`<p class="small muted" style="font-family:var(--sans);margin-top:18px">구절을 누르면 마크·메모·설명을 볼 수 있어요.</p>`}
+  const gws=vs?GH.filter(g=>vs.some(t=>t.includes(g))):[];
+  const nEx=ns.length+gws.length;
+  if(nEx)h+=`<button class="swipehint" data-ex="top"><span aria-hidden="true">←</span> 왼쪽으로 밀면 이 ${unit(b)}의 설명 ${ns.length}개${gws.length?` · 낱말 ${gws.length}개`:""}</button>`;
+  $("#txt").innerHTML=h;
+  // 설명
+  let x="";
+  if(c===1)x+=`<div id="ex-intro">${introHTML(b,0)}</div>`;
+  x+=`<h3>표시된 구절 설명</h3>`+(ns.length?ns.map(n=>`<div class="note" id="n${n.i}"><div class="rf"><button data-jv="${n.a}" style="min-height:0;color:var(--rub);font-weight:700">${BA(b)} ${c}:${n.a}${n.z!==n.a?"–"+n.z:""}</button></div><h4>${esc(n.t)}</h4><p>${linkRefs(esc(n.d))}</p></div>`).join(""):`<p class="small muted">이 ${unit(b)}에는 따로 표시한 구절이 없어요. 아래의 시대 설명을 참고하세요.</p>`);
+  const sec=secOf(b,c);if(sec)x+=`<h3>책 안에서의 위치</h3><p class="small" style="margin:0">${BN(b)}의 <b>${esc(sec[1])}</b> 부분이에요 (${esc(sec[0])}${unit(b)}).</p>`;
+  x+=`<h3>이 ${unit(b)}의 시대</h3><p class="small" style="margin:0"><b style="color:${e.c}">${esc(e.t)}</b> (${esc(e.y)}) — ${esc(e.lead)}</p>`;
+  if(gws.length)x+=`<h3>이 ${unit(b)}의 낱말 풀이</h3>`+gws.map(g=>`<div class="gw"><b>${esc(g)}</b><span>${linkRefs(esc(GD[g]))}</span></div>`).join("");
+  const ms=Object.keys(S.memos).filter(m=>m.startsWith(k+"-")&&S.memos[m].t).sort((a,z)=>a.split("-")[2]-z.split("-")[2]);
+  if(ms.length)x+=`<h3>내 메모</h3>`+ms.map(m=>`<div class="memo"><div class="rf">${c}:${m.split("-")[2]}</div>${esc(S.memos[m].t)}</div>`).join("");
+  if(c!==1)x+=`<div class="links" style="margin-top:22px"><button class="btn ghost" data-book2="${b}">${BN(b)} 책 해설</button><a class="btn ghost" target="_blank" rel="noopener" href="${BP}">▶ 바이블프로젝트 공식 영상</a></div>`;
+  $("#ex").innerHTML=x;
+  // 하단
+  if(day){const d=DAYS[day-1],pos=ci-d.f+1,tot=d.t-d.f+1;
+    $("#rmid").innerHTML=`<span>${day}일차 · ${pos}/${tot}</span> <button class="chip" id="rdone" aria-pressed="${!!S.done[day]}" style="margin-left:6px">${S.done[day]?"✓ 완료":"완료 표시"}</button>`}
+  else $("#rmid").textContent=`${BA(b)} ${c}/${BOOKS[b-1][4]}`;
+  $("#rprev").disabled=!prevOf();$("#rnext").disabled=!nextOf();
+}
+function nextOf(){const {b,c,day}=R;if(day){const i=CHI[b+"-"+c];if(i<CH.length-1)return CH[i+1]}return c<BOOKS[b-1][4]?{b,c:c+1}:b<66?{b:b+1,c:1}:null}
+function prevOf(){const {b,c,day}=R;if(day){const i=CHI[b+"-"+c];if(i>0)return CH[i-1]}return c>1?{b,c:c-1}:b>1?{b:b-1,c:BOOKS[b-2][4]}:null}
+function moveTo(t){if(!t)return;let day=R.day;if(day){const i=CHI[t.b+"-"+t.c];day=CH[i].d;
+  const was=DAYS[R.day-1];if(i>was.t&&!S.done[R.day]){S.done[R.day]=1;save("plan");toast(`${R.day}일차 완료로 표시했어요`)}}
+  stopTts();R.day=0;openReader(t.b,t.c,{day})}
+$("#rnext").onclick=()=>moveTo(nextOf());$("#rprev").onclick=()=>{const p=prevOf();if(p){stopTts();const d=R.day?CH[CHI[p.b+"-"+p.c]].d:0;R.day=0;openReader(p.b,p.c,{day:d})}};
+$("#rclose").onclick=closeReader;
+$("#rfont").onclick=()=>{const z=[17,19,21,23,25];S.fs=z[(z.indexOf(S.fs)+1)%z.length]||19;document.documentElement.style.setProperty("--fs",S.fs+"px");save("plan");toast(`글자 크기 ${S.fs}`)};
+document.documentElement.style.setProperty("--fs",(S.fs||19)+"px");
+const showEx=id=>{const p2=$("#p2");$("#panes").scrollTo({left:p2.offsetLeft,behavior:"smooth"});if(id){const el=document.getElementById(id);if(el){setTimeout(()=>{el.scrollIntoView({block:"start",behavior:"smooth"});el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash")},matchMedia("(min-width:900px)").matches?0:320)}}else p2.scrollTop=0};
+$("#exbtn").onclick=()=>showEx();
+$("#reader").addEventListener("click",e=>{const t=e.target;
+  if(t.closest("#rdone")){S.done[R.day]=S.done[R.day]?0:1;save("plan");renderReader();return}
+  const ex=t.closest("[data-ex]");if(ex){showEx(ex.dataset.ex==="intro"?"ex-intro":null);return}
+  const sto=t.closest("[data-sto]");if(sto){S.story=+sto.dataset.sto;save("plan");closeReader();go("story");return}
+  const bk=t.closest("[data-book2]");if(bk){closeReader();openBook(+bk.dataset.book2);return}
+  const jv=t.closest("[data-jv]");if(jv){$("#panes").scrollTo({left:0,behavior:"smooth"});const el=document.getElementById("v"+jv.dataset.jv);if(el){el.scrollIntoView({block:"center"});el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash")}return}
+  const gl=t.closest("[data-gl]");if(gl){e.stopPropagation();openSheet(`<p class="small muted" style="margin:0">낱말 풀이</p><h3 style="font-size:24px;color:var(--lapis);margin:4px 0 8px">${esc(gl.dataset.gl)}</h3><p style="margin:0 0 12px;font-size:16.5px">${linkRefs(esc(GD[gl.dataset.gl]||""))}</p><button class="btn ghost" data-close>닫기</button>`);return}
+  const v=t.closest("#txt .v");if(v)verseSheet(+v.dataset.v);
+});
+
+// 구절 시트
+let sheetOn=false,SV=0;
+function openSheet(h){$("#sheet").innerHTML=h;$("#sheet").classList.add("on");$("#scrim").classList.add("on");sheetOn=true}
+function closeSheet(){$("#sheet").classList.remove("on");$("#scrim").classList.remove("on");sheetOn=false}
+$("#scrim").onclick=closeSheet;
+addEventListener("keydown",e=>{if(e.key==="Escape"){if(sheetOn)closeSheet();else if(R)closeReader()}});
+function verseSheet(v){
+  SV=v;const {b,c}=R,vk=`${b}-${c}-${v}`,t=TEXT[b][c-1][v-1],mk=S.marks[vk]||0,n=chapterNotes(b,c).filter(x=>v>=x.a&&v<=x.z);
+  openSheet(`<p class="small" style="margin:0 0 4px;color:var(--lapis);font-weight:700">${BN(b)} ${c}:${v}</p><p class="sv">${esc(t)}</p>
+   ${n.map(x=>`<div class="note"><h4>${esc(x.t)}</h4><p>${linkRefs(esc(x.d))}</p><button class="chip" data-shownote="${x.i}" style="margin-top:8px">설명 칸에서 보기</button></div>`).join("")}
+   <div class="row"><span class="small muted" style="width:3em">마크</span>${[1,2,3,4].map(k=>`<button class="dot${mk===k?" on":""}" data-mk="${k}" style="background:var(--m${k})" aria-label="색 ${k}"></button>`).join("")}<button class="chip" data-mk="0">지우기</button></div>
+   <label class="small muted" for="mt">메모</label><textarea id="mt" placeholder="이 구절에 대한 생각, 질문, 기도…">${esc(S.memos[vk]?.t||"")}</textarea>
+   <div class="row"><button class="btn" id="msave">메모 저장</button>${memoOn(vk)?`<button class="btn ghost" id="mdel">메모 삭제</button>`:""}<button class="btn ghost" id="vcopy">구절 복사</button>${(TTS||WEB)?`<button class="btn ghost" id="vfrom">여기서부터 듣기</button>`:""}<button class="btn ghost" data-close style="margin-left:auto">닫기</button></div>`);
+}
+$("#sheet").addEventListener("click",async e=>{const t=e.target;
+  if(t.closest("[data-close]"))return closeSheet();
+  const sn=t.closest("[data-shownote]");if(sn){closeSheet();showEx("n"+sn.dataset.shownote);return}
+  if(!R)return;const vk=`${R.b}-${R.c}-${SV}`;
+  const mk=t.closest("[data-mk]");if(mk){const k=+mk.dataset.mk;if(k)S.marks[vk]=k;else delete S.marks[vk];save("marks");renderReader();verseSheet(SV);return}
+  if(t.closest("#msave")){const v=$("#mt").value.trim();S.memos[vk]={t:v,at:Date.now()};save("memos");renderReader();closeSheet();toast(v?"메모를 저장했어요":"메모를 지웠어요");return}
+  if(t.closest("#mdel")){S.memos[vk]={t:"",at:Date.now()};save("memos");renderReader();closeSheet();toast("메모를 지웠어요");return}
+  if(t.closest("#vfrom")){closeSheet();stopTts();FROM=SV;$("#rtts").click();return}
+  if(t.closest("#vcopy")){const s=`${TEXT[R.b][R.c-1][SV-1]} (${BN(R.b)} ${R.c}:${SV}, 개역한글)`;try{await navigator.clipboard.writeText(s);toast("복사했어요")}catch(x){toast("복사가 막혀 있어요. 길게 눌러 선택해 주세요")}}
+});
+
+// 듣기: Claude 음성이 있으면 그것을, 없으면 기기(브라우저) 음성을 써요
+let WEB=null,FROM=0;
+try{if("speechSynthesis" in window&&"SpeechSynthesisUtterance" in window)WEB=window.speechSynthesis}catch(e){}
+function koVoice(){try{const vs=WEB.getVoices();return vs.find(v=>/^ko/i.test(v.lang))||null}catch(e){return null}}
+if(WEB){$("#rtts").hidden=false;try{WEB.onvoiceschanged=()=>{}}catch(e){}}
+function litVerse(v){const el=document.getElementById("v"+v);if(el){document.querySelectorAll("#txt .v.flash").forEach(x=>x.classList.remove("flash"));el.classList.add("flash");el.scrollIntoView({block:"center",behavior:"smooth"})}}
+function ttsOff(){speaking=false;$("#rtts").classList.remove("speaking");$("#rtts").setAttribute("aria-label","소리로 듣기")}
+function stopTts(){if(speaking){try{if(TTS)TTS.stop()}catch(e){}try{if(WEB)WEB.cancel()}catch(e){}}ttsOff()}
+async function speakClaude(vs){try{await TTS.speak(vs.map((t,i)=>({text:t,id:String(i+1)})));return true}catch(e){if(e&&e.code==="rate_limited"){toast("잠시 후 다시 눌러 주세요");return true}if(e&&e.code==="viewer_stopped")return true;return false}}
+function speakWeb(vs,off){return new Promise(res=>{try{WEB.cancel();const kv=koVoice();if(!kv)toast("기기에 한국어 음성이 없으면 발음이 어색할 수 있어요");
+  vs.forEach((t,i)=>{const u=new SpeechSynthesisUtterance(t);u.lang="ko-KR";if(kv)u.voice=kv;u.rate=.95;u.onstart=()=>litVerse(i+1+off);if(i===vs.length-1){u.onend=()=>res();u.onerror=()=>res()}WEB.speak(u)})}catch(e){res()}})}
+$("#rtts").onclick=async()=>{if(!R||!TEXT)return;if(speaking){stopTts();return}
+  const off=FROM?FROM-1:0;FROM=0;const vs=TEXT[R.b][R.c-1].slice(off);speaking=true;$("#rtts").classList.add("speaking");$("#rtts").setAttribute("aria-label","읽기 멈추기");
+  let ok=false;if(TTS){TTS._off=off;ok=await speakClaude(vs)}
+  if(!ok&&speaking&&WEB){await speakWeb(vs,off);}
+  ttsOff();document.querySelectorAll("#txt .v.flash").forEach(x=>x.classList.remove("flash"))};
+(async()=>{if(!window.claude||!claude.use)return;try{TTS=await claude.use("tts");if(TTS){$("#rtts").hidden=false;TTS.onLine(({id})=>{if(id)litVerse(+id+(TTS._off||0))})}}catch(e){}})();
+
+// 검색
+let sq="";
+function rSearch(){
+  if(!$("#q")){$("#v-search").innerHTML=`<div class="wrap"><h2 style="font-size:30px">검색</h2><p class="muted" style="margin:6px 0 12px">단어(예: 은혜, 언약궤), 구절(예: 요 3:16, 시편 23), 해설, 낱말 풀이, 내 메모를 한 번에 찾아요.</p>
+   <input type="search" id="q" placeholder="찾을 말이나 구절" autocomplete="off" value="${esc(sq)}"><div id="sr"></div></div>`;
+   $("#q").addEventListener("input",()=>{clearTimeout(rSearch.h);rSearch.h=setTimeout(()=>{sq=$("#q").value;doSearch()},220)})}
+  doSearch();
+}
+function hl(t,q){return esc(t).split(esc(q)).join(`<mark>${esc(q)}</mark>`)}
+function doSearch(){const box=$("#sr");if(!box)return;const q=sq.trim();if(!q){box.innerHTML="";return}
+  let h="";const r=parseRef(q);
+  if(r)h+=`<div class="sh">바로 가기</div><ul class="res"><li><button data-go="${r.b}.${r.c}.${r.v}"><span class="rf">${BN(r.b)} ${r.c}${r.v?":"+r.v:unit(r.b)}</span><div class="tx">${r.v&&TEXT?esc(TEXT[r.b][r.c-1][r.v-1]||""):"이 "+unit(r.b)+" 열기"}</div></button></li></ul>`;
+  if(q.length>=1){
+    const g=GLOSS.filter(x=>x[0].includes(q)||x[1].includes(q)).slice(0,20);
+    if(g.length)h+=`<div class="sh">낱말 풀이 ${g.length}</div>`+g.map(x=>`<div class="gw"><b>${hl(x[0],q)}</b><span>${hl(x[1],q)}</span></div>`).join("");
+    const ns=NOTES.filter(n=>n[3].includes(q)||n[4].includes(q)).slice(0,30);
+    if(ns.length)h+=`<div class="sh">구절 설명 ${ns.length}</div><ul class="res">`+ns.map(n=>`<li><button data-go="${n[0]}.${n[1]}.${parseInt(n[2])}"><span class="rf">${BA(n[0])} ${n[1]}:${n[2]} · ${esc(n[3])}</span><div class="small">${hl(n[4],q)}</div></button></li>`).join("")+"</ul>";
+    const ib=[];for(const b in INTRO){if(BN(+b).includes(q)||INTRO[b].some(s=>s.includes(q)))ib.push(+b)}
+    if(ib.length)h+=`<div class="sh">책 해설 ${ib.length}</div><div class="links" style="margin-top:4px">`+ib.map(b=>`<button class="chip" data-sb="${b}">${BN(b)}</button>`).join("")+"</div>";
+    const ms=Object.keys(S.memos).filter(k=>S.memos[k].t&&S.memos[k].t.includes(q));
+    if(ms.length)h+=`<div class="sh">내 메모 ${ms.length}</div><ul class="res">`+ms.map(k=>{const [b,c,v]=k.split("-").map(Number);return `<li><button data-go="${b}.${c}.${v}"><span class="rf">${refTxt(b,c,v)}</span><div class="small">${hl(S.memos[k].t,q)}</div></button></li>`}).join("")+"</ul>";
+    if(TEXT&&q.length>=2){let n=0;const out=[];for(let b=1;b<=66;b++){const B=TEXT[b];if(!B)continue;for(let c=0;c<B.length;c++){const V=B[c];for(let v=0;v<V.length;v++)if(V[v].includes(q)){n++;if(out.length<200)out.push([b,c+1,v+1,V[v]])}}}
+      h+=`<div class="sh">성경 본문 ${n.toLocaleString()}절${n>200?" (앞 200절)":""}</div><ul class="res">`+out.map(([b,c,v,t])=>`<li><button data-go="${b}.${c}.${v}"><span class="rf">${BN(b)} ${c}:${v}</span><div class="tx">${hl(t,q)}</div></button></li>`).join("")+"</ul>"}
+    else if(!TEXT)h+=`<p class="muted small">본문을 불러오는 중이에요…</p>`;else if(q.length<2&&!r)h+=`<p class="muted small">본문 검색은 두 글자 이상 입력하세요.</p>`;
+  }
+  box.innerHTML=h||`<p class="muted">찾은 결과가 없어요.</p>`;
+}
+$("#v-search").addEventListener("click",e=>{const b=e.target.closest("[data-sb]");if(b)openBook(+b.dataset.sb)});
+
+// 내 기록
+let mf=0;
+function rMe(){
+  const marks=Object.entries(S.marks).filter(([,k])=>k&&(!mf||k===mf)).sort(([a],[z])=>{const A=a.split("-").map(Number),Z=z.split("-").map(Number);return A[0]-Z[0]||A[1]-Z[1]||A[2]-Z[2]});
+  const memos=Object.entries(S.memos).filter(([,m])=>m.t).sort(([,a],[,z])=>z.at-a.at);
+  const done=Object.values(S.done).filter(Boolean).length;
+  const vt=(k)=>{const [b,c,v]=k.split("-").map(Number);return TEXT?TEXT[b][c-1][v-1]||"":""};
+  $("#v-me").innerHTML=`<div class="wrap"><h2 style="font-size:30px">내 기록</h2>
+   <div class="stat" style="margin-top:14px"><div><b>${done}</b><span class="small muted">읽은 날</span></div><div><b>${Object.values(S.marks).filter(Boolean).length}</b><span class="small muted">마크한 구절</span></div><div><b>${memos.length}</b><span class="small muted">메모</span></div></div>
+   <p class="small muted" style="margin:10px 2px 0">${esc(sync)}</p>
+   <div class="sh">마크</div><div class="segs"><button class="chip" data-mf="0" aria-pressed="${!mf}">전체</button>${[1,2,3,4].map(k=>`<button class="chip" data-mf="${k}" aria-pressed="${mf===k}"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--m${k});margin-right:6px;border:1px solid var(--line)"></span>${["노랑","초록","파랑","분홍"][k-1]}</button>`).join("")}</div>
+   ${marks.length?`<ul class="res">${marks.map(([k,m])=>{const [b,c,v]=k.split("-").map(Number);return `<li><button data-go="${b}.${c}.${v}"><span class="rf"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--m${m});margin-right:6px"></span>${BN(b)} ${c}:${v}</span><div class="tx">${esc(vt(k))}</div></button></li>`}).join("")}</ul>`:`<p class="muted small">본문에서 구절을 누르고 색을 고르면 여기에 모여요.</p>`}
+   <div class="sh">메모</div>${memos.length?`<ul class="res">${memos.map(([k,m])=>{const [b,c,v]=k.split("-").map(Number);return `<li><button data-go="${b}.${c}.${v}"><span class="rf">${BN(b)} ${c}:${v} · ${new Date(m.at).toLocaleDateString("ko-KR")}</span><div style="white-space:pre-wrap">${esc(m.t)}</div></button></li>`}).join("")}</ul>`:`<p class="muted small">구절을 누르고 메모를 쓰면 여기에 모여요.</p>`}
+   <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
+   <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
+   <div id="bkbox"></div>
+   <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
+}
+$("#v-me").addEventListener("click",async e=>{const t=e.target;
+  const f=t.closest("[data-mf]");if(f){mf=+f.dataset.mf;rMe();return}
+  if(t.closest("#bk1")){const s=JSON.stringify({marks:S.marks,memos:S.memos,done:S.done});try{await navigator.clipboard.writeText(s);toast("기록을 복사했어요")}catch(x){$("#bkbox").innerHTML=`<textarea readonly style="margin-top:8px">${esc(s)}</textarea><p class="small muted">위 글자를 길게 눌러 전체 선택 후 복사하세요.</p>`}return}
+  if(t.closest("#bk2")){$("#bkbox").innerHTML=`<textarea id="bkin" style="margin-top:8px" placeholder="복사해 둔 기록을 여기에 붙여 넣으세요"></textarea><button class="btn" id="bk3" style="margin-top:8px">되살리기</button>`;return}
+  if(t.closest("#bk3")){try{const o=JSON.parse($("#bkin").value);if(typeof o!=="object"||!o)throw 0;Object.assign(S.marks,o.marks||{});for(const k in (o.memos||{})){const m=o.memos[k];if(m&&typeof m.t==="string"&&(!S.memos[k]||(m.at||0)>(S.memos[k].at||0)))S.memos[k]={t:m.t,at:+m.at||Date.now()}}Object.assign(S.done,o.done||{});
+    for(const k in S.marks)if(![1,2,3,4].includes(S.marks[k]))delete S.marks[k];save("marks");save("memos");save("plan");toast("기록을 되살렸어요");rMe()}catch(x){toast("기록 형식이 맞지 않아요")}}
+});
+
+const cov=$("#cover");
+function hideCover(){cov.classList.add("off");try{sessionStorage.setItem("cov","1")}catch(e){}}
+cov.addEventListener("click",hideCover);addEventListener("keydown",e=>{if(!cov.classList.contains("off")&&(e.key==="Enter"||e.key===" "||e.key==="Escape")){e.preventDefault();hideCover()}});
+$("#cov").onclick=()=>cov.classList.remove("off");
+try{if(sessionStorage.getItem("cov"))cov.classList.add("off")}catch(e){}
+go(location.hash.slice(1)||"story");
+initDb();
+}
+</script>
+<script>
+if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"||location.hostname==="127.0.0.1")){addEventListener("load",()=>{try{navigator.serviceWorker.register("sw.js").catch(()=>{})}catch(e){}})}
+</script>
+</body></html>
