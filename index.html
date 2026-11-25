@@ -921,8 +921,8 @@ $("#reader").addEventListener("click",e=>{const t=e.target;
 
 // 구절 시트
 let sheetOn=false,SV=0;
-function openSheet(h){$("#sheet").innerHTML=h;$("#sheet").classList.add("on");$("#scrim").classList.add("on");sheetOn=true}
-function closeSheet(){$("#sheet").classList.remove("on");$("#scrim").classList.remove("on");sheetOn=false}
+function openSheet(h){ttsOpen=false;$("#sheet").innerHTML=h;$("#sheet").classList.add("on");$("#scrim").classList.add("on");sheetOn=true}
+function closeSheet(){ttsOpen=false;$("#sheet").classList.remove("on");$("#scrim").classList.remove("on");sheetOn=false}
 $("#scrim").onclick=closeSheet;
 addEventListener("keydown",e=>{if(e.key==="Escape"){if(sheetOn)closeSheet();else if(R)closeReader()}});
 function verseSheet(v){
@@ -953,7 +953,10 @@ const vql=v=>["기본","","향상됨","프리미엄"][vq(v)];
 const vid=v=>v.voiceURI||v.name;
 function koVoices(){try{return WEB.getVoices().filter(v=>/^ko/i.test(v.lang)).sort((a,b)=>vq(b)-vq(a)||(b.localService-a.localService))}catch(e){return[]}}
 function pickVoice(){const vs=koVoices();return vs.find(v=>vid(v)===S.voice)||vs[0]||null}
-if(WEB){$("#rtts").hidden=false;try{WEB.onvoiceschanged=()=>{if(sheetOn&&$("#vsel"))ttsSheet()}}catch(e){}}
+let ttsOpen=false,vpoll=0;
+function refreshVoices(){if(ttsOpen&&sheetOn)ttsSheet()}
+function pollVoices(n=24){clearInterval(vpoll);let k=0;vpoll=setInterval(()=>{k++;if(koVoices().length||k>n){clearInterval(vpoll);refreshVoices()}},250)}
+if(WEB){$("#rtts").hidden=false;try{WEB.getVoices();WEB.addEventListener?WEB.addEventListener("voiceschanged",refreshVoices):(WEB.onvoiceschanged=refreshVoices)}catch(e){}pollVoices(40)}
 if(!S.rate)S.rate=.8;
 function litVerse(v){const el=document.getElementById("v"+v);if(el){document.querySelectorAll("#txt .v.flash").forEach(x=>x.classList.remove("flash"));el.classList.add("flash");el.scrollIntoView({block:"center",behavior:"smooth"})}}
 function ttsOff(){speaking=false;$("#rtts").classList.remove("speaking");$("#rtts").setAttribute("aria-label","소리로 듣기")}
@@ -967,16 +970,18 @@ async function play(){if(!R||!TEXT)return;
   if(!ok&&speaking&&WEB)await speakWeb(vs,off);
   ttsOff();document.querySelectorAll("#txt .v.flash").forEach(x=>x.classList.remove("flash"))}
 const RATES=[[.65,"아주 천천히"],[.8,"천천히"],[.95,"보통"],[1.1,"빠르게"]];
-function ttsSheet(){
+function ttsSheet(){ttsOpen=true;
   const vs=WEB?koVoices():[],cur=pickVoice();
   openSheet(`<p class="small" style="margin:0 0 4px;color:var(--lapis);font-weight:700">${BN(R.b)} ${R.c}${unit(R.b)} 듣기</p>
    <div class="row"><span class="small muted" style="width:3em">속도</span>${RATES.map(([r,l])=>`<button class="chip" data-rate="${r}" aria-pressed="${Math.abs(S.rate-r)<.01}" style="${Math.abs(S.rate-r)<.01?"background:var(--lapisbg);color:#fff":""}">${l}</button>`).join("")}</div>
    ${!TTS&&vs.length?`<label class="small muted" for="vsel">목소리</label><select id="vsel" style="width:100%;font:16px var(--sans);padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);margin-top:4px">${vs.map(v=>`<option value="${esc(vid(v))}"${cur&&vid(cur)===vid(v)?" selected":""}>${esc(v.name)}${vql(v)?" · "+vql(v):""}</option>`).join("")}</select>
    <p class="small muted" style="margin:8px 0 0">이 기기에서 찾은 한국어 음성 ${vs.length}개. 목록에 '향상됨'이나 '프리미엄'이 없다면, 아이폰 <b>설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 한국어</b>에서 내려받은 뒤 앱을 완전히 닫았다 다시 열어 주세요.</p>`:""}
-   ${!TTS&&WEB&&!vs.length?`<p class="small muted" style="margin:8px 0 0">이 기기에 한국어 음성이 없어요. 기기 설정에서 한국어 음성을 내려받아 주세요.</p>`:""}
-   <div class="row" style="margin-top:14px"><button class="btn" id="tplay">▶ 처음부터 듣기</button><button class="btn ghost" id="ttest">미리 들어보기</button><button class="btn ghost" data-close style="margin-left:auto">닫기</button></div>`);
+   ${!TTS&&WEB&&!vs.length?`<p class="small muted" style="margin:8px 0 0">음성 목록을 불러오는 중이에요… 목록이 안 보여도 '처음부터 듣기'를 누르면 기기의 기본 한국어 음성으로 읽어요.</p>`:""}
+   <div class="row" style="margin-top:14px"><button class="btn" id="tplay">▶ 처음부터 듣기</button><button class="btn ghost" id="ttest">미리 들어보기</button><button class="btn ghost" data-close style="margin-left:auto">닫기</button></div>`);ttsOpen=true;
 }
-$("#rtts").onclick=()=>{if(!R||!TEXT)return;if(speaking){stopTts();return}ttsSheet()};
+$("#rtts").onclick=()=>{if(!R||!TEXT)return;if(speaking){stopTts();return}
+  if(WEB&&!koVoices().length){try{const u=new SpeechSynthesisUtterance(" ");u.volume=0;u.lang="ko-KR";WEB.speak(u)}catch(e){}pollVoices(24)}
+  ttsSheet()};
 $("#sheet").addEventListener("click",e=>{const t=e.target;
   const r=t.closest("[data-rate]");if(r){S.rate=+r.dataset.rate;save("plan");ttsSheet();return}
   if(t.closest("#tplay")){closeSheet();play();return}
