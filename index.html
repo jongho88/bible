@@ -55,7 +55,16 @@ main{flex:1;overflow:hidden;position:relative}
 .tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line);background:var(--bg);padding-bottom:env(safe-area-inset-bottom)}
 .tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;font-size:12.5px;color:var(--sub)}
 .tabs button svg{width:22px;height:22px}
-.tabs button[aria-current=page]{color:var(--lapis);font-weight:700}
+.tabs button{--tc:var(--lapis)}
+.tabs button[data-t=story]{--tc:light-dark(#3d5fa8,#8fa8e0)}
+.tabs button[data-t=plan]{--tc:light-dark(#b3362f,#f08a80)}
+.tabs button[data-t=books]{--tc:light-dark(#2f7f86,#6fc3c9)}
+.tabs button[data-t=search]{--tc:light-dark(#a3612f,#e0a66b)}
+.tabs button[data-t=me]{--tc:light-dark(#7a5a96,#c3a6dc)}
+.tabs button svg{color:var(--tc);fill:color-mix(in srgb,var(--tc) 22%,transparent);transition:fill .2s}
+.tabs button:active svg{transform:scale(.92)}
+.tabs button[aria-current=page]{color:var(--tc);font-weight:700}
+.tabs button[aria-current=page] svg{fill:color-mix(in srgb,var(--tc) 40%,transparent)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 16px;border-radius:999px;background:var(--lapisbg);color:var(--onlapis);font-weight:500}
 .btn.ghost{background:var(--panel);color:var(--ink)}
 a.btn{text-decoration:none}
@@ -348,7 +357,7 @@ textarea{min-height:96px;resize:vertical}
  </main>
  <nav class="tabs" aria-label="메뉴">
   <button data-t="story"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="13" height="15" rx="2"/><path d="M8 3h11a1 1 0 0 1 1 1v14"/></svg>맥락보기</button>
-  <button data-t="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h3M4 12h3M4 18h3M10 6h10M10 12h10M10 18h10"/></svg>시대순 읽기</button>
+  <button data-t="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4M8 14h3M13 14h3M8 17h3" fill="none"/></svg>시대순 읽기</button>
   <button data-t="books"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4v16H5zM10 4h4v16h-4zM15.5 5l3.5-.8 3 15-3.5.8z"/></svg>66권 해설</button>
   <button data-t="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>검색</button>
   <button data-t="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg>내 기록</button>
@@ -1235,7 +1244,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b>버전 1.76</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b>버전 1.80</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
