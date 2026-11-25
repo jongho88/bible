@@ -724,6 +724,31 @@ const PLAN=[
 ["s15",[[44,13,14],[48,1,6],[44,15,17],[52,1,5],[53,1,3],[44,18,19],[46,1,16],[47,1,13],[45,1,16],[44,20,28],[49,1,6],[50,1,4],[51,1,4],[57,1,1],[54,1,6],[56,1,3],[55,1,4]]],
 ["s16",[[60,1,5],[61,1,3],[65,1,1],[58,1,13],[62,1,5],[63,1,1],[64,1,1],[66,1,22]]]
 ];
+
+// 바이블프로젝트 공식 한국어 영상 (bibleproject.com/Korean 에서 확인한 유튜브 주소)
+// [책 번호]: [[제목, 유튜브 ID, 시작 장, 끝 장], ...]
+const BPV={
+1:[["창세기 1~11장","dLv2ndgXrbo",1,11],["창세기 12~50장","p4Oh-rbc9rE",12,50]],
+2:[["출애굽기 1~18장","PrTbYx6KbtY",1,18],["출애굽기 19~40장","ze0bIlO5p1w",19,40]],
+3:[["레위기","OUPcm3QGt7Y"]],4:[["민수기","Q0Lac54urBU"]],5:[["신명기","HOA8818FdYc"]],6:[["여호수아","9MmKvOItPds"]],
+7:[["사사기","2rnPxn2aeN0"]],8:[["룻기","jB2au0FGgjo"]],9:[["사무엘상","gZ9Jf2FeZJQ"]],10:[["사무엘하","QYuSYPIfFPA"]],
+11:[["열왕기상하","jIcsdztsKBE"]],12:[["열왕기상하","jIcsdztsKBE"]],13:[["역대상하","AgRvk1qOAgg"]],14:[["역대상하","AgRvk1qOAgg"]],
+15:[["에스라-느헤미야","IxHJN4cOl-c"]],16:[["에스라-느헤미야","IxHJN4cOl-c"]],17:[["에스더","e4rGAPgtBbc"]],18:[["욥기","SoOSMWGuDxk"]],
+19:[["시편","amAZ8ewil7g"]],20:[["잠언","WPAs3uHoPDI"]],21:[["전도서","8bnFXIKuq3U"]],22:[["아가","jLA7P-L9NgU"]],
+23:[["이사야 1~39장","b0-A9qEu5ug",1,39],["이사야 40~66장","592AmPSM2P8",40,66]],24:[["예레미야","ErL1bUKQIIY"]],25:[["예레미야애가","twumxE5HxYU"]],
+26:[["에스겔 1~33장","IO9XplZBcvk",1,33],["에스겔 34~48장","T_dn5VhU73E",34,48]],27:[["다니엘","clI5OYY4lVo"]],28:[["호세아","M669lzWgN5k"]],
+29:[["요엘","4ucQjbVb4oE"]],30:[["아모스","FOH4qvNr9O8"]],31:[["오바댜","znmT4B8j4xA"]],32:[["요나","P6bSRsI4rY0"]],33:[["미가","cES-IDPeU4E"]],
+34:[["나훔","qhJQqrm2pUw"]],35:[["하박국","BRbdfL0u4hQ"]],36:[["스바냐","WWIQaLlsCjo"]],37:[["학개","j-S26FNz_XY"]],38:[["스가랴","l8CdmoLKq3E"]],39:[["말라기","KxJb21AxVqI"]],
+40:[["마태복음 1~13장","cbabreYd34Q",1,13],["마태복음 14~28장","Va-eFIztMxU",14,28]],41:[["마가복음","hKtkrVwvFoo"]],
+42:[["누가복음 1~9장","szex2l67GwQ",1,9],["누가복음 10~24장","FJ2cCWKxgfM",10,24]],43:[["요한복음 1~12장","FV55I_rX4Kg",1,12],["요한복음 13~21장","bVRSuGbY5-s",13,21]],
+44:[["사도행전 1~12장","kOCqsPst9Ag",1,12],["사도행전 13~28장","_rJ89EhnwSQ",13,28]],45:[["로마서 1~4장","PT4C0ley074",1,4],["로마서 5~16장","k5i6Dk-afp0",5,16]],
+46:[["고린도전서","SoxLSx5DOjg"]],47:[["고린도후서","xZFXdP7CCcc"]],48:[["갈라디아서","IRaMP5i4ROc"]],49:[["에베소서","1Cvb3mjw7WQ"]],50:[["빌립보서","P2stOv4EuD8"]],
+51:[["골로새서","PToo8H3ESmI"]],52:[["데살로니가전서","78mjPkm3gNU"]],53:[["데살로니가후서","aSvUcBhd4hQ"]],54:[["디모데전서","TPaaXttsgzY"]],55:[["디모데후서","3dkgqj64kS8"]],
+56:[["디도서","tdTrkbn8plI"]],57:[["빌레몬서","FF52ylLRH3g"]],58:[["히브리서","_y4X0Y1nu5E"]],59:[["야고보서","kGLyLhRuxWs"]],60:[["베드로전서","5te24c_61aI"]],61:[["베드로후서","Ii-v2hGv-zk"]],
+62:[["요한1~3서","cMKPbDZhToo"]],63:[["요한1~3서","cMKPbDZhToo"]],64:[["요한1~3서","cMKPbDZhToo"]],65:[["유다서","ggYH-spyKHY"]],
+66:[["요한계시록 1~11장","ue4ZFykrMJ8",1,11],["요한계시록 12~22장","TV36boVNZOk",12,22]]
+};
+const BPV_ALL=[["구약 전체","-nbwEZJSvW0"],["신약 전체","K801qW6Easc"]];
 {
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -877,19 +902,21 @@ $("#v-plan").addEventListener("click",e=>{const t=e.target;
 // 66권
 let bookSel=0;
 function openBook(b){bookSel=b;if(cur!=="books")go("books");else rBooks();$("#v-books").scrollTop=0}
+const YT=id=>"https://www.youtube.com/watch?v="+id;
+const vidBtn=(v,ghost)=>`<a class="btn ${ghost?"ghost":""} vb" href="${YT(v[1])}" target="_blank" rel="noopener">▶ ${esc(v[0])} 개요 영상</a>`;
+function vidFor(b,c){const vs=BPV[b]||[];return vs.find(v=>v[2]==null||(c>=v[2]&&c<=v[3]))||vs[0]}
 function introHTML(b,full){
   const I=INTRO[b];if(!I)return"";
   const o=I[4].split("|").map(x=>{const k=x.indexOf(" ");return `<li><b>${esc(x.slice(0,k))}${unit(b)}</b><span>${esc(x.slice(k+1))}</span></li>`}).join("");
   const keys=I[5].split(";").map(r=>{const [c,v]=r.split(":");return `<button class="chip" data-go="${b}.${c}.${parseInt(v)}">${c}:${esc(v)}</button>`}).join("");
   const era=CHI[b+"-1"]!=null?ERA[CH[CHI[b+"-1"]].e]:null;
-  const yt=BP;
   return `<div class="intro">${full?`<p class="small muted" style="margin:0 0 4px">${esc(BOOKS[b-1][5])} · ${BOOKS[b-1][4]}${unit(b)}${era?` · <span style="color:${era.c};font-weight:700">${esc(era.t)}</span>`:""}</p><h2>${BN(b)}</h2>`:`<h3 style="font-size:20px;color:var(--lapis)">${BN(b)} 해설</h3>`}
    <p class="msg">${esc(I[3])}</p>
    <dl class="meta"><dt>저자</dt><dd>${esc(I[0])}</dd><dt>기록 시기</dt><dd>${esc(I[1])}</dd><dt>배경</dt><dd>${esc(I[2])}</dd></dl>
    <h3 style="font-family:var(--sans);font-size:14px;color:var(--sub);margin:16px 0 0">구조</h3><ul class="outline">${o}</ul>
    <h3 style="font-family:var(--sans);font-size:14px;color:var(--sub);margin:16px 0 6px">핵심 구절</h3><div class="links" style="margin-top:0">${keys}</div>
    <p class="tip">${linkRefs(esc(I[6]))}</p>
-   <div class="links"><a class="btn ghost" href="${yt}" target="_blank" rel="noopener">▶ 바이블프로젝트 공식 한국어 영상</a></div></div>`;
+   <div class="links">${(BPV[b]||[]).map(v=>vidBtn(v,1)).join("")}</div><p class="small muted" style="margin:6px 0 0">바이블프로젝트 공식 한국어 영상 (유튜브)</p></div>`;
 }
 function rBooks(){
   const v=$("#v-books");
@@ -901,7 +928,7 @@ function rBooks(){
   const groups=[];BOOKS.forEach((k,i)=>{let g=groups.find(x=>x.n===k[5]&&x.t===(i<39?"구약":"신약"));if(!g)groups.push(g={n:k[5],t:i<39?"구약":"신약",b:[]});g.b.push(i+1)});
   v.innerHTML=`<div class="wrap"><h2 style="font-size:30px">66권 해설</h2><p class="muted" style="margin:6px 0 0">스터디 바이블처럼 각 책의 저자, 시기, 배경, 구조, 핵심 구절을 정리했어요. 책을 누르면 해설과 함께 ${"장"}을 골라 읽을 수 있어요.</p>
    ${groups.map(g=>`<div class="grp"><h3>${g.t} · ${esc(g.n)}</h3><div class="bgrid">${g.b.map(b=>{const e=CHI[b+"-1"]!=null?ERA[CH[CHI[b+"-1"]].e]:null;return `<button data-book="${b}"><b>${BN(b)}</b><span>${e?esc(e.t):""}</span></button>`}).join("")}</div></div>`).join("")}
-   <p class="small muted" style="margin-top:22px">영상 버튼은 바이블프로젝트 공식 한국어 페이지(<a href="https://bibleproject.com/Korean/" target="_blank" rel="noopener">bibleproject.com/Korean</a>)로 바로 연결돼요. 유튜브 검색을 거치지 않아서 다른 채널 영상이 섞이지 않아요. 페이지의 '구약', '신약' 목록에서 책 이름을 고르세요.</p></div>`;
+   <p class="small muted" style="margin-top:22px">영상 버튼은 바이블프로젝트 공식 한국어 채널의 해당 책 개요 영상으로 바로 연결돼요(유튜브). 전체 흐름부터 보고 싶으시면:</p><div class="links">${BPV_ALL.map(v=>vidBtn(v,1)).join("")}</div><p class="small muted">출처: <a href="https://bibleproject.com/Korean/" target="_blank" rel="noopener">bibleproject.com/Korean</a></p></div>`;
 }
 $("#v-books").addEventListener("click",e=>{const t=e.target;if(t.closest("#bback")){bookSel=0;rBooks();return}const bk=t.closest("[data-book]");if(bk)openBook(+bk.dataset.book)});
 
@@ -959,7 +986,7 @@ function renderReader(){
   if(gws.length)x+=`<h3>이 ${unit(b)}의 낱말 풀이</h3>`+gws.map(g=>`<div class="gw"><b>${esc(g)}</b><span>${linkRefs(esc(GD[g]))}</span></div>`).join("");
   const ms=Object.keys(S.memos).filter(m=>m.startsWith(k+"-")&&S.memos[m].t).sort((a,z)=>a.split("-")[2]-z.split("-")[2]);
   if(ms.length)x+=`<h3>내 메모</h3>`+ms.map(m=>`<div class="memo"><div class="rf">${c}:${m.split("-")[2]}</div>${esc(S.memos[m].t)}</div>`).join("");
-  if(c!==1)x+=`<div class="links" style="margin-top:22px"><a class="btn ghost" target="_blank" rel="noopener" href="${BP}">▶ 바이블프로젝트 공식 영상</a></div>`;
+  if(c!==1)x+=`<div class="links" style="margin-top:22px">${vidFor(b,c)?vidBtn(vidFor(b,c),1):""}</div>`;
   $("#ex").innerHTML=x;
   // 하단
   if(day){const d=DAYS[day-1],pos=ci-d.f+1,tot=d.t-d.f+1;
@@ -1076,7 +1103,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.29</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.31</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
