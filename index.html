@@ -145,7 +145,8 @@ button.chip{min-height:36px}
 .panes::-webkit-scrollbar{display:none}
 .pane{flex:0 0 100%;overflow-y:auto;scroll-snap-align:start;padding:16px max(5vw,16px) 40px}
 .pane .in{max-width:680px;margin:0 auto}
-#txt{font-family:"Gowun Batang",serif;font-size:var(--fs);line-height:1.95}
+#txt{font-family:"Gowun Batang",serif;font-size:var(--fs);line-height:1.95;-webkit-text-stroke:.35px currentColor;paint-order:stroke fill}
+#txt sup,#txt .introbox,#txt .eraban,#txt .swipehint,#txt .small{-webkit-text-stroke:0}
 #txt .v{margin:0;padding:3px 8px;border-radius:8px;cursor:pointer;position:relative}
 #txt .v sup{font-family:var(--sans);font-size:.58em;color:var(--sub);margin-right:5px;vertical-align:.4em}
 #txt .v.nt{background:var(--rubbg);box-shadow:inset 3px 0 0 var(--rub)}
