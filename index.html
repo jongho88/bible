@@ -1104,8 +1104,8 @@ function rStory(){
      ${e.why?`<div class="why">${linkRefs(esc(e.why))}</div>`:""}
      ${pe?`<div class="links"><button class="btn" data-era="${e.id}">이 시대 읽기표 보기</button></div>`:e.id==="s17"?`<div class="links"><button class="btn" data-t2="plan">시대순 읽기 시작하기</button></div>`:""}
     </div></article></div>
-   <div class="deckbar"><button class="btn ghost" id="sp" ${i?"":"disabled"}>‹ 이전</button><span class="sp">카드를 탭하면 다음 이야기</span><button class="btn" id="sn" ${i<ERAS.length-1?"":"disabled"}>다음 ›</button></div>
-   <p class="tapnote">왼쪽 가장자리를 탭하면 이전, 나머지를 탭하면 다음으로 넘어가요.<br>키보드 ← → 도 돼요.</p></div>`;
+   <div class="deckbar"><button class="btn ghost" id="sp" ${i?"":"disabled"}>‹ 이전</button><span class="sp">옆으로 밀어서 넘기기</span><button class="btn" id="sn" ${i<ERAS.length-1?"":"disabled"}>다음 ›</button></div>
+   <p class="tapnote">카드를 옆으로 밀거나 아래 버튼으로 넘겨요.<br>키보드 ← → 도 돼요.</p></div>`;
 }
 function stepStory(d){const n=Math.max(0,Math.min(ERAS.length-1,(S.story|0)+d));if(n===S.story)return;S.story=n;save("plan");rStory();$("#v-story").scrollTop=0}
 $("#v-story").addEventListener("click",e=>{
@@ -1116,10 +1116,11 @@ $("#v-story").addEventListener("click",e=>{
   const er=t.closest("[data-era]");if(er){go("plan");setTimeout(()=>document.getElementById("era-"+er.dataset.era)?.scrollIntoView({block:"start"}),30);return}
   if(t.closest("[data-t2]"))return go("plan");
   if(t.closest("[data-go]"))return;
-  const c=t.closest("#card");if(!c)return;
-  if(getSelection&&String(getSelection()).length)return;
-  const r=c.getBoundingClientRect();stepStory(e.clientX-r.left<r.width*.28?-1:1);
 });
+// 카드를 옆으로 밀어서 넘기기 (탭으로는 넘어가지 않음)
+{let sx=0,sy=0,on=0;const V=$("#v-story");
+ V.addEventListener("touchstart",e=>{if(!e.target.closest("#card"))return;const p=e.touches[0];sx=p.clientX;sy=p.clientY;on=1},{passive:true});
+ V.addEventListener("touchend",e=>{if(!on)return;on=0;const p=e.changedTouches[0],dx=p.clientX-sx,dy=p.clientY-sy;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)stepStory(dx<0?1:-1)},{passive:true});}
 addEventListener("keydown",e=>{if(R||sheetOn)return;if(cur!=="story"||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;if(e.key==="ArrowRight")stepStory(1);if(e.key==="ArrowLeft")stepStory(-1)});
 
 // 시대순 읽기
@@ -1358,7 +1359,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.102</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.103</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
