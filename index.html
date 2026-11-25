@@ -111,7 +111,7 @@ button.chip{min-height:36px}
 .days li button.go{flex:1;display:flex;align-items:center;gap:12px;text-align:left;padding:8px 4px}
 .days .dn{font-size:13px;color:var(--sub);width:46px;flex:none}
 .days .lb{font-size:16px;flex:1}
-.nb{display:inline-flex;align-items:center;flex:none;font-size:12.5px;font-weight:700;color:var(--rub);background:var(--rubbg);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.nb{display:inline-flex;align-items:center;flex:none;font-size:12.5px;font-weight:400;color:var(--rub);background:var(--rubbg);border-radius:999px;padding:2px 9px;white-space:nowrap}
 .days .ck{width:44px;height:44px;display:grid;place-items:center;flex:none}
 .days .ck span{width:24px;height:24px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center}
 .days li.done .ck span{background:var(--lapis);border-color:var(--lapis);color:var(--bg)}
@@ -853,7 +853,7 @@ function rPlan(){
    <div class="jump">${PLAN.map(([id])=>`<button class="chip" data-jump="${id}">${esc(ERA[id].t)}</button>`).join("")}</div>`;
   PLAN.forEach(([id])=>{const e=ERA[id];const ds=DAYS.filter(d=>d.e===id);
     h+=`<section class="era" id="era-${id}"><h2>${esc(e.t)} <small>${esc(e.y)}</small></h2><div class="bar2" style="background:${e.c}"></div><p class="eraln">${esc(e.lead)} <button class="chip" data-story="${e.i}" style="min-height:30px">맥락보기</button></p>
-    <ul class="days">${ds.map(d=>`<li class="${S.done[d.n]?"done":""}${nd&&nd.n===d.n?" today":""}"><button class="ck" data-ck="${d.n}" aria-label="${d.n}일차 완료 표시" aria-pressed="${!!S.done[d.n]}"><span>${S.done[d.n]?"✓":""}</span></button><button class="go" data-day="${d.n}"><span class="dn">${d.n}일차</span><span class="lb">${dayLabel(d)}</span>${dayNotes(d)?`<span class="nb" title="해설이 있는 장: ${dayNoteCh(d)}">해설 ${dayNotes(d)}</span>`:""}</button></li>`).join("")}</ul></section>`});
+    <ul class="days">${ds.map(d=>`<li class="${S.done[d.n]?"done":""}${nd&&nd.n===d.n?" today":""}"><button class="ck" data-ck="${d.n}" aria-label="${d.n}일차 완료 표시" aria-pressed="${!!S.done[d.n]}"><span>${S.done[d.n]?"✓":""}</span></button><button class="go" data-day="${d.n}"><span class="dn">${d.n}일차</span><span class="lb">${dayLabel(d)}</span>${dayNotes(d)?`<span class="nb" title="해설이 있는 장: ${dayNoteCh(d)}">해설</span>`:""}</button></li>`).join("")}</ul></section>`});
   $("#v-plan").innerHTML=h+`<p class="small muted" style="margin-top:28px">시대 배치는 널리 쓰이는 연대기 통독 순서를 따랐지만, 요엘·욥기·일부 시편처럼 연대가 분명하지 않은 책은 학자마다 견해가 달라요.</p></div>`;
 }
 $("#v-plan").addEventListener("click",e=>{const t=e.target;
@@ -1060,7 +1060,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.26</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.27</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
