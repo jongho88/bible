@@ -946,9 +946,12 @@ $("#sheet").addEventListener("click",async e=>{const t=e.target;
 // 듣기: Claude 음성이 있으면 그것을, 없으면 기기(브라우저) 음성을 써요
 let WEB=null,FROM=0;
 try{if("speechSynthesis" in window&&"SpeechSynthesisUtterance" in window)WEB=window.speechSynthesis}catch(e){}
-const GOOD=/enhanced|premium|향상|고급|neural|natural/i;
-function koVoices(){try{return WEB.getVoices().filter(v=>/^ko/i.test(v.lang)).sort((a,b)=>(GOOD.test(b.name)-GOOD.test(a.name))||(b.localService-a.localService))}catch(e){return[]}}
-function pickVoice(){const vs=koVoices();return vs.find(v=>v.name===S.voice)||vs[0]||null}
+const GOOD=/enhanced|premium|향상|고급|고품질|프리미엄|neural|natural/i;
+const vq=v=>{const t=(v.voiceURI||"")+" "+v.name;return /premium|프리미엄/i.test(t)?3:/enhanced|향상|고품질|고급|neural|natural/i.test(t)?2:/compact|기본/i.test(t)?0:1};
+const vql=v=>["기본","","향상됨","프리미엄"][vq(v)];
+const vid=v=>v.voiceURI||v.name;
+function koVoices(){try{return WEB.getVoices().filter(v=>/^ko/i.test(v.lang)).sort((a,b)=>vq(b)-vq(a)||(b.localService-a.localService))}catch(e){return[]}}
+function pickVoice(){const vs=koVoices();return vs.find(v=>vid(v)===S.voice)||vs[0]||null}
 if(WEB){$("#rtts").hidden=false;try{WEB.onvoiceschanged=()=>{if(sheetOn&&$("#vsel"))ttsSheet()}}catch(e){}}
 if(!S.rate)S.rate=.8;
 function litVerse(v){const el=document.getElementById("v"+v);if(el){document.querySelectorAll("#txt .v.flash").forEach(x=>x.classList.remove("flash"));el.classList.add("flash");el.scrollIntoView({block:"center",behavior:"smooth"})}}
@@ -956,7 +959,7 @@ function ttsOff(){speaking=false;$("#rtts").classList.remove("speaking");$("#rtt
 function stopTts(){if(speaking){try{if(TTS)TTS.stop()}catch(e){}try{if(WEB)WEB.cancel()}catch(e){}}ttsOff()}
 async function speakClaude(vs){try{await TTS.speak(vs.map((t,i)=>({text:t,id:String(i+1),rate:Math.max(.7,S.rate+.1)})));return true}catch(e){if(e&&e.code==="rate_limited"){toast("잠시 후 다시 눌러 주세요");return true}if(e&&e.code==="viewer_stopped")return true;return false}}
 function speakWeb(vs,off){return new Promise(res=>{try{WEB.cancel();const kv=pickVoice();
-  vs.forEach((t,i)=>{const u=new SpeechSynthesisUtterance(t);u.lang="ko-KR";if(kv)u.voice=kv;u.rate=S.rate;u.onstart=()=>litVerse(i+1+off);if(i===vs.length-1){u.onend=()=>res();u.onerror=()=>res()}WEB.speak(u)})}catch(e){res()}})}
+  vs.forEach((t,i)=>{const u=new SpeechSynthesisUtterance(t);if(kv){u.voice=kv;u.lang=kv.lang}else u.lang="ko-KR";u.rate=S.rate;u.onstart=()=>litVerse(i+1+off);if(i===vs.length-1){u.onend=()=>res();u.onerror=()=>res()}WEB.speak(u)})}catch(e){res()}})}
 async function play(){if(!R||!TEXT)return;
   const off=FROM?FROM-1:0;FROM=0;const vs=TEXT[R.b][R.c-1].slice(off);speaking=true;$("#rtts").classList.add("speaking");$("#rtts").setAttribute("aria-label","읽기 멈추기");
   let ok=false;if(TTS){TTS._off=off;ok=await speakClaude(vs)}
@@ -967,8 +970,8 @@ function ttsSheet(){
   const vs=WEB?koVoices():[],cur=pickVoice();
   openSheet(`<p class="small" style="margin:0 0 4px;color:var(--lapis);font-weight:700">${BN(R.b)} ${R.c}${unit(R.b)} 듣기</p>
    <div class="row"><span class="small muted" style="width:3em">속도</span>${RATES.map(([r,l])=>`<button class="chip" data-rate="${r}" aria-pressed="${Math.abs(S.rate-r)<.01}" style="${Math.abs(S.rate-r)<.01?"background:var(--lapisbg);color:#fff":""}">${l}</button>`).join("")}</div>
-   ${!TTS&&vs.length?`<label class="small muted" for="vsel">목소리</label><select id="vsel" style="width:100%;font:16px var(--sans);padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);margin-top:4px">${vs.map(v=>`<option value="${esc(v.name)}"${cur&&cur.name===v.name?" selected":""}>${esc(v.name)}${GOOD.test(v.name)?" (고음질)":""}</option>`).join("")}</select>
-   <p class="small muted" style="margin:8px 0 0">목소리가 어색하면 아이폰 <b>설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 한국어</b>에서 '향상된 음성'을 내려받은 뒤 여기서 고르세요.</p>`:""}
+   ${!TTS&&vs.length?`<label class="small muted" for="vsel">목소리</label><select id="vsel" style="width:100%;font:16px var(--sans);padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);margin-top:4px">${vs.map(v=>`<option value="${esc(vid(v))}"${cur&&vid(cur)===vid(v)?" selected":""}>${esc(v.name)}${vql(v)?" · "+vql(v):""}</option>`).join("")}</select>
+   <p class="small muted" style="margin:8px 0 0">이 기기에서 찾은 한국어 음성 ${vs.length}개. 목록에 '향상됨'이나 '프리미엄'이 없다면, 아이폰 <b>설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 한국어</b>에서 내려받은 뒤 앱을 완전히 닫았다 다시 열어 주세요.</p>`:""}
    ${!TTS&&WEB&&!vs.length?`<p class="small muted" style="margin:8px 0 0">이 기기에 한국어 음성이 없어요. 기기 설정에서 한국어 음성을 내려받아 주세요.</p>`:""}
    <div class="row" style="margin-top:14px"><button class="btn" id="tplay">▶ 처음부터 듣기</button><button class="btn ghost" id="ttest">미리 들어보기</button><button class="btn ghost" data-close style="margin-left:auto">닫기</button></div>`);
 }
@@ -976,9 +979,9 @@ $("#rtts").onclick=()=>{if(!R||!TEXT)return;if(speaking){stopTts();return}ttsShe
 $("#sheet").addEventListener("click",e=>{const t=e.target;
   const r=t.closest("[data-rate]");if(r){S.rate=+r.dataset.rate;save("plan");ttsSheet();return}
   if(t.closest("#tplay")){closeSheet();play();return}
-  if(t.closest("#ttest")){try{WEB&&WEB.cancel();if(TTS&&!WEB){play();closeSheet();return}const u=new SpeechSynthesisUtterance("태초에 하나님이 천지를 창조하시니라");u.lang="ko-KR";const v=pickVoice();if(v)u.voice=v;u.rate=S.rate;WEB.speak(u)}catch(x){}return}
+  if(t.closest("#ttest")){try{WEB&&WEB.cancel();if(TTS&&!WEB){play();closeSheet();return}const u=new SpeechSynthesisUtterance("태초에 하나님이 천지를 창조하시니라");const v=pickVoice();if(v){u.voice=v;u.lang=v.lang}else u.lang="ko-KR";u.rate=S.rate;WEB.speak(u)}catch(x){}return}
 });
-$("#sheet").addEventListener("change",e=>{if(e.target.id==="vsel"){S.voice=e.target.value;save("plan")}});
+$("#sheet").addEventListener("change",e=>{if(e.target.id==="vsel"){S.voice=e.target.value;save("plan");try{WEB.cancel();const v=pickVoice(),u=new SpeechSynthesisUtterance("태초에 하나님이 천지를 창조하시니라");if(v){u.voice=v;u.lang=v.lang}u.rate=S.rate;WEB.speak(u)}catch(x){}}});
 (async()=>{if(!window.claude||!claude.use)return;try{TTS=await claude.use("tts");if(TTS){$("#rtts").hidden=false;TTS.onLine(({id})=>{if(id)litVerse(+id+(TTS._off||0))})}}catch(e){}})();
 
 // 검색
