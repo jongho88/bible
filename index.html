@@ -1100,9 +1100,8 @@ function rStory(){
     <div class="bd"><h2 class="et">${esc(e.t)}</h2><div class="ey" style="color:${e.c}">${esc(e.y)}</div><p class="lead">${esc(e.lead)}</p>${e.p.map(p=>`<p>${linkRefs(esc(p))}</p>`).join("")}
      ${e.who?`<h3>주요 인물</h3><p class="small" style="margin:0">${esc(e.who)}</p>`:""}
      ${e.ev.length?`<h3>핵심 사건</h3>${evList(e)}`:""}
-     ${e.bk.length?`<h3>이 시대의 책</h3><div class="links" style="margin-top:0">${[...new Set(e.bk)].map(b=>`<button class="chip" data-book="${b}">${BN(b)}</button>`).join("")}</div>`:""}
      ${e.why?`<div class="why">${linkRefs(esc(e.why))}</div>`:""}
-     ${pe?`<div class="links"><button class="btn" data-era="${e.id}">이 시대 읽기표 보기</button></div>`:e.id==="s17"?`<div class="links"><button class="btn" data-t2="plan">시대순 읽기 시작하기</button></div>`:""}
+     ${e.id==="s17"?`<div class="links"><button class="btn" data-t2="plan">시대순 읽기 시작하기</button></div>`:""}
     </div></article></div>
    <div class="deckbar"><button class="btn ghost" id="sp" ${i?"":"disabled"}>‹ 이전</button><span class="sp">옆으로 밀어서 넘기기</span><button class="btn" id="sn" ${i<ERAS.length-1?"":"disabled"}>다음 ›</button></div>
    <p class="tapnote">카드를 옆으로 밀거나 아래 버튼으로 넘겨요.<br>키보드 ← → 도 돼요.</p></div>`;
@@ -1359,7 +1358,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.103</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.104</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
