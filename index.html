@@ -65,6 +65,9 @@ button.chip{min-height:36px}
 .small{font-size:14px}
 /* 이야기 */
 .ribbon{display:flex;gap:3px;margin:0}
+.prog .ribbon{background:#fff;border-radius:12px;padding:0 8px}
+.prog .ribbon button i{opacity:.45}.prog .ribbon button:hover i{opacity:.75}.prog .ribbon button.on i{opacity:1}
+.prog .ribl{font-size:14px;color:#fff;opacity:.95}
 .ribbon button{flex:1;min-height:36px;padding:10px 0;display:flex;align-items:center;border-radius:4px}
 .ribbon button i{display:block;width:100%;height:14px;border-radius:3px;opacity:.35;transition:opacity .3s,transform .3s}
 .ribbon button:hover i{opacity:.7}
@@ -784,8 +787,10 @@ function rStory(){
   const i=Math.max(0,Math.min(ERAS.length-1,S.story|0)),e=ERAS[i];
   const pe=PLAN.find(p=>p[0]===e.id);
   $("#v-story").innerHTML=`<div class="wrap">
+   <div class="prog">
+   <div class="ph"><div><h2>맥락보기</h2><div class="small" style="opacity:.9;margin-top:4px">성경 전체 흐름을 ${ERAS.length}장면으로</div></div><div class="pn"><b>${i+1}</b><span>/${ERAS.length}장면</span></div></div>
    <div class="ribbon" role="group" aria-label="시대 바로 가기">${ERAS.map((x,j)=>`<button data-si="${j}" class="${j===i?"on":""}" title="${esc(x.t)}" aria-label="${j+1}. ${esc(x.t)}"${j===i?' aria-current="true"':""}><i style="background:${x.c}"></i></button>`).join("")}</div>
-   <div class="ribl"><span>창조</span><span>${i+1} / ${ERAS.length} · 색 칸을 누르면 그 시대로</span><span>새 창조</span></div>
+   <div class="pf ribl"><span>창조</span><span style="opacity:.8">색 칸을 누르면 그 시대로</span><span>새 창조</span></div></div>
    <div class="deck"><article class="card" id="card" aria-live="polite">
     <div class="hd" style="background:${e.c}"><div class="n">맥락보기 ${i+1}장면</div><h2>${esc(e.t)}</h2><div class="y">${esc(e.y)}</div></div>
     <div class="bd"><p class="lead">${esc(e.lead)}</p>${e.p.map(p=>`<p>${linkRefs(esc(p))}</p>`).join("")}
@@ -1016,7 +1021,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.20</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.21</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
