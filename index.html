@@ -161,12 +161,6 @@ button.chip{min-height:36px}
 .jump{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px;position:sticky;top:0;background:var(--bg);z-index:2}
 .jump button{flex:none}
 /* 66권 */
-.grp{margin-top:22px}
-.grp h3{font-family:var(--sans);font-size:14px;color:var(--sub);margin-bottom:8px}
-.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
-.bgrid button{padding:10px 8px;border-radius:12px;background:var(--panel);text-align:left;display:flex;flex-direction:column;gap:2px}
-.bgrid b{font-weight:500;font-size:15.5px}
-.bgrid span{font-size:12.5px;color:var(--sub)}
 .intro{border-radius:18px;background:var(--panel);padding:18px}
 .intro h2{font-size:34px;color:var(--lapis)}
 .intro .tip{border-left:3px solid var(--rub);padding-left:12px;margin:14px 0 0;font-size:15.5px}
@@ -407,6 +401,19 @@ textarea{min-height:96px;resize:vertical}
 .cover h2.wm svg.tcx .tube{animation:neonOn 1.1s steps(1,end) 4.2s both,neonHum 3s ease-in-out 5.4s infinite alternate}
 @keyframes neonOn{0%{filter:none}10%{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}18%{filter:none}26%{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}34%{filter:drop-shadow(0 0 2px rgba(255,226,120,.5))}40%,100%{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}}
 @keyframes neonHum{from{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}to{filter:drop-shadow(0 0 3px rgba(255,232,140,1)) drop-shadow(0 0 10px rgba(255,205,60,.95)) drop-shadow(0 0 20px rgba(255,190,40,.65))}}
+/* 66권: 책장 */
+.shelfwrap{margin-top:22px}
+.tt{font-family:"Noto Serif KR",serif;font-size:20px;margin:0 0 6px}.tt small{font:500 13px var(--sans);color:var(--sub);margin-left:4px}
+.shelf{display:flex;flex-wrap:wrap;align-items:flex-end;column-gap:10px;row-gap:18px;padding:12px 4px 0;background:linear-gradient(to bottom,transparent calc(100% - 0px),transparent)}
+.sg{display:flex;flex-direction:column;align-items:stretch}
+.sg .sp{display:flex;align-items:flex-end;gap:2px;padding:0 2px;border-bottom:7px solid light-dark(#b89568,#5a4630);box-shadow:0 7px 0 -3px light-dark(#8d6c45,#3d2f20)}
+.sg .sp button{width:27px;border-radius:3px 3px 1px 1px;background:var(--gc);color:#fffaf0;position:relative;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:inset -3px 0 0 rgba(0,0,0,.14),inset 2px 0 0 rgba(255,255,255,.12);transition:transform .15s}
+.sg .sp button::before,.sg .sp button::after{content:"";position:absolute;left:3px;right:3px;height:2px;background:rgba(240,210,140,.75)}
+.sg .sp button::before{top:9px}.sg .sp button::after{bottom:9px}
+.sg .sp button span{writing-mode:vertical-rl;font:600 12.5px/1 "Noto Serif KR",serif;letter-spacing:.06em;white-space:nowrap}
+.sg .sp button:active{transform:translateY(-6px)}
+@media(hover:hover){.sg .sp button:hover{transform:translateY(-6px)}}
+.sg .sl{font:600 11.5px var(--sans);color:var(--gc);text-align:center;margin-top:9px;filter:saturate(1.1)}
 @keyframes fadein{to{opacity:1}}
 @keyframes drop{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:none}}
 @keyframes draw{to{stroke-dashoffset:0}}
@@ -1166,6 +1173,10 @@ function introHTML(b,full,noVid){
    <p class="tip">${linkRefs(esc(I[6]))}</p>
    ${noVid?"":`<div class="links">${(BPV[b]||[]).map(v=>vidBtn(v,1)).join("")}</div><p class="small muted" style="margin:6px 0 0">바이블프로젝트 공식 한국어 영상 (유튜브)</p>`}</div>`;
 }
+
+const GC={"율법서":"#8a5a3c","역사서":"#5f7448","시가서":"#9a7426","대선지서":"#6b4f7f","소선지서":"#8a6a9a","복음서":"#a3392f","역사서(신약)":"#b07a2a","바울서신":"#2f5f8a","일반서신":"#2f7f86","예언서(신약)":"#3b4a8c"};
+function booksBody(groups){
+  return ["구약","신약"].map(T=>`<section class="shelfwrap"><h3 class="tt">${T} <small>${T==="구약"?39:27}권</small></h3><div class="shelf">${groups.filter(g=>g.t===T).map(g=>`<div class="sg" style="--gc:${GC[g.n]}"><div class="sp">${g.b.map(b=>{const n=BOOKS[b-1][4],h=Math.round(Math.max(98+Math.min(n,66)*.42,BN(b).length*13.6+34));return `<button data-book="${b}" style="height:${h}px" aria-label="${BN(b)}"><span>${BN(b)}</span></button>`}).join("")}</div><div class="sl">${esc(g.n.replace("(신약)",""))}</div></div>`).join("")}</div></section>`).join("")}
 function rBooks(){
   const v=$("#v-books");
   if(bookSel){const b=bookSel,rs=readSet();const day=CHI[b+"-1"]!=null?CH[CHI[b+"-1"]].d:0;
@@ -1175,7 +1186,7 @@ function rBooks(){
      <p class="small muted">파란 칸은 읽기표에서 완료한 ${unit(b)}이에요.</p></div>`;return}
   const groups=[];BOOKS.forEach((k,i)=>{let g=groups.find(x=>x.n===k[5]&&x.t===(i<39?"구약":"신약"));if(!g)groups.push(g={n:k[5],t:i<39?"구약":"신약",b:[]});g.b.push(i+1)});
   v.innerHTML=`<div class="wrap"><h2 style="font-size:30px">66권 해설</h2><p class="muted" style="margin:6px 0 0">스터디 바이블처럼 각 책의 저자, 시기, 배경, 구조, 핵심 구절을 정리했어요. 책을 누르면 해설과 함께 ${"장"}을 골라 읽을 수 있어요.</p>
-   ${groups.map(g=>`<div class="grp"><h3>${g.t} · ${esc(g.n)}</h3><div class="bgrid">${g.b.map(b=>{const e=CHI[b+"-1"]!=null?ERA[CH[CHI[b+"-1"]].e]:null;return `<button data-book="${b}"><b>${BN(b)}</b><span>${e?esc(e.t):""}</span></button>`}).join("")}</div></div>`).join("")}
+   ${booksBody(groups)}
    <p class="small muted" style="margin-top:22px">영상 버튼은 바이블프로젝트 공식 한국어 채널의 해당 책 개요 영상으로 바로 연결돼요(유튜브). 전체 흐름부터 보고 싶으시면:</p><div class="links">${BPV_ALL.map(v=>vidBtn(v,1)).join("")}</div><p class="small muted">출처: <a href="https://bibleproject.com/Korean/" target="_blank" rel="noopener">bibleproject.com/Korean</a></p></div>`;
 }
 $("#v-books").addEventListener("click",e=>{const t=e.target;if(t.closest("#bback")){bookSel=0;rBooks();return}const bk=t.closest("[data-book]");if(bk)openBook(+bk.dataset.book)});
@@ -1358,7 +1369,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.104</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.107</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
