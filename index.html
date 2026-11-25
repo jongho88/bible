@@ -1085,7 +1085,7 @@ addEventListener("hashchange",()=>go(location.hash.slice(1)));
 
 // 큰 그림
 function evList(e){const X=EVX[e.id]||{};
-  return `<ul class="evs">${e.ev.map(x=>{const d=X[x];if(!d)return `<li>${esc(x)}</li>`;let go="";if(d[1]){const [b,c1,c2]=d[1].split(".").map(Number);go=`<button class="chip evgo" data-go="${b}.${c1}.0">${BA(b)} ${c1}${c2!==c1?"–"+c2:""}${unit(b)} 읽기 ›</button>`}
+  return `<ul class="evs">${e.ev.map(x=>{const d=X[x];if(!d)return `<li>${esc(x)}</li>`;const go="";
    return `<li class="evx"><button class="evb" data-ev aria-expanded="false"><span>${esc(x)}</span><i aria-hidden="true">▾</i></button><div class="evd"><div><p>${linkRefs(esc(d[0]))}</p>${go}</div></div></li>`}).join("")}</ul>`}
 function rStory(){
   const i=Math.max(0,Math.min(ERAS.length-1,S.story|0)),e=ERAS[i];
@@ -1188,6 +1188,8 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-ev]");if(!
 // 공통: 구절 바로가기
 document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(!g)return;e.preventDefault();e.stopPropagation();const [b,c,v]=g.dataset.go.split(".").map(Number);closeSheet();openReader(b,c,{v})},true);
 
+// 핵심 사건 설명 안을 눌러도 다음 장면으로 넘어가지 않게
+document.addEventListener("click",e=>{if(e.target.closest(".evd")&&!e.target.closest("[data-go]"))e.stopPropagation()},true);
 // 리더
 let R=null;
 const BACK={story:"맥락보기",plan:"시대순 읽기",books:"66권 해설",search:"검색",me:"내 기록"};let ORIGIN="plan";
@@ -1356,7 +1358,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.100</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.101</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
