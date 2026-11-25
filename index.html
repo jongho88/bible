@@ -774,7 +774,7 @@ function rStory(){
    <div class="ribbon" role="group" aria-label="시대 바로 가기">${ERAS.map((x,j)=>`<button data-si="${j}" class="${j===i?"on":""}" title="${esc(x.t)}" aria-label="${j+1}. ${esc(x.t)}"${j===i?' aria-current="true"':""}><i style="background:${x.c}"></i></button>`).join("")}</div>
    <div class="ribl"><span>창조</span><span>${i+1} / ${ERAS.length} · 색 칸을 누르면 그 시대로</span><span>새 창조</span></div>
    <div class="deck"><article class="card" id="card" aria-live="polite">
-    <div class="hd" style="background:${e.c}"><div class="n">${i+1}장면</div><h2>${esc(e.t)}</h2><div class="y">${esc(e.y)}</div></div>
+    <div class="hd" style="background:${e.c}"><div class="n">큰그림 (맥락잡기) ${i+1}장면</div><h2>${esc(e.t)}</h2><div class="y">${esc(e.y)}</div></div>
     <div class="bd"><p class="lead">${esc(e.lead)}</p>${e.p.map(p=>`<p>${linkRefs(esc(p))}</p>`).join("")}
      ${e.who?`<h3>주요 인물</h3><p class="small" style="margin:0">${esc(e.who)}</p>`:""}
      ${e.ev.length?`<h3>핵심 사건</h3><ul class="evs">${e.ev.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}
@@ -1001,7 +1001,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.15</b> <span class="muted">· 2026년 11월 24일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.16</b> <span class="muted">· 2026년 11월 24일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
