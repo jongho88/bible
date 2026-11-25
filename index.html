@@ -702,8 +702,12 @@ function linkRefs(h){return h.replace(RE_REF,(all,a,c,v)=>{const b=ALIAS[a];if(!
 // 시대순 읽기표 → 365일
 const CH=[],CHI={};
 PLAN.forEach(([e,segs])=>segs.forEach(([b,s,t])=>{for(let c=s;c<=t;c++){CHI[b+"-"+c]=CH.length;CH.push({b,c,e})}}));
+// 시대별로 날 수를 먼저 나누고(비율대로), 그 안에서 하루 분량을 잘라요 — 하루가 두 시대에 걸치지 않게
 const ND=365,DAYS=[];
-for(let i=0;i<ND;i++){const f=Math.floor(i*CH.length/ND),t=Math.floor((i+1)*CH.length/ND)-1;DAYS.push({n:i+1,f,t,e:CH[f].e})}
+{const groups=[];let at=0;PLAN.forEach(([e,segs])=>{let n=0;segs.forEach(([b,s,t])=>n+=t-s+1);groups.push({e,f:at,n});at+=n});
+ const tot=at;groups.forEach(g=>{g.x=g.n*ND/tot;g.d=Math.max(1,Math.floor(g.x))});
+ let left=ND-groups.reduce((a,g)=>a+g.d,0);[...groups].sort((a,b)=>(b.x-Math.floor(b.x))-(a.x-Math.floor(a.x))).forEach(g=>{if(left>0){g.d++;left--}});
+ groups.forEach(g=>{for(let i=0;i<g.d;i++){const f=g.f+Math.floor(i*g.n/g.d),t=g.f+Math.floor((i+1)*g.n/g.d)-1;DAYS.push({n:DAYS.length+1,f,t,e:g.e})}});}
 CH.forEach((x,i)=>{x.d=DAYS.findIndex(d=>i>=d.f&&i<=d.t)+1});
 function dayLabel(d){const parts=[];let cur=null;for(let i=d.f;i<=d.t;i++){const x=CH[i];if(cur&&cur.b===x.b&&cur.e2===x.c-1){cur.e2=x.c}else{cur={b:x.b,s:x.c,e2:x.c};parts.push(cur)}}
   return parts.map(p=>`${BA(p.b)} ${p.s}${p.e2!==p.s?"–"+p.e2:""}`).join(" · ")}
@@ -718,9 +722,11 @@ const GD={};GLOSS.forEach(g=>GD[g[0]]=g[1]);
 const LS="mac-bible-v1";
 let S={marks:{},memos:{},done:{},fs:19,last:null,story:0};
 try{Object.assign(S,JSON.parse(localStorage.getItem(LS)||"{}"))}catch(e){}
+if((S.pv|0)<2){const read=new Set();for(const d in S.done)if(S.done[d]){const i=+d-1,f=Math.floor(i*CH.length/ND),t=Math.floor((i+1)*CH.length/ND)-1;for(let k=f;k<=t;k++)read.add(k)}
+  const nd={};DAYS.forEach(d=>{let all=true;for(let k=d.f;k<=d.t;k++)if(!read.has(k)){all=false;break}if(all&&read.size)nd[d.n]=1});S.done=nd;S.pv=2;try{localStorage.setItem("mac-bible-v1",JSON.stringify(S))}catch(e){}}
 let DB=null,BASE="",sync="이 기기의 브라우저에만 저장돼요";
 const W={},D={},T={};
-function payload(n){return n==="marks"?{m:S.marks}:n==="memos"?{m:S.memos}:{done:S.done,last:S.last,fs:S.fs,story:S.story,rate:S.rate}}
+function payload(n){return n==="marks"?{m:S.marks}:n==="memos"?{m:S.memos}:{done:S.done,last:S.last,fs:S.fs,story:S.story,pv:S.pv}}
 async function push(n){if(!DB)return;if(W[n]){D[n]=1;return}W[n]=1;
   try{await DB.doc(BASE+"/"+n).set(payload(n))}catch(e){if(e&&(e.code==="invalid_argument"||e.code==="revoked"||e.code==="not_granted")){DB=null;sync="이 기기의 브라우저에만 저장돼요";}}
   W[n]=0;if(D[n]){D[n]=0;push(n)}}
@@ -734,7 +740,7 @@ async function initDb(){
     const [a,b,c]=await Promise.all([get("marks"),get("memos"),get("plan")]);
     if(a.exists){S.marks=Object.assign({},a.data().m||{},S.marks)}
     if(b.exists){const rm=b.data().m||{};for(const k in rm){if(!S.memos[k]||(rm[k].at||0)>(S.memos[k].at||0))S.memos[k]=rm[k]}}
-    if(c.exists){const d=c.data();Object.assign(S.done,d.done||{});if(!S.last&&d.last)S.last=d.last;if(d.fs&&!localStorage.getItem(LS))S.fs=d.fs}
+    if(c.exists){const d=c.data();if((d.pv|0)>=2)Object.assign(S.done,d.done||{});if(!S.last&&d.last)S.last=d.last;if(d.fs&&!localStorage.getItem(LS))S.fs=d.fs}
     DB=db;sync="계정에 저장돼요—다른 기기에서도 이어서 볼 수 있어요";
     try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
     push("marks");push("memos");push("plan");render();
@@ -995,7 +1001,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.14</b> <span class="muted">· 2026년 11월 24일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.15</b> <span class="muted">· 2026년 11월 24일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
