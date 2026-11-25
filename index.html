@@ -402,6 +402,7 @@ textarea{min-height:96px;resize:vertical}
 @keyframes neonOn{0%{filter:none}10%{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}18%{filter:none}26%{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}34%{filter:drop-shadow(0 0 2px rgba(255,226,120,.5))}40%,100%{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}}
 @keyframes neonHum{from{filter:drop-shadow(0 0 2px rgba(255,226,120,1)) drop-shadow(0 0 7px rgba(255,200,50,.85)) drop-shadow(0 0 15px rgba(255,190,40,.55))}to{filter:drop-shadow(0 0 3px rgba(255,232,140,1)) drop-shadow(0 0 10px rgba(255,205,60,.95)) drop-shadow(0 0 20px rgba(255,190,40,.65))}}
 /* 66권: 책장 */
+#v-books{touch-action:pan-y;overflow-x:hidden}
 .shelfwrap{margin-top:22px}
 .tt{font-family:"Noto Serif KR",serif;font-size:20px;margin:0 0 6px}.tt small{font:500 13px var(--sans);color:var(--sub);margin-left:4px}
 .shelf{display:flex;flex-wrap:wrap;align-items:flex-end;column-gap:10px;row-gap:18px;padding:12px 4px 0;background:linear-gradient(to bottom,transparent calc(100% - 0px),transparent)}
@@ -1156,7 +1157,8 @@ $("#v-plan").addEventListener("click",e=>{const t=e.target;
 
 // 66권
 let bookSel=0;
-function openBook(b){bookSel=b;if(cur!=="books")go("books");else rBooks();$("#v-books").scrollTop=0}
+let bkScroll=0;function openBook(b){const V=$("#v-books");bkScroll=cur==="books"&&!bookSel?V.scrollTop:0;bookSel=b;if(cur!=="books")go("books");else rBooks();V.scrollTop=0;const w=V.querySelector(".wrap");if(w){w.style.cssText="transform:translateX(40px);opacity:0";requestAnimationFrame(()=>{w.style.cssText="transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .28s;transform:none;opacity:1"})}}
+function backToShelf(){const V=$("#v-books");bookSel=0;rBooks();V.scrollTop=bkScroll;const w=V.querySelector(".wrap");if(w){w.style.cssText="transform:translateX(-36px);opacity:.3";requestAnimationFrame(()=>{w.style.cssText="transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .28s;transform:none;opacity:1"})}}
 const YT=id=>"https://www.youtube.com/watch?v="+id;
 const vidBtn=(v,ghost)=>`<a class="btn ${ghost?"ghost":""} vb" href="${YT(v[1])}" target="_blank" rel="noopener">▶ ${esc(v[0])} 개요 영상</a>`;
 function vidFor(b,c){const vs=BPV[b]||[];return vs.find(v=>v[2]==null||(c>=v[2]&&c<=v[3]))||vs[0]}
@@ -1189,10 +1191,16 @@ function rBooks(){
    ${booksBody(groups)}
    <p class="small muted" style="margin-top:22px">영상 버튼은 바이블프로젝트 공식 한국어 채널의 해당 책 개요 영상으로 바로 연결돼요(유튜브). 전체 흐름부터 보고 싶으시면:</p><div class="links">${BPV_ALL.map(v=>vidBtn(v,1)).join("")}</div><p class="small muted">출처: <a href="https://bibleproject.com/Korean/" target="_blank" rel="noopener">bibleproject.com/Korean</a></p></div>`;
 }
-{let sx=0,sy=0,on=0;const V=$("#v-books");
- V.addEventListener("touchstart",e=>{if(!bookSel)return;const p=e.touches[0];sx=p.clientX;sy=p.clientY;on=1},{passive:true});
- V.addEventListener("touchend",e=>{if(!on)return;on=0;const p=e.changedTouches[0],dx=p.clientX-sx,dy=p.clientY-sy;if(bookSel&&Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.6){bookSel=0;rBooks();V.scrollTop=0}},{passive:true});}
-$("#v-books").addEventListener("click",e=>{const t=e.target;if(t.closest("#bback")){bookSel=0;rBooks();return}const bk=t.closest("[data-book]");if(bk)openBook(+bk.dataset.book)});
+{let sx=0,sy=0,on=0,drag=0,dx=0,t0=0,w=null;const V=$("#v-books");
+ V.addEventListener("touchstart",e=>{if(!bookSel)return;const p=e.touches[0];sx=p.clientX;sy=p.clientY;on=1;drag=0;dx=0;t0=Date.now();w=V.querySelector(".wrap")},{passive:true});
+ V.addEventListener("touchmove",e=>{if(!on||!w)return;const p=e.touches[0],x=p.clientX-sx,y=p.clientY-sy;
+   if(!drag){if(Math.abs(x)>10&&Math.abs(x)>Math.abs(y)*1.3){drag=1;w.style.transition="none"}else if(Math.abs(y)>12){on=0;return}else return}
+   dx=x;const W=V.clientWidth;w.style.transform=`translateX(${dx}px)`;w.style.opacity=1-Math.min(.5,Math.abs(dx)/W*.6)},{passive:true});
+ V.addEventListener("touchend",()=>{if(!on)return;on=0;if(!drag||!w)return;const W=V.clientWidth,v=Math.abs(dx)/Math.max(1,Date.now()-t0);
+   if(Math.abs(dx)>W*.28||(v>.5&&Math.abs(dx)>40)){w.style.transition="transform .22s ease-out,opacity .22s";w.style.transform=`translateX(${dx>0?W:-W}px)`;w.style.opacity="0";setTimeout(backToShelf,200)}
+   else{w.style.transition="transform .25s cubic-bezier(.2,.8,.2,1),opacity .25s";w.style.transform="none";w.style.opacity="1"}},{passive:true});
+ V.addEventListener("touchcancel",()=>{if(on&&drag&&w){w.style.transition="transform .25s";w.style.transform="none";w.style.opacity="1"}on=0});}
+$("#v-books").addEventListener("click",e=>{const t=e.target;if(t.closest("#bback")){backToShelf();return}const bk=t.closest("[data-book]");if(bk)openBook(+bk.dataset.book)});
 
 // 핵심 사건 펼치기
 document.addEventListener("click",e=>{const b=e.target.closest("[data-ev]");if(!b)return;e.stopPropagation();
@@ -1372,7 +1380,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.117</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.118</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
