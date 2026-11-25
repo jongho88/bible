@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>성경 껴안기</title>
+<title>StepBible</title>
 <meta name="description" content="흐름으로 읽는 개역한글 성경 — 큰 그림, 365일 시대순 읽기, 66권 해설">
 <meta name="theme-color" content="#5a1f24">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="성경 껴안기">
-<meta property="og:title" content="성경 껴안기">
+<meta name="apple-mobile-web-app-title" content="StepBible">
+<meta property="og:title" content="StepBible">
 <meta property="og:description" content="흩어진 이야기가 하나로 모일 때 — 흐름으로 읽는 개역한글 성경">
 <meta property="og:image" content="https://jongho88.github.io/bible/thumb.png">
 <meta property="og:image:width" content="1200">
@@ -332,7 +332,7 @@ textarea{min-height:96px;resize:vertical}
 <body>
 <div class="app">
  <header class="top">
-  <h1><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="4" width="22" height="25" rx="3" fill="#23418f"/><rect x="8" y="4" width="2" height="25" fill="#c3372c"/><path d="M18 9v12M14 13h8" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><button id="cov" style="min-height:0;font:inherit;color:inherit" aria-label="표지 보기">성경 껴안기</button></h1>
+  <h1>StepBible</h1>
   <span class="st" id="st">본문 불러오는 중…</span>
  </header>
  <main>
@@ -373,7 +373,7 @@ textarea{min-height:96px;resize:vertical}
 
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
-<div class="cover" id="cover" role="dialog" aria-label="표지"><div class="frame">
+<div class="cover off" id="cover" role="dialog" aria-label="표지" hidden><div class="frame">
  <svg viewBox="0 0 360 232" aria-hidden="true">
   <path class="cv" d="M180 74C146 60 72 58 16 70V196C72 186 146 188 180 204 214 188 288 186 344 196V70C288 58 214 60 180 74Z"/>
   <path class="pgf" d="M180 68C146 52 76 50 26 64V186C76 174 146 176 180 192 214 176 284 174 334 186V64C284 50 214 52 180 68Z"/>
@@ -392,7 +392,7 @@ textarea{min-height:96px;resize:vertical}
   <path class="ed" pathLength="1" style="animation-delay:3.75s" d="M20 192C76 182 146 184 180 200 214 184 284 182 340 192"/>
   <path class="rb" d="M184 196V228L188.5 222 193 228V200Z"/>
  </svg>
- <h2 class="fade">성경 껴안기</h2>
+ <h2 class="fade">StepBible</h2>
  <p class="tag fade">흩어진 이야기가 하나로 모일 때</p>
  <p class="sub fade">개역한글 · 전체 맥락 이해하기 · 365일 시대순 읽기</p>
  <div class="ft">성경전서 개역한글판 (대한성서공회)</div>
@@ -1229,7 +1229,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.50</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b>버전 1.51</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
@@ -1243,7 +1243,7 @@ $("#v-me").addEventListener("click",async e=>{const t=e.target;
 const cov=$("#cover");
 function hideCover(){cov.classList.add("off");try{sessionStorage.setItem("cov","1")}catch(e){}}
 cov.addEventListener("click",hideCover);addEventListener("keydown",e=>{if(!cov.classList.contains("off")&&(e.key==="Enter"||e.key===" "||e.key==="Escape")){e.preventDefault();hideCover()}});
-$("#cov").onclick=()=>cov.classList.remove("off");
+
 try{if(sessionStorage.getItem("cov"))cov.classList.add("off")}catch(e){}
 go(location.hash.slice(1)||"story");
 initDb();

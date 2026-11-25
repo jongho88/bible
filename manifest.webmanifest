@@ -1,6 +1,6 @@
 {
-  "name": "성경 껴안기",
-  "short_name": "성경 껴안기",
+  "name": "StepBible",
+  "short_name": "StepBible",
   "description": "흐름으로 읽는 개역한글 성경 — 큰 그림, 365일 시대순 읽기, 66권 해설",
   "lang": "ko",
   "start_url": "./",
