@@ -453,7 +453,7 @@ textarea{min-height:96px;resize:vertical}
   <button data-t="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4M8 14h3M13 14h3M8 17h3" fill="none"/></svg>시대순 읽기</button>
   <button data-t="books"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4v16H5zM10 4h4v16h-4zM15.5 5l3.5-.8 3 15-3.5.8z"/></svg>66권 해설</button>
   <button data-t="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>검색</button>
-  <button data-t="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg>내 기록</button>
+  <button data-t="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg>기록 보기</button>
  </nav>
 </div>
 
@@ -1224,7 +1224,7 @@ document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(!
 document.addEventListener("click",e=>{const d=e.target.closest(".evd");if(!d||e.target.closest("[data-go]"))return;e.stopPropagation();const li=d.closest(".evx");if(li){li.classList.remove("open");const b=li.querySelector("[data-ev]");if(b)b.setAttribute("aria-expanded","false")}},true);
 // 리더
 let R=null;
-const BACK={story:"맥락보기",plan:"시대순 읽기",books:"66권 해설",search:"검색",me:"내 기록"};let ORIGIN="plan";
+const BACK={story:"맥락보기",plan:"시대순 읽기",books:"66권 해설",search:"검색",me:"기록 보기"};let ORIGIN="plan";
 function openReader(b,c,o={}){
   if(!R){ORIGIN=cur;const bt=$("#rclose");bt.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 5l-7 7 7 7"/></svg>${esc(BACK[ORIGIN]||"뒤로")}`;bt.setAttribute("aria-label",(BACK[ORIGIN]||"이전 화면")+"으로 돌아가기")}
   const k=b+"-"+c;let day=o.day||0;
@@ -1381,7 +1381,7 @@ function rMe(){
   const memos=Object.entries(S.memos).filter(([,m])=>m.t).sort(([,a],[,z])=>z.at-a.at);
   const done=Object.values(S.done).filter(Boolean).length;
   const vt=(k)=>{const [b,c,v]=k.split("-").map(Number);return TEXT?TEXT[b][c-1][v-1]||"":""};
-  $("#v-me").innerHTML=`<div class="wrap"><h2 style="font-size:30px">내 기록</h2>
+  $("#v-me").innerHTML=`<div class="wrap"><h2 style="font-size:30px">기록 보기</h2>
    <div class="stat" style="margin-top:14px"><div><b>${done}</b><span class="small muted">읽은 날</span></div><div><b>${Object.values(S.marks).filter(Boolean).length}</b><span class="small muted">마크한 구절</span></div><div><b>${memos.length}</b><span class="small muted">메모</span></div></div>
    <p class="small muted" style="margin:10px 2px 0">${esc(sync)}</p>
    <div class="sh">마크</div><div class="segs"><button class="chip" data-mf="0" aria-pressed="${!mf}">전체</button>${[1,2,3,4].map(k=>`<button class="chip" data-mf="${k}" aria-pressed="${mf===k}"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--m${k});margin-right:6px;border:1px solid var(--line)"></span>${["노랑","초록","파랑","분홍"][k-1]}</button>`).join("")}</div>
@@ -1390,7 +1390,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.120</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.121</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
