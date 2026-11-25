@@ -48,6 +48,8 @@ h1,h2,h3{font-family:"Noto Serif KR",serif;line-height:1.15;text-wrap:balance;ma
 .top h1 span{color:light-dark(#92400e,#e0a66b)}
 .top h1 svg{width:26px;height:26px}
 .top .st{margin-left:auto;font-size:13px;color:var(--sub)}
+.top .st.season{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ink);cursor:pointer;min-height:32px}
+.top .st.season i{width:9px;height:9px;border-radius:50%;flex:none}
 main{flex:1;overflow:hidden;position:relative}
 .view{position:absolute;inset:0;overflow-y:auto;display:none;padding-bottom:24px}
 .view.on{display:block}
@@ -1031,8 +1033,39 @@ async function initDb(){
 let TEXT=null,NV=0;
 const st=$("#st");
 fetch("bible.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(a=>{TEXT={};a.forEach(([b,c,v])=>{(TEXT[b]||=[])[c-1]=v;NV+=v.length});
-  st.textContent=`개역한글 · ${NV.toLocaleString()}절`;if(R)renderReader();if(cur==="search")doSearch()}).catch(()=>{st.textContent="본문을 불러오지 못했어요"});
+  showSeason();if(R)renderReader();if(cur==="search")doSearch()}).catch(()=>{st.textContent="본문을 불러오지 못했어요"});
 
+
+/* 교회력 절기 표시 */
+const TODAY=(()=>{const q=new URLSearchParams(location.search).get("d");const d=q?new Date(q+"T12:00:00"):new Date();return isNaN(d)?new Date():d})();
+function seasonOf(t){const Y=t.getFullYear(),dt=(m,d)=>new Date(Y,m-1,d),day=86400000,dd=(a,b)=>Math.round((a-b)/day),M=t.getMonth()+1,D=t.getDate(),T=new Date(Y,M-1,D);
+  const [em,ed]=easter(Y),E=dt(em,ed),e=dd(T,E),P="#6b4f9a",G="#b8902f",R="#b3362f",B="#a3612f";
+  const nth=(m,wd,n)=>{const f=dt(m,1);return dt(m,1+((wd-f.getDay()+7)%7)+7*(n-1))};
+  const same=a=>dd(T,a)===0,ko=["첫째","둘째","셋째","넷째"];
+  if(e===-46)return{t:"재의 수요일",c:P,d:"사순절이 시작되는 날이에요."};
+  if(e>-46&&e<-7){let n=0;for(let i=-46;i<=e;i++){const x=new Date(E.getTime()+i*day);if(x.getDay()!==0)n++}return{t:`사순절 ${n}일째`,c:P,d:"부활절 전 40일(주일 제외), 예수의 고난을 묵상하는 기간이에요."}}
+  if(e===-7)return{t:"종려주일",c:P,d:"예수께서 예루살렘에 들어가신 날이에요 (요 12:12–15). 고난주간이 시작돼요."};
+  if(e>-7&&e<-3)return{t:"고난주간",c:P,d:"예수의 마지막 한 주를 묵상해요."};
+  if(e===-3)return{t:"세족 목요일",c:P,d:"제자들의 발을 씻기시고 마지막 만찬을 나누신 날이에요 (요 13장)."};
+  if(e===-2)return{t:"성금요일",c:"#555",d:"예수께서 십자가에 달려 죽으신 날이에요 (요 19장)."};
+  if(e===-1)return{t:"성토요일",c:"#555",d:"예수께서 무덤에 계셨던 날이에요."};
+  if(e===0)return{t:"부활절",c:G,d:"예수 그리스도의 부활을 기념해요 (마 28장)."};
+  if(e===39)return{t:"예수 승천일",c:G,d:"부활 40일째, 예수께서 하늘에 오르신 날이에요 (행 1:9)."};
+  if(e===49)return{t:"성령강림절",c:R,d:"부활 50일째, 성령이 임하신 날이에요 (행 2장)."};
+  if(same(nth(7,0,1)))return{t:"맥추감사주일",c:B,d:"한 해의 첫 열매를 감사하는 주일이에요 (출 23:16)."};
+  if(same(nth(11,0,3)))return{t:"추수감사주일",c:B,d:"한 해 동안 거둔 것을 감사하는 주일이에요."};
+  if(same(nth(11,4,4)))return{t:"추수감사절",c:B,d:"미국 추수감사절(Thanksgiving)이에요. 감사로 하루를 열어요."};
+  const a1=new Date(Y,10,27+((7-dt(11,27).getDay())%7));
+  if(T>=a1&&T<dt(12,24)){const w=Math.floor(dd(T,a1)/7);return{t:`대림절 ${ko[w]} 주`,c:P,d:"성탄을 기다리며 준비하는 4주간이에요."}}
+  if(M===12&&D===24)return{t:"성탄 전야",c:G,d:"예수 그리스도의 탄생을 기다리는 밤이에요 (눅 2장)."};
+  if(M===12&&D===25)return{t:"성탄절",c:G,d:"예수 그리스도의 탄생을 기념해요 (눅 2:11)."};
+  if(M===12&&D===31)return{t:"송구영신",c:G,d:"한 해를 보내고 새해를 맞으며 감사해요."};
+  if(M===1&&D===6)return{t:"주현절",c:G,d:"동방박사들이 아기 예수께 경배한 일을 기념해요 (마 2장)."};
+  return null}
+function showSeason(){const se=seasonOf(TODAY);
+  if(!se){st.textContent=`개역한글 · ${NV.toLocaleString()}절`;st.removeAttribute("role");st.onclick=null;return}
+  st.innerHTML=`<i style="background:${se.c}"></i>${esc(se.t)}`;st.classList.add("season");st.setAttribute("role","button");st.tabIndex=0;st.title=se.d;
+  st.onclick=()=>{const t=$("#toast");t.textContent=`${se.t} — ${se.d}`;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),3600)}}
 const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),1800)};
 const readSet=()=>{const s=new Set();for(const d in S.done)if(S.done[d]){const x=DAYS[d-1];if(x)for(let i=x.f;i<=x.t;i++)s.add(CH[i].b+"-"+CH[i].c)}return s};
 const memoOn=k=>S.memos[k]&&S.memos[k].t;
@@ -1319,7 +1352,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.92</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.93</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
