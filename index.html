@@ -325,6 +325,81 @@ textarea{min-height:96px;resize:vertical}
 .cover h2.wm{font-family:"Cormorant Garamond","Noto Serif KR",serif;font-weight:700;font-size:clamp(46px,11vw,72px);letter-spacing:.005em;line-height:1;color:light-dark(#0f172a,#ece6da)}
 .cover h2.wm span{color:light-dark(#92400e,#e0a66b)}
 .cover .tx{fill:none;stroke:light-dark(#e2d8c4,#3a3a40);stroke-width:1.6;stroke-linecap:round;opacity:0;animation:fadein .5s ease-out var(--d) forwards}
+/* 이스터에그 */
+.eggcard{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;padding:16px 16px calc(16px + env(safe-area-inset-bottom));background:rgba(20,16,10,0);transition:background .3s}
+.eggcard.on{background:rgba(20,16,10,.28)}
+.eggcard .ecb{width:min(100%,420px);background:var(--bg);color:var(--ink);border-radius:20px;padding:22px 20px 16px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.22);border:1.5px solid #e2cf9c;transform:translateY(30px);opacity:0;transition:transform .35s cubic-bezier(.2,.9,.3,1.2),opacity .3s}
+.eggcard.on .ecb{transform:none;opacity:1}
+.eggcard .eci svg{width:46px;height:46px;fill:none;stroke:#c9a24e;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.eggcard b{display:block;font:700 19px "Noto Serif KR",serif;margin:6px 0 10px}
+.eggcard .ecv{font:700 17px/1.65 "Gowun Batang",serif;margin:0 0 6px}
+.eggcard .ecm{font:16px/1.7 "Gowun Batang",serif;margin:0 0 6px}
+.eggcard .ecr{display:block;font-size:13px;color:var(--sub);margin-bottom:14px}
+.eggcard .ecx{min-width:120px}
+.eggfx{position:fixed;inset:0;z-index:79;pointer-events:none;overflow:hidden}
+.eggfx .sandbg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(247,238,220,.92),rgba(238,226,202,.88));opacity:0;animation:fadein .35s forwards,fadeout .6s ease-in 5.4s forwards}
+.eggfx .feet{position:absolute;inset:0}
+.eggfx .feet .fpw{opacity:0;animation:print 6.6s linear var(--d) forwards}
+.eggfx .feet .sole{fill:color-mix(in srgb,#8d6a48 16%,transparent);stroke:#5e4630;stroke-width:1;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw .36s ease-out var(--d) forwards}
+.eggfx .feet .blk{fill:color-mix(in srgb,#5e4630 26%,transparent);stroke:#5e4630;stroke-width:.7}
+.eggfx .feet .ln{fill:none;stroke:#4f3a27;stroke-width:1.5;stroke-linejoin:round;opacity:.8}
+.eggfx .feet .heel{opacity:0;animation:fadein .14s ease-out var(--d) forwards}
+.eggfx .feet .fore{opacity:0;animation:fadein .18s ease-out calc(var(--d) + .2s) forwards}
+.eggfx .feet .fpw{clip-path:inset(100% -20% -20% -20%);animation:print 6.6s linear var(--d) forwards,press .34s ease-out var(--d) forwards}
+@keyframes press{from{clip-path:inset(100% -20% -20% -20%)}to{clip-path:inset(-20% -20% -20% -20%)}}
+@keyframes print{0%{opacity:0}2%{opacity:1}45%{opacity:.9}100%{opacity:0}}
+@keyframes toe{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.eggfx .sea .fish path{fill:none;stroke-linejoin:round;stroke-linecap:round}
+.eggfx .sea .fish{--fc:#2c6a92;--ff:#6aa8d2}
+.eggfx .sea .fish.tilapia{--fc:#3f6b57;--ff:#7fa892}
+.eggfx .sea .fish.sardine{--fc:#3d5f86;--ff:#a8c4de}
+.eggfx .sea .fish.barbel{--fc:#6a5636;--ff:#b59a6c}
+.eggfx .sea .fish .bd{fill:color-mix(in srgb,var(--ff) 30%,transparent);stroke:var(--fc);stroke-width:1.3}
+.eggfx .sea .fish .tl,.eggfx .sea .fish .df,.eggfx .sea .fish .af{fill:color-mix(in srgb,var(--ff) 20%,transparent);stroke:var(--fc);stroke-width:1}
+.eggfx .sea .fish .br{stroke:var(--fc);stroke-width:2.2;opacity:.18}
+.eggfx .sea .fish .ll{stroke:var(--fc);stroke-width:.7;opacity:.45;stroke-dasharray:1.5 1.5}
+.eggfx .sea .fish .gl,.eggfx .sea .fish .pf,.eggfx .sea .fish .bb{stroke:var(--fc);stroke-width:1}
+.eggfx .sea .fish .eye{fill:#fff;stroke:var(--fc);stroke-width:.8}
+.eggfx .sea .fish .pu{fill:#1d2f3a}
+.eggfx .sea .bub{fill:none;stroke:#7fb3d8;stroke-width:1.2;opacity:0;animation:bub 2.4s ease-out forwards}
+@keyframes bub{0%{opacity:0;transform:translateY(0)}15%{opacity:.8}100%{opacity:0;transform:translateY(-90px)}}
+.eggfx.rainbow{display:flex;align-items:flex-start;justify-content:center;padding-top:calc(env(safe-area-inset-top) + 96px)}
+.eggfx.rainbow svg{width:min(96vw,460px);height:auto;opacity:0;animation:rbin 1.6s ease-out forwards,fadeout 1.2s ease-in 3.8s forwards}
+.eggfx.rainbow path{fill:none;stroke-width:7;opacity:.62}
+@keyframes rbin{0%{opacity:0;clip-path:inset(0 100% 0 0)}100%{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes fadeout{to{opacity:0}}
+.tear{display:inline-block;width:12px;height:16px;margin-left:3px;vertical-align:-2px;position:relative;overflow:visible}
+.tear svg{position:absolute;left:0;top:-6px;width:12px;height:34px;overflow:visible}
+.tear .drop{fill:color-mix(in srgb,#6aa3d8 55%,transparent);stroke:#4f8cc4;stroke-width:1;transform-box:fill-box;transform-origin:50% 0;animation:tear 3.2s 1s 3 both}
+.tear .drop .hl{fill:none;stroke:#fff;stroke-width:1;stroke-linecap:round}
+.tear .spl{fill:none;stroke:#6aa3d8;stroke-width:1;opacity:0;transform-box:fill-box;transform-origin:center;animation:spl 3.2s 1s 3 both}
+@keyframes tear{0%{transform:translateY(0) scale(.15,.1);opacity:0}10%{opacity:1}38%{transform:translateY(0) scale(1,1)}50%{transform:translateY(1px) scale(.94,1.12)}55%{transform:translateY(2px) scale(.96,1.08);animation-timing-function:cubic-bezier(.55,0,1,.45)}78%{transform:translateY(22px) scale(.9,1.15);opacity:1}80%,100%{transform:translateY(22px) scale(.9,1.15);opacity:0}}
+@keyframes spl{0%,78%{opacity:0;transform:scale(.2)}82%{opacity:.9}100%{opacity:0;transform:scale(1.6)}}
+.eggfx .confetti i{position:absolute;top:-24px;animation-name:fall;animation-timing-function:linear;animation-fill-mode:forwards}
+.eggfx .confetti b{display:block;border-radius:1.5px;animation:flip .6s linear infinite}
+@keyframes fall{0%{transform:translate(0,0)}25%{transform:translate(var(--sw),27vh)}50%{transform:translate(calc(var(--sw)*-1),54vh)}75%{transform:translate(var(--sw),81vh)}100%{transform:translate(0,110vh)}}
+@keyframes flip{0%{transform:rotateX(0) rotateZ(0)}50%{transform:rotateX(180deg) rotateZ(25deg)}100%{transform:rotateX(360deg) rotateZ(0)}}
+.eggfx .finrb{position:absolute;top:0;left:50%;width:28px;height:0;background:linear-gradient(90deg,#b8902f,#e2c36a 45%,#b8902f);margin-left:-14px;clip-path:polygon(0 0,100% 0,100% 100%,50% calc(100% - 12px),0 100%);animation:rb 1.4s cubic-bezier(.3,1.25,.5,1) .3s forwards,sway 2.4s ease-in-out 1.7s infinite alternate;transform-origin:top center}
+@keyframes rb{to{height:38vh}}
+@keyframes sway{from{transform:rotate(-1.6deg)}to{transform:rotate(1.6deg)}}
+.cover .sea-art path,.cover .sea-art circle{fill:none;stroke:#c9a24e;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cover .sea-art [pathLength]{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.1s ease-out 3.9s forwards}
+.cover .sea-art.xmas .glow circle{fill:color-mix(in srgb,#f3d675 45%,transparent);stroke:none;opacity:0;transform-box:fill-box;transform-origin:center;animation:glow 2.4s ease-in-out 4.6s infinite alternate}
+@keyframes glow{from{opacity:.2;transform:scale(.7)}to{opacity:.8;transform:scale(1.25)}}
+.cover .sea-art .spk path{opacity:0;stroke-width:1.4;animation:twk 1.6s ease-in-out infinite alternate}
+.cover .sea-art .spk path:nth-child(1){animation-delay:4.8s}.cover .sea-art .spk path:nth-child(2){animation-delay:5.3s}.cover .sea-art .spk path:nth-child(3){animation-delay:5.7s}
+@keyframes twk{from{opacity:0}to{opacity:.9}}
+.cover .sea-art.easter .dark{fill:light-dark(#5b4a33,#2a2218);stroke:none;opacity:0;animation:fadein .6s 4.3s forwards}
+.cover .sea-art.easter .stone{animation:roll 1.4s cubic-bezier(.4,0,.2,1) 4.5s both}
+@keyframes roll{from{transform:translate(0px,3px) rotate(0)}to{transform:translate(28px,3px) rotate(160deg)}}
+.cover .sea-art.easter .rays path{stroke:#e6b93c;opacity:0;animation:twk 1.4s ease-in-out 5.8s infinite alternate}
+.eggnote{font:13px var(--sans)!important;color:var(--sub);margin:-6px 0 14px!important;text-indent:0!important}
+.eggbadge{display:inline-flex;align-items:center;gap:6px;font:700 13px var(--sans);color:#8a6a1e;background:color-mix(in srgb,#c9a24e 18%,var(--bg));border:1px solid color-mix(in srgb,#c9a24e 45%,transparent);border-radius:999px;padding:5px 12px;margin:2px 0 14px}
+.eggbadge svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.cover .seasonv{font:15px/1.6 "Gowun Batang",serif;color:var(--ink);margin:6px 0 0;max-width:30em}
+.cover .seasonv b{color:#a3612f}.cover .seasonv span{font:12px var(--sans);color:var(--sub)}
+.cover .seasonv.fade{animation-delay:4.4s}
+@media(prefers-reduced-motion:reduce){.eggfx{display:none}.tear svg{animation:none}}
 @keyframes fadein{to{opacity:1}}
 @keyframes drop{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:none}}
 @keyframes draw{to{stroke-dashoffset:0}}
@@ -935,7 +1010,7 @@ function payload(n){return n==="marks"?{m:S.marks}:n==="memos"?{m:S.memos}:{done
 async function push(n){if(!DB)return;if(W[n]){D[n]=1;return}W[n]=1;
   try{await DB.doc(BASE+"/"+n).set(payload(n))}catch(e){if(e&&(e.code==="invalid_argument"||e.code==="revoked"||e.code==="not_granted")){DB=null;sync="이 기기의 브라우저에만 저장돼요";}}
   W[n]=0;if(D[n]){D[n]=0;push(n)}}
-function save(n){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}if(DB){clearTimeout(T[n]);T[n]=setTimeout(()=>push(n),1200)}}
+function save(n){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}if(n==="plan"&&typeof eggFin==="function")setTimeout(eggFin,0);if(DB){clearTimeout(T[n]);T[n]=setTimeout(()=>push(n),1200)}}
 async function initDb(){
   if(!window.claude||!claude.use)return;
   try{const [db,user]=await Promise.all([claude.use("db"),claude.use("user")]);
@@ -1019,7 +1094,7 @@ function rPlan(){
   let h=`<div class="wrap"><div class="prog">
    <div class="ph"><div><h2>시대순 읽기</h2><div class="small" style="opacity:.9;margin-top:4px">사건이 일어난 순서로, 1년에 성경 전체</div></div><div class="pn"><b>${done}</b><span>/${ND}일</span></div></div>
    <div class="bar2"><div class="bar"><i style="width:${done/ND*100}%"></i></div>${nd?`<b class="knob" style="left:${(nd.n-1)/ND*100}%" title="지금 ${nd.n}일차"></b>`:""}</div>
-   <div class="pf"><div class="pf-l"><span class="small" style="opacity:.9">${Math.round(done/ND*100)}% · 하루 약 3장</span>${nd?`<span class="pf-next">${dayLabel(nd)}</span>`:""}</div>${nd?`<button class="btn" data-day="${nd.n}">${nd.n}일차 시작</button>`:`<span class="small">모두 읽었어요!</span>`}</div></div>
+   <div class="pf"><div class="pf-l"><span class="small" style="opacity:.9">${Math.round(done/ND*100)}% · 하루 약 3장</span>${nd?`<span class="pf-next">${dayLabel(nd)}</span>`:""}</div>${nd?`<button class="btn" data-day="${nd.n}">${nd.n}일차 시작</button>`:`<button class="btn" id="finagain">모두 읽었어요! 🎉</button>`}</div></div>
    ${S.last?`<p class="small muted" style="margin:10px 2px 0">마지막으로 읽은 곳: <button class="chip" data-go="${S.last.b}.${S.last.c}.0">${BN(S.last.b)} ${S.last.c}${unit(S.last.b)}</button></p>`:""}
    <details class="pinfo"><summary>ⓘ 이 읽기표는 어떻게 구성되어 있나요?</summary><p class="small muted">성경 책 순서가 아니라 <b>사건이 일어난 순서</b>로 배치했어요. 선지서는 그 선지자가 활동한 왕의 시대에, 바울서신은 사도행전에서 그 편지를 쓴 장면에 들어가 있어요. 해설이 있는 날은 오른쪽에 <span class="nb" style="margin:0 2px">해설</span> 표시가 붙고, 해설이 있는 구절은 본문에서 <span style="color:var(--rub);font-weight:700">붉은 띠</span>로 표시돼요.</p></details>
    <div class="jump">${PLAN.map(([id])=>`<button class="chip ej" data-jump="${id}" style="--ec:${ERA[id].c}">${esc(ERA[id].t)}</button>`).join("")}</div>`;
@@ -1113,7 +1188,7 @@ function renderReader(){
   const gws=vs?GH.filter(g=>vs.some(t=>t.includes(g))):[];
   const nEx=ns.length+gws.length;
   if(nEx)h+=`<button class="swipehint" data-ex="top"><span aria-hidden="true">←</span> 왼쪽으로 밀면 이 ${unit(b)}의 설명 ${ns.length}개${gws.length?` · 낱말 ${gws.length}개`:""}</button>`;
-  $("#txt").innerHTML=h;
+  $("#txt").innerHTML=h;eggReader(b,c);
   const hasEx=nEx>0;$("#exbtn").classList.toggle("has",hasEx);$("#edgetab").classList.toggle("on",hasEx);
   const pn=$("#panes");pn.classList.remove("peek");
   if(hasEx&&!S.swiped&&(S.peek|0)<3&&!matchMedia("(min-width:900px)").matches){void pn.offsetWidth;pn.classList.add("peek");S.peek=(S.peek|0)+1;save("plan")}
@@ -1208,7 +1283,7 @@ function rSearch(){
   doSearch();
 }
 function hl(t,q){return esc(t).split(esc(q)).join(`<mark>${esc(q)}</mark>`)}
-function doSearch(){const box=$("#sr");if(!box)return;const q=sq.trim();if(!q){box.innerHTML="";return}
+function doSearch(){const box=$("#sr");if(!box)return;const q=sq.trim();if(q==="153"&&doSearch.e!==q)eggFish();doSearch.e=q;if(!q){box.innerHTML="";return}
   let h="";const r=parseRef(q);
   if(r)h+=`<div class="sh">바로 가기</div><ul class="res"><li><button data-go="${r.b}.${r.c}.${r.v}"><span class="rf">${BN(r.b)} ${r.c}${r.v?":"+r.v:unit(r.b)}</span><div class="tx">${r.v&&TEXT?esc(TEXT[r.b][r.c-1][r.v-1]||""):"이 "+unit(r.b)+" 열기"}</div></button></li></ul>`;
   if(q.length>=1){
@@ -1244,7 +1319,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b>버전 1.80</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.92</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
@@ -1259,7 +1334,96 @@ const cov=$("#cover");
 function hideCover(){cov.classList.add("off");try{sessionStorage.setItem("cov","1")}catch(e){}}
 cov.addEventListener("click",hideCover);addEventListener("keydown",e=>{if(!cov.classList.contains("off")&&(e.key==="Enter"||e.key===" "||e.key==="Escape")){e.preventDefault();hideCover()}});
 
-try{if(sessionStorage.getItem("cov"))cov.classList.add("off")}catch(e){}
+
+/* ===== 이스터에그 ===== */
+const FOOT='<path class="sole" pathLength="1" d="M0 0C-6.5 0-9-4-9-10L-9-22C-9-27-7.5-31-7.8-36-8.4-44-10.8-50-10.4-57-10-66-4.5-72 1.5-72 8-72 12.2-66 12-57 11.8-49 9-44 6.6-38 5.4-34 5.2-29 6-24L7-10C7-4 5 0 0 0Z"/><g class="heel"><path class="blk" d="M-7.2-18H5.6V-6C5.6-3 3.6-1.6 0-1.6-4-1.6-7.2-3.4-7.2-7Z"/><path class="ln" clip-path="url(#hlc)" d="M-8 -4.5H7M-8 -7.5H7M-8 -10.5H7M-8 -13.5H7M-8 -16.5H7"/></g><g class="fore"><path class="blk" d="M-7.8-38C-8.6-45-9.4-51-9-57-8.6-65-4-70 1.5-70 7-70 10.6-65 10.4-57 10.2-50 7.8-45 5.6-38Z"/><path class="ln" clip-path="url(#ffc)" d="M-11 -40.5L1 -43.7L13 -40.5M-11 -43.9L1 -47.1L13 -43.9M-11 -47.3L1 -50.5L13 -47.3M-11 -50.7L1 -53.9L13 -50.7M-11 -54.1L1 -57.3L13 -54.1M-11 -57.5L1 -60.7L13 -57.5M-11 -60.9L1 -64.1L13 -60.9M-11 -64.3L1 -67.5L13 -64.3M-11 -67.7L1 -70.9L13 -67.7"/></g>';
+const vtx=(b,c,v,f)=>{try{return TEXT[b][c-1][v-1]||f}catch(e){return f}};
+function eggCard(icon,title,verse,ref,extra){
+  let o=$("#eggcard");if(o)o.remove();
+  o=document.createElement("div");o.id="eggcard";o.className="eggcard";o.setAttribute("role","dialog");o.setAttribute("aria-label",title);
+  o.innerHTML=`<div class="ecb">${icon?`<div class="eci" aria-hidden="true">${icon}</div>`:""}<b>${esc(title)}</b>${verse?`<p class="ecv">“${esc(verse)}”</p><span class="ecr">${esc(ref)}</span>`:""}${extra||""}<button class="btn ghost ecx">닫기</button></div>`;
+  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add("on"));
+  const close=()=>{o.classList.remove("on");setTimeout(()=>o.remove(),300)};
+  o.addEventListener("click",e=>{if(e.target===o||e.target.closest(".ecx"))close()});
+}
+function eggFx(html,ms,cls){const f=document.createElement("div");f.className="eggfx "+(cls||"");f.setAttribute("aria-hidden","true");f.innerHTML=html;document.body.appendChild(f);setTimeout(()=>f.remove(),ms)}
+/* 1. 로고 7번 → 창조의 7일 */
+let lgN=0,lgT=0;
+$(".top h1").addEventListener("click",()=>{const n=Date.now();lgN=n-lgT<900?lgN+1:1;lgT=n;
+  if(lgN>=7){lgN=0;const W=innerWidth,H=innerHeight,N=6,sc=Math.min(2.1,W/190),st=H*.19;let g="";
+    for(let k=0;k<N;k++){const left=k%2===0,x=W*.5+(left?-1:1)*13*sc+Math.sin(k*.9)*5,y=H-20-k*st,turn=left?-6:6;
+      g+=`<g class="fpw" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${turn}) scale(${sc.toFixed(2)})${left?"":" scale(-1 1)"}" style="--d:${(.35+k*.6).toFixed(2)}s">${FOOT}</g>`}
+    eggFx(`<div class="sandbg"></div><svg class="feet" width="${W}" height="${H}"><defs><clipPath id="ffc"><path d="M-7.8-38C-8.6-45-9.4-51-9-57-8.6-65-4-70 1.5-70 7-70 10.6-65 10.4-57 10.2-50 7.8-45 5.6-38Z"/></clipPath><clipPath id="hlc"><path d="M-7.2-18H5.6V-6C5.6-3 3.6-1.6 0-1.6-4-1.6-7.2-3.4-7.2-7Z"/></clipPath><filter id="sand" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="2.2"/><feGaussianBlur stdDeviation=".35"/></filter></defs><g filter="url(#sand)">${g}</g></svg>`,7400);
+    setTimeout(()=>eggCard(`<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="9"/><path d="M20 3v5M20 32v5M3 20h5M32 20h5M8 8l3.5 3.5M28.5 28.5 32 32M8 32l3.5-3.5M28.5 11.5 32 8"/></svg>`,"일곱째 날",vtx(1,2,2,"하나님의 지으시던 일이 일곱째 날이 이를 때에 마치니 그 지으시던 일이 다하므로 일곱째 날에 안식하시니라"),"창세기 2:2"),4600)}});
+/* 2. 검색 153 → 물고기 */
+function eggFish(){const W=innerWidth,H=innerHeight,F=[];let g="";
+  const SP={
+   t:{L:44,W:11,nm:"tilapia",tail:"round",fin:"spiny",bars:1,v:42,f:3.2,a:4},
+   s:{L:30,W:4.2,nm:"sardine",tail:"fork",fin:"small",v:88,f:6.5,a:3},
+   b:{L:52,W:7,nm:"barbel",tail:"fork",fin:"tri",barb:1,v:36,f:2.8,a:5}};
+  const list=[];
+  for(let k=0;k<9;k++)list.push({sp:"s",y:H*.3+((k*7)%5)*11-((k*3)%4)*6,x0:-60-((k*11)%6)*18,dl:.2+(k%3)*.05,s:.85+((k*3)%3)*.1,ph:k*.6});
+  [[.55,.0,1.15],[.68,.9,.95],[.2,1.5,.85]].forEach(([y,dl,s],k)=>list.push({sp:"t",y:H*y,x0:-90,dl,s,ph:k*2}));
+  [[.8,.4,1],[.86,1.6,.8]].forEach(([y,dl,s],k)=>list.push({sp:"b",y:H*y,x0:-100,dl,s,ph:k*1.4}));
+  list.forEach((f,k)=>{Object.assign(f,SP[f.sp]);F.push(f);
+    g+=`<g class="fish ${f.nm}" id="fs${k}" transform="translate(-120 ${f.y.toFixed(0)})"><path class="af"/><path class="df"/><path class="tl"/><path class="bd"/><path class="br"/><path class="ll"/><path class="gl"/><path class="pf"/><path class="bb"/><circle class="eye" r="${f.sp==="s"?1.1:1.6}"/><circle class="pu" r="${f.sp==="s"?.55:.8}"/></g>`});
+  for(let k=0;k<14;k++)g+=`<circle class="bub" cx="${(W*(.08+.065*k)).toFixed(0)}" cy="${(H*(.32+.05*((k*3)%10))).toFixed(0)}" r="${1.2+(k%3)*.9}" style="animation-delay:${(.3+k*.25).toFixed(2)}s"/>`;
+  eggFx(`<svg class="sea" width="${W}" height="${H}">${g}</svg>`,6400);
+  const NS=14,fx=n=>n.toFixed(1),P=p=>fx(p[0])+" "+fx(p[1]);
+  const prof={tilapia:(t,w)=>t<.15?Math.sqrt(t/.15)*w:t<.72?w*(1-.3*((t-.15)/.57)**2):w*.7*(1-(t-.72)/.28)**1.1+2.4,
+    sardine:(t,w)=>t<.14?Math.sqrt(t/.14)*w:t<.78?w*(1-.5*((t-.14)/.64)**1.4):w*.5*(1-(t-.78)/.22)+.9,
+    barbel:(t,w)=>t<.12?Math.sqrt(t/.12)*w:t<.8?w*(1-.5*((t-.12)/.68)**1.3):w*.5*(1-(t-.8)/.2)+1.4};
+  function draw(el,tm,f){const c=el._c||(el._c=[...el.children].reduce((o,x)=>(o[x.getAttribute("class")]=x,o),{}));const L=f.L,sp=[];
+    for(let i=0;i<=NS;i++){const t=i/NS,amp=f.a*(.06+t*t),d=amp*Math.sin(f.f*tm*2-t*4+f.ph);sp.push([L*(1-t),d])}
+    const up=[],dn=[],nr=[];for(let i=0;i<=NS;i++){const q=sp[Math.min(NS,i+1)],r=sp[Math.max(0,i-1)],tx=q[0]-r[0]||-1,ty=q[1]-r[1],l=Math.hypot(tx,ty),nx=-ty/l,ny=tx/l,w=prof[f.nm](i/NS,f.W);nr.push([nx,ny]);up.push([sp[i][0]+nx*w,sp[i][1]+ny*w]);dn.push([sp[i][0]-nx*w,sp[i][1]-ny*w])}
+    const nose=[L+(f.sp==="t"?2:3),sp[0][1]+(f.sp==="b"?1:0)];
+    c.bd.setAttribute("d",`M${P(nose)}Q${fx(L+1)} ${fx(up[0][1]-f.W*.35)} ${P(up[1])}L${up.slice(2).map(P).join("L")}L${dn.slice(2).reverse().map(P).join("L")}L${P(dn[1])}Q${fx(L+1)} ${fx(dn[0][1]+f.W*.3)} ${P(nose)}Z`);
+    const e=sp[NS],pe=sp[NS-1],an=Math.atan2(e[1]-pe[1],e[0]-pe[0]),co=Math.cos(an),sn=Math.sin(an),T=(x,y)=>fx(e[0]+x*co-y*sn)+" "+fx(e[1]+x*sn+y*co),k=f.W/7;
+    c.tl.setAttribute("d",f.tail==="round"?`M${T(0,-2.4)}C${T(3,-5*k)} ${T(7,-7*k)} ${T(9.5,-6.5*k)}C${T(11,-3*k)} ${T(11,3*k)} ${T(9.5,6.5*k)}C${T(7,7*k)} ${T(3,5*k)} ${T(0,2.4)}Z`
+      :`M${T(0,-1.4)}C${T(5,-4*k)} ${T(10,-9*k)} ${T(13*k+3,-12*k)}C${T(10*k+1,-5*k)} ${T(8*k+1,-1)} ${T(7*k+1,0)}C${T(8*k+1,1)} ${T(10*k+1,5*k)} ${T(13*k+3,12*k)}C${T(10,9*k)} ${T(5,4*k)} ${T(0,1.4)}Z`);
+    const off=(i,h)=>[up[i][0]+nr[i][0]*h,up[i][1]+nr[i][1]*h],offd=(i,h)=>[dn[i][0]-nr[i][0]*h,dn[i][1]-nr[i][1]*h];
+    if(f.fin==="spiny"){const i1=2,i2=10;let d=`M${P(up[i1])}`;for(let i=i1;i<=i2;i++)d+=`L${P(off(i,(i<7?6.5:5)*(1+.06*Math.sin(tm*5+i))))}L${P(off(Math.min(i2,i+.5|0),3.2))}`;d+=`Q${P(off(i2+1,4))} ${P(up[i2+1])}Z`;let sp2="";for(let i=i1+1;i<=i2;i++)sp2+=`M${P(up[i])}L${P(off(i,(i<7?6.5:5)))}`;c.df.setAttribute("d",d+sp2)}
+    else if(f.fin==="tri"){const i1=4,i2=7;c.df.setAttribute("d",`M${P(up[i1])}L${P(off(i1+1,9))}Q${P(off(i2,4))} ${P(up[i2])}Z`)}
+    else{const i1=5,i2=8;c.df.setAttribute("d",`M${P(up[i1])}L${P(off(i1+1,4))}L${P(up[i2])}Z`)}
+    const a1=f.sp==="t"?8:9,a2=f.sp==="t"?11:11;c.af.setAttribute("d",`M${P(dn[a1])}L${P(offd(a1+1,f.sp==="s"?2.5:4.5))}L${P(offd(a2,2))}L${P(dn[a2])}Z`);
+    let br="";if(f.bars)for(const i of [4,6,8,10])br+=`M${P([up[i][0]-nr[i][0]*1.5,up[i][1]-nr[i][1]*1.5])}L${P([dn[i][0]+nr[i][0]*1.5,dn[i][1]+nr[i][1]*1.5])}`;c.br.setAttribute("d",br);
+    c.ll.setAttribute("d","M"+sp.slice(3,NS-1).map((p,j)=>P([p[0]+nr[j+3][0]*f.W*.18,p[1]+nr[j+3][1]*f.W*.18])).join("L"));
+    const gq=sp[3],gw=prof[f.nm](3/NS,f.W)*.8;c.gl.setAttribute("d",`M${fx(gq[0]+1.5)} ${fx(gq[1]-gw)}Q${fx(gq[0]-2.5)} ${fx(gq[1])} ${fx(gq[0]+1.5)} ${fx(gq[1]+gw)}`);
+    const pp=sp[4],fl=Math.sin(tm*8+f.ph)*2.5*k;c.pf.setAttribute("d",`M${fx(pp[0])} ${fx(pp[1]+1)}Q${fx(pp[0]-4*k)} ${fx(pp[1]+5*k+fl)} ${fx(pp[0]-8*k)} ${fx(pp[1]+3*k+fl)}`);
+    c.bb.setAttribute("d",f.barb?`M${P(nose)}q3 4 1 9M${fx(nose[0]-2)} ${fx(nose[1]+1.5)}q2 4-1 8`:"");
+    const ey=sp[1],eo=f.W*.28;c.eye.setAttribute("cx",fx(ey[0]+.6));c.eye.setAttribute("cy",fx(ey[1]-eo));c.pu.setAttribute("cx",fx(ey[0]+1));c.pu.setAttribute("cy",fx(ey[1]-eo-.2))}
+  const t0=performance.now();(function fr(t){const e=(t-t0)/1000;if(e>6.4)return;
+    F.forEach((f,k)=>{const el=document.getElementById("fs"+k);if(!el)return;const tt=Math.max(0,e-f.dl),wv=Math.sin(tt*1.1+f.ph),x=f.x0+f.v*f.s*tt*1.5,y=f.y+wv*f.a*2,dy=Math.cos(tt*1.1+f.ph)*f.a*2.2,ang=Math.atan2(dy,f.v*f.s*1.5)*180/Math.PI;
+      el.setAttribute("transform",`translate(${fx(x)} ${fx(y)}) rotate(${fx(ang)}) scale(${f.s.toFixed(2)})`);draw(el,tt,f)});requestAnimationFrame(fr)})(t0);
+  setTimeout(()=>eggCard(`<svg viewBox="0 0 48 30"><path d="M6 15C13 6 28 5 38 12 40 14 40 15 40 15 40 15 40 16 38 18 28 25 13 24 6 15ZM6 15 1 9C2 13 2 17 1 21Z"/><circle cx="34" cy="13.5" r="1.4"/></svg>`,"물고기 153마리",vtx(43,21,11,"시몬 베드로가 올라가서 그물을 육지에 끌어 올리니 큰 고기가 일백 쉰 세 마리라 이같이 많으나 그물이 찢어지지 아니하였더라"),"요한복음 21:11"),4200)}
+/* 3. 버전 7번 → 만든 사람의 한마디 */
+let vN=0,vT=0;
+$("#v-me").addEventListener("click",e=>{if(!e.target.closest("#ver"))return;const n=Date.now();vN=n-vT<900?vN+1:1;vT=n;
+  if(vN>=7){vN=0;eggCard(`<svg viewBox="0 0 40 40"><path d="M8 32 28 12l4 4-20 20H8Z"/><path d="M25 15l4 4"/></svg>`,"개발자의 한마디","","",`<p class="ecm">와이프가 성경 맥락 공부를 하느라<br>여러 책을 뒤적이는 걸 보고 만들었습니다.<br>모두 성경을 잘 이해하고<br>은혜받으시길 바랍니다.</p><span class="ecr">— StepBible 개발자</span>`)}});
+/* 4·5·6. 본문 속 이스터에그 */
+function eggReader(b,c){
+  if(b===43&&c===11){const p=$("#v35");if(p){p.insertAdjacentHTML("beforeend",`<span class="tear" aria-hidden="true"><svg viewBox="0 0 14 40"><g class="drop"><path d="M7 2C7 2 2.6 8.6 2.6 11.2A4.4 4.4 0 0 0 11.4 11.2C11.4 8.6 7 2 7 2Z"/><path class="hl" d="M5 10.5A2 2 0 0 0 6.2 12.6"/></g><ellipse class="spl" cx="7" cy="37" rx="5" ry="1.4"/></svg></span>`);p.insertAdjacentHTML("afterend",`<p class="eggnote">성경에서 가장 짧은 절이에요.</p>`)}}
+  if(b===1&&c===9){const cs=["#e2574c","#ef8f3b","#f0c94a","#72b86a","#4c93d9","#4d5fb8","#8b5ec0"];
+    eggFx(`<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMax meet"><defs><linearGradient id="rbf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".62" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="rbm"><rect width="400" height="230" fill="url(#rbf)"/></mask><filter id="rbb"><feGaussianBlur stdDeviation="1.6"/></filter></defs><g mask="url(#rbm)" filter="url(#rbb)">${cs.map((c,i)=>`<path d="M${22+i*6.4} 226A${178-i*6.4} ${178-i*6.4} 0 0 1 ${378-i*6.4} 226" style="stroke:${c}"/>`).join("")}</g></svg>`,5200,"rainbow")}
+  if(b===19&&(c===119||c===117)){const L=c===119;$("#txt").insertAdjacentHTML("afterbegin",`<div class="eggbadge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${L?"M4 4h16M4 9h16M4 14h16M4 19h10":"M6 12h12"}"/></svg>성경에서 가장 ${L?"긴":"짧은"} 장이에요 · ${L?"176":"2"}절</div>`)}
+}
+/* 7. 절기 표지 */
+function easter(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;return [mo,da]}
+(function(){const q=new URLSearchParams(location.search).get("egg"),t=new Date(),M=t.getMonth()+1,D=t.getDate(),[em,ed]=easter(t.getFullYear());
+  const kind=q||(M===12&&(D===24||D===25)?"xmas":(M===em&&D===ed)?"easter":"");if(!kind||!cov)return;
+  const svg=$("#cover svg");if(!svg)return;
+  const art=kind==="xmas"?`<g class="sea-art xmas" transform="translate(180 -2)"><g class="glow"><circle r="13"/></g><path pathLength="1" d="M0-15 2.4-3.4 9-9 3.4-2.4 15 0 3.4 2.4 9 9 2.4 3.4 0 30-2.4 3.4-9 9-3.4 2.4-15 0-3.4-2.4-9-9-2.4-3.4Z"/><g class="spk"><path d="M-24-8v6M-27-5h6"/><path d="M22-12v5M19.5-9.5h5"/><path d="M26 6v4M24 8h4"/></g></g>`
+    :`<g class="sea-art easter" transform="translate(180 10) scale(.9)"><path pathLength="1" d="M-58 14C-46-4-30-18 0-20 30-18 46-4 58 14"/><path pathLength="1" d="M-13 14V3A13 13 0 0 1 13 3V14"/><path class="dark" d="M-10 14V3.5A10 10 0 0 1 10 3.5V14Z"/><g class="stone"><circle pathLength="1" r="11"/><path pathLength="1" d="M-5-4C-2-6 3-6 5-3"/></g><g class="rays"><path d="M0-6V-14M-9-3-15-8M9-3 15-8"/></g><path pathLength="1" d="M-70 14H70"/></g>`;
+  svg.insertAdjacentHTML("beforeend",art);svg.style.overflow="visible";
+  const v=kind==="xmas"?["성탄을 축하해요","오늘날 다윗의 동네에 너희를 위하여 구주가 나셨으니 곧 그리스도 주시니라","누가복음 2:11"]:["부활을 축하해요","그가 여기 계시지 않고 그의 말씀하시던대로 살아나셨느니라","마태복음 28:6"];
+  const sub=$("#cover .sub");sub.insertAdjacentHTML("afterend",`<p class="seasonv fade"><b>${v[0]}</b><br>“${v[1]}” <span>${v[2]}</span></p>`)})();
+/* 8. 365일 완주 */
+function eggFin(force){const n=Object.values(S.done).filter(Boolean).length;if(!force&&(n<ND||localStorage.getItem("sb-fin")))return;try{localStorage.setItem("sb-fin","1")}catch(e){}
+  let g="";for(let k=0;k<34;k++){const x=(k*53)%100,c=["#c9a24e","#e8c547","#b3362f","#3d5fa8","#2f7f86","#7a5a96"][k%6],dur=2.8+((k*7)%5)*.35;g+=`<i style="left:${x}%;animation-delay:${((k*.11)%1.3).toFixed(2)}s;animation-duration:${dur.toFixed(2)}s;--sw:${(k%2?1:-1)*(14+(k*5)%22)}px"><b style="background:${c};animation-duration:${(.5+((k*3)%5)*.12).toFixed(2)}s;width:${6+(k%3)*2}px;height:${10+(k%4)*2}px"></b></i>`}
+  eggFx(`<div class="confetti">${g}</div><div class="finrb"></div>`,4200);
+  setTimeout(()=>eggCard(`<svg viewBox="0 0 40 40"><path d="M14 4h12v20l-6-5-6 5Z"/><circle cx="20" cy="29" r="7"/></svg>`,"365일 완주를 축하해요!",vtx(40,25,21,"그 주인이 이르되 잘하였도다 착하고 충성된 종아 네가 작은 일에 충성하였으매 내가 많은 것으로 네게 맡기리니 네 주인의 즐거움에 참예할지어다 하고"),"마태복음 25:21"),1400)}
+document.addEventListener("click",e=>{if(e.target.closest("#finagain"))eggFin(1)});
+try{if(sessionStorage.getItem("cov")&&!new URLSearchParams(location.search).get("egg"))cov.classList.add("off")}catch(e){}
 go(location.hash.slice(1)||"story");
 initDb();
 }
