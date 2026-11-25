@@ -212,6 +212,17 @@ button.chip{min-height:36px}
 .dot.on{border:3px solid var(--ink)}
 textarea,input[type=search],input[type=text]{width:100%;font:16px/1.5 var(--sans);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 textarea{min-height:96px;resize:vertical}
+.esh{margin:-20px -22px 0}
+.esh-hd{position:relative;background:var(--ec);color:#fff;padding:20px 22px 18px;border-radius:20px 20px 0 0}
+.esh-x{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:50%;color:#fff;font-size:20px;background:rgba(255,255,255,.18)}
+.esh-hd span{font-size:13.5px;opacity:.9}
+.esh-hd h3{font-size:30px;margin:4px 0 6px;color:#fff}
+.esh>p,.esh>h4,.esh>ul,.esh>.why,.esh>.row{margin-left:22px;margin-right:22px}
+.esh .lead{font-family:"Gowun Batang",serif;font-size:18px;font-weight:700;line-height:1.55;margin-top:16px}
+.esh>p{font-size:16px;margin-top:0;margin-bottom:12px}
+.esh h4{font-size:14px;color:var(--sub);margin-top:16px;margin-bottom:6px}
+.esh .evs li{background:var(--panel)}
+.sheet:has(.esh){max-width:620px;max-height:88dvh}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
 .toast.on{opacity:1}
 /* 검색·기록 */
@@ -838,7 +849,7 @@ $("#v-plan").addEventListener("click",e=>{const t=e.target;
   const ck=t.closest("[data-ck]");if(ck){const n=+ck.dataset.ck;S.done[n]=S.done[n]?0:1;save("plan");const y=$("#v-plan").scrollTop;rPlan();$("#v-plan").scrollTop=y;return}
   const d=t.closest("[data-day]");if(d){const x=DAYS[+d.dataset.day-1];openReader(CH[x.f].b,CH[x.f].c,{day:x.n});return}
   const j=t.closest("[data-jump]");if(j){document.getElementById("era-"+j.dataset.jump)?.scrollIntoView({block:"start",behavior:"smooth"});return}
-  const s=t.closest("[data-story]");if(s){S.story=+s.dataset.story;save("plan");go("story");return}
+  const s=t.closest("[data-story]");if(s){eraSheet(+s.dataset.story);return}
 });
 
 // 66권
@@ -943,13 +954,22 @@ $("#exbtn").onclick=()=>showEx();
 $("#reader").addEventListener("click",e=>{const t=e.target;
   if(t.closest("#rdone")){S.done[R.day]=S.done[R.day]?0:1;save("plan");renderReader();return}
   const ex=t.closest("[data-ex]");if(ex){if(ex.dataset.ex==="intro"){const d=document.getElementById("ex-intro");if(d&&d.tagName==="DETAILS")d.open=true}showEx(ex.dataset.ex==="intro"?"ex-intro":null);return}
-  const sto=t.closest("[data-sto]");if(sto){S.story=+sto.dataset.sto;save("plan");closeReader();go("story");return}
+  const sto=t.closest("[data-sto]");if(sto){eraSheet(+sto.dataset.sto);return}
   const bk=t.closest("[data-book2]");if(bk){closeReader();openBook(+bk.dataset.book2);return}
   const jv=t.closest("[data-jv]");if(jv){$("#panes").scrollTo({left:0,behavior:"smooth"});const el=document.getElementById("v"+jv.dataset.jv);if(el){el.scrollIntoView({block:"center"});el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash")}return}
   const gl=t.closest("[data-gl]");if(gl){e.stopPropagation();openSheet(`<p class="small muted" style="margin:0">낱말 풀이</p><h3 style="font-size:24px;color:var(--lapis);margin:4px 0 8px">${esc(gl.dataset.gl)}</h3><p style="margin:0 0 12px;font-size:16.5px">${linkRefs(esc(GD[gl.dataset.gl]||""))}</p><button class="btn ghost" data-close>닫기</button>`);return}
   const v=t.closest("#txt .v");if(v)verseSheet(+v.dataset.v);
 });
 
+// 맥락보기 창: 보던 자리를 떠나지 않고 시대 설명을 잠깐 보는 창
+function eraSheet(i){const e=ERAS[i];
+  openSheet(`<div class="esh" style="--ec:${e.c}"><div class="esh-hd"><button class="esh-x" data-close aria-label="닫기">✕</button><span>맥락보기 ${i+1}장면</span><h3>${esc(e.t)}</h3><span>${esc(e.y)}</span></div>
+   <p class="lead">${esc(e.lead)}</p>${e.p.map(p=>`<p>${linkRefs(esc(p))}</p>`).join("")}
+   ${e.who?`<h4>주요 인물</h4><p>${esc(e.who)}</p>`:""}
+   ${e.ev.length?`<h4>핵심 사건</h4><ul class="evs">${e.ev.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}
+   ${e.why?`<div class="why">${linkRefs(esc(e.why))}</div>`:""}
+   <div class="row" style="margin-top:16px"><button class="btn" data-close>닫기</button><button class="btn ghost" data-sgo="${i}">맥락보기 탭에서 보기</button></div></div>`);
+  $("#sheet").scrollTop=0}
 // 구절 시트
 let sheetOn=false,SV=0;
 function openSheet(h){$("#sheet").innerHTML=h;$("#sheet").classList.add("on");$("#scrim").classList.add("on");sheetOn=true}
@@ -966,6 +986,7 @@ function verseSheet(v){
 }
 $("#sheet").addEventListener("click",async e=>{const t=e.target;
   if(t.closest("[data-close]"))return closeSheet();
+  const sg=t.closest("[data-sgo]");if(sg){closeSheet();S.story=+sg.dataset.sgo;save("plan");if(R)closeReader();go("story");$("#v-story").scrollTop=0;return}
   const sn=t.closest("[data-shownote]");if(sn){closeSheet();showEx("n"+sn.dataset.shownote);return}
   if(!R)return;const vk=`${R.b}-${R.c}-${SV}`;
   const mk=t.closest("[data-mk]");if(mk){const k=+mk.dataset.mk;if(k)S.marks[vk]=k;else delete S.marks[vk];save("marks");renderReader();verseSheet(SV);return}
@@ -1021,7 +1042,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.21</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">성경 껴안기 <b>버전 1.23</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
