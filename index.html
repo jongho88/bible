@@ -116,9 +116,9 @@ button.chip{min-height:36px}
 .evd p{margin:0 0 8px;font-size:15px;line-height:1.6;max-width:none}
 .evd .evgo{margin:0 0 10px;min-height:34px;background:var(--bg);color:light-dark(#7a5200,#ffd98a)}
 .why{border-left:3px solid var(--rub);padding:4px 0 4px 12px;margin-top:16px;font-size:15.5px}
-.track{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;margin:14px calc(-1 * max(4vw,14px)) 0;padding:0 max(4vw,14px) 8px;scroll-padding:0 max(4vw,14px);align-items:flex-start;transition:height .3s ease;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
-.track::-webkit-scrollbar{display:none}
-.track>.card{flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.track{overflow:hidden;margin:14px calc(-1 * max(4vw,14px)) 0;padding:0 max(4vw,14px) 8px;transition:height .3s ease;touch-action:pan-y}
+.rail{display:flex;gap:12px;align-items:flex-start;will-change:transform}
+.rail>.card{flex:0 0 100%;box-shadow:0 2px 10px rgba(0,0,0,.06)}
 
 .deckbar{display:flex;align-items:center;gap:8px;margin-top:14px}
 .deckbar .sp{flex:1;text-align:center;font-size:14px;color:var(--sub)}
@@ -1117,33 +1117,41 @@ function rStory(){
    <div class="ph"><div><h2>맥락보기</h2><div class="small" style="opacity:.9;margin-top:4px">성경 전체 흐름을 ${ERAS.length}장면으로</div></div><div class="pn"><b id="stn">${i+1}</b><span>/${ERAS.length}장면</span></div></div>
    <div class="ribbon" role="group" aria-label="시대 바로 가기">${ERAS.map((x,j)=>`<button data-si="${j}" class="${j===i?"on":""}" title="${esc(x.t)}" aria-label="${j+1}. ${esc(x.t)}"${j===i?' aria-current="true"':""}><i style="background:${x.c}"></i></button>`).join("")}</div>
    <div class="pf ribl"><span>창조</span><span style="opacity:.8">색 칸을 누르면 그 시대로</span><span>새 창조</span></div></div>
-   <div class="track" id="track">${ERAS.map((e,j)=>storyCard(e,j)).join("")}</div>
+   <div class="track" id="track"><div class="rail" id="rail">${ERAS.map((e,j)=>storyCard(e,j)).join("")}</div></div>
    <div class="deckbar"><button class="btn ghost" id="sp" ${i?"":"disabled"}>‹ 이전</button><span class="sp">옆으로 밀어서 넘기기</span><button class="btn" id="sn" ${i<ERAS.length-1?"":"disabled"}>다음 ›</button></div>
    <p class="tapnote">카드를 옆으로 밀거나 아래 버튼으로 넘겨요.<br>키보드 ← → 도 돼요.</p></div>`;
-  const T=$("#track");T._i=i;
-  requestAnimationFrame(()=>{T.scrollLeft=cardX(T,i);markStory(i,1)});
-  if(window.ResizeObserver){const ro=new ResizeObserver(()=>fitTrack(T));T.querySelectorAll(".card").forEach(c=>ro.observe(c))}
-  let tm=0;T.addEventListener("scroll",()=>{clearTimeout(tm);const n=nearCard(T);if(n!==T._i)markStory(n);tm=setTimeout(()=>{const k=nearCard(T);if(k!==S.story){S.story=k;save("plan")}},140)},{passive:true});
+  const T=$("#track"),RL=$("#rail");T._i=i;
+  requestAnimationFrame(()=>{railTo(i,0);markStory(i,1)});
+  if(window.ResizeObserver){const ro=new ResizeObserver(()=>{fitTrack(T);railTo(T._i,0)});RL.querySelectorAll(".card").forEach(c=>ro.observe(c));ro.observe(T)}
+  // 한 장씩 넘기기: 손가락을 따라 움직이고, 놓으면 앞뒤 한 장으로만 이동
+  let sx=0,sy=0,on=0,drag=0,dx=0,t0=0;
+  T.addEventListener("touchstart",e=>{const p=e.touches[0];sx=p.clientX;sy=p.clientY;on=1;drag=0;dx=0;t0=Date.now()},{passive:true});
+  T.addEventListener("touchmove",e=>{if(!on)return;const p=e.touches[0],x=p.clientX-sx,y=p.clientY-sy;
+    if(!drag){if(Math.abs(x)>8&&Math.abs(x)>Math.abs(y)*1.2){drag=1;RL.style.transition="none"}else if(Math.abs(y)>10){on=0;return}else return}
+    const k=T._i;dx=x;if((k===0&&dx>0)||(k===ERAS.length-1&&dx<0))dx=x*.3;RL.style.transform=`translateX(${(-railX(k)+dx).toFixed(1)}px)`},{passive:true});
+  const end=()=>{if(!on)return;on=0;if(!drag)return;const w=T.clientWidth,v=Math.abs(dx)/Math.max(1,Date.now()-t0),k=T._i;
+    let n=k;if(Math.abs(dx)>w*.18||(v>.35&&Math.abs(dx)>24))n=k+(dx<0?1:-1);n=Math.max(0,Math.min(ERAS.length-1,n));
+    railTo(n,1);if(n!==k){markStory(n);S.story=n;save("plan")}};
+  T.addEventListener("touchend",end,{passive:true});T.addEventListener("touchcancel",end,{passive:true});
 }
-const cardX=(T,i)=>{const c=T.children[i];return c?c.offsetLeft-(T.clientWidth-c.offsetWidth)/2:0};
-function nearCard(T){const mid=T.scrollLeft+T.clientWidth/2;let best=0,bd=1e9;[...T.children].forEach((c,j)=>{const d=Math.abs(c.offsetLeft+c.offsetWidth/2-mid);if(d<bd){bd=d;best=j}});return best}
-function fitTrack(T){const c=T.children[T._i];if(c)T.style.height=(c.offsetHeight+8)+"px"}
+function railX(i){const RL=$("#rail");const c=RL&&RL.children[i];return c?c.offsetLeft-RL.children[0].offsetLeft:0}
+function railTo(i,anim){const RL=$("#rail");if(!RL)return;RL.style.transition=anim?"transform .34s cubic-bezier(.25,.8,.25,1)":"none";RL.style.transform=`translateX(${-railX(i)}px)`}
+function fitTrack(T){const RL=$("#rail"),c=RL&&RL.children[T._i];if(c)T.style.height=(c.offsetHeight+8)+"px"}
 function markStory(i,first){const T=$("#track");if(!T)return;const prev=T._i;T._i=i;
-  [...T.children].forEach((c,j)=>c.classList.toggle("on",j===i));fitTrack(T);
+  [...$("#rail").children].forEach((c,j)=>c.classList.toggle("on",j===i));fitTrack(T);
   const n=$("#stn");if(n)n.textContent=i+1;
   document.querySelectorAll("#v-story [data-si]").forEach((b,j)=>{b.classList.toggle("on",j===i);if(j===i)b.setAttribute("aria-current","true");else b.removeAttribute("aria-current")});
   const sp=$("#sp"),sn=$("#sn");if(sp)sp.disabled=!i;if(sn)sn.disabled=i>=ERAS.length-1;
   if(!first&&prev!==i){const V=$("#v-story"),top=T.offsetTop-12;if(V.scrollTop>top)V.scrollTo({top,behavior:"smooth"})}}
 function stepStory(d){const T=$("#track");const cur0=T?T._i:(S.story|0);const n=Math.max(0,Math.min(ERAS.length-1,cur0+d));
   if(!T){S.story=n;save("plan");return}
-  if(n===cur0)return;T.scrollTo({left:cardX(T,n),behavior:Math.abs(n-cur0)>3?"auto":"smooth"});markStory(n);S.story=n;save("plan")}
+  if(n===cur0)return;railTo(n,1);markStory(n);S.story=n;save("plan")}
 $("#v-story").addEventListener("click",e=>{
   const t=e.target;
   const si=t.closest("[data-si]");if(si){const T=$("#track");stepStory(+si.dataset.si-(T?T._i:S.story|0));return}
   if(t.closest("#sp"))return stepStory(-1);if(t.closest("#sn"))return stepStory(1);
   const bk=t.closest("[data-book]");if(bk){openBook(+bk.dataset.book);return}
   if(t.closest("[data-t2]"))return go("plan");
-  const cd=t.closest(".track .card");if(cd&&!cd.classList.contains("on")&&!t.closest("[data-go]")){stepStory(+cd.dataset.ci-$("#track")._i)}
 });
 addEventListener("keydown",e=>{if(R||sheetOn)return;if(cur!=="story"||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;if(e.key==="ArrowRight")stepStory(1);if(e.key==="ArrowLeft")stepStory(-1)});
 
@@ -1404,7 +1412,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.126</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.127</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
