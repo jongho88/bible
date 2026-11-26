@@ -297,7 +297,9 @@ textarea{min-height:96px;resize:vertical}
 .edgetab.on{display:flex}
 @media(max-width:899px){#p1{padding-right:38px}}
 .edgetab b{writing-mode:horizontal-tb;font-size:16px;line-height:1}
-#exbtn{position:relative}
+#exbtn{position:relative;border-radius:10px;transition:background .2s,color .2s}
+#exbtn.on{background:var(--lapis);color:#fff}
+#exbtn.on::after{display:none}
 #exbtn.has::after{content:"";position:absolute;top:9px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--rub);box-shadow:0 0 0 2px var(--bg)}
 .panes.peek>.pane{animation:peek 1s cubic-bezier(.4,0,.2,1) .7s}
 @keyframes peek{0%{transform:none}35%,55%{transform:translateX(-64px)}100%{transform:none}}
@@ -488,14 +490,14 @@ textarea{min-height:96px;resize:vertical}
   <button id="rclose" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
   <h2 id="rt"></h2>
   <button id="rfont" aria-label="글자 크기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 19 8 5l5 14M4.8 14h6.4M14 19l3.5-9 3.5 9M15 16h5"/></svg></button>
-  <button id="exbtn" aria-label="설명 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M13 4v16M15.5 9h3M15.5 13h3"/></svg></button>
+  <button id="exbtn" aria-label="해설 보기" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M13 4v16M15.5 9h3M15.5 13h3"/></svg></button>
  </div>
  <div class="ectx" id="ectx"></div>
  <div class="panes" id="panes">
   <div class="pane" id="p1"><div class="in" id="txt"></div></div>
   <div class="pane" id="p2"><div class="in" id="ex"></div></div>
  </div>
- <button class="edgetab" id="edgetab" aria-label="설명 보기"><b>‹</b>설명</button>
+ <button class="edgetab" id="edgetab" aria-label="해설 보기"><b>‹</b>해설</button>
  <div class="rft">
   <button class="btn ghost" id="rprev">‹ 이전 장</button>
   <div class="mid" id="rmid"></div>
@@ -1276,10 +1278,10 @@ function renderReader(){
     vs.forEach((t,i)=>{const v=i+1,vk=k+"-"+v,n=ns.some(x=>v>=x.a&&v<=x.z),mk=S.marks[vk];
       let s=esc(t).replace(GRE,m=>{if(seen.has(m))return m;seen.add(m);return `<span class="gl" data-gl="${esc(m)}">${m}</span>`});
       h+=`<p class="v${n?" nt":""}${mk?" k"+mk:""}" id="v${v}" data-v="${v}"><sup>${v}</sup>${s}${memoOn(vk)?`<span class="mm" aria-label="메모 있음">✎</span>`:""}</p>`});
-    h+=`<p class="small muted" style="font-family:var(--sans);margin-top:18px">구절을 누르면 마크·메모·설명을 볼 수 있어요.</p>`}
+    h+=`<p class="small muted" style="font-family:var(--sans);margin-top:18px">구절을 누르면 마크·메모·해설을 볼 수 있어요.</p>`}
   const gws=vs?GH.filter(g=>vs.some(t=>t.includes(g))):[];
   const nEx=ns.length+gws.length;
-  if(nEx)h+=`<button class="swipehint" data-ex="top"><span aria-hidden="true">←</span> 왼쪽으로 밀면 이 ${unit(b)}의 설명 ${ns.length}개${gws.length?` · 낱말 ${gws.length}개`:""}</button>`;
+  if(nEx)h+=`<button class="swipehint" data-ex="top"><span aria-hidden="true">←</span> 왼쪽으로 밀면 이 ${unit(b)}의 해설 ${ns.length}개${gws.length?` · 낱말 ${gws.length}개`:""}</button>`;
   $("#txt").innerHTML=h;eggReader(b,c);
   const hasEx=nEx>0;$("#exbtn").classList.toggle("has",hasEx);$("#edgetab").classList.toggle("on",hasEx);
   const pn=$("#panes");pn.classList.remove("peek");
@@ -1288,7 +1290,7 @@ function renderReader(){
   let x="";
   if(c===1)x+=`<div id="ex-intro">${introHTML(b,0,1)}</div>`;
   else x+=`<details id="ex-intro" class="bkint"${dayStart?" open":""}><summary>${BN(b)} 책 해설</summary>${introHTML(b,0,1)}</details>`;
-  x+=`<h3>표시된 구절 설명</h3>`+(ns.length?ns.map(n=>`<div class="note" id="n${n.i}"><div class="rf"><button data-jv="${n.a}" style="min-height:0;color:var(--rub);font-weight:700">${BA(b)} ${c}:${n.a}${n.z!==n.a?"–"+n.z:""}</button></div><h4>${esc(n.t)}</h4><p>${linkRefs(esc(n.d))}</p></div>`).join(""):`<p class="small muted">이 ${unit(b)}에는 따로 표시한 구절이 없어요. 아래의 시대 설명을 참고하세요.</p>`);
+  x+=`<h3>표시된 구절 해설</h3>`+(ns.length?ns.map(n=>`<div class="note" id="n${n.i}"><div class="rf"><button data-jv="${n.a}" style="min-height:0;color:var(--rub);font-weight:700">${BA(b)} ${c}:${n.a}${n.z!==n.a?"–"+n.z:""}</button></div><h4>${esc(n.t)}</h4><p>${linkRefs(esc(n.d))}</p></div>`).join(""):`<p class="small muted">이 ${unit(b)}에는 따로 표시한 구절이 없어요. 아래의 시대 해설을 참고하세요.</p>`);
   const sec=secOf(b,c);if(sec)x+=`<h3>책 안에서의 위치</h3><p class="small" style="margin:0">${BN(b)}의 <b>${esc(sec[1])}</b> 부분이에요 (${esc(sec[0])}${unit(b)}).</p>`;
   x+=`<h3>이 ${unit(b)}의 시대</h3><p class="small" style="margin:0"><b style="color:${e.c}">${esc(e.t)}</b> (${esc(e.y)}) — ${esc(e.lead)}</p>`;
   if(gws.length)x+=`<h3>이 ${unit(b)}의 낱말 풀이</h3>`+gws.map(g=>`<div class="gw"><b>${esc(g)}</b><span>${linkRefs(esc(GD[g]))}</span></div>`).join("");
@@ -1312,7 +1314,8 @@ $("#rclose").onclick=closeReader;
 $("#rfont").onclick=()=>{const z=[17,19,21,23,25];S.fs=z[(z.indexOf(S.fs)+1)%z.length]||19;document.documentElement.style.setProperty("--fs",S.fs+"px");save("plan");toast(`글자 크기 ${S.fs}`)};
 document.documentElement.style.setProperty("--fs",(S.fs||19)+"px");
 const showEx=id=>{const p2=$("#p2");$("#panes").scrollTo({left:p2.offsetLeft,behavior:"smooth"});if(id){const el=document.getElementById(id);if(el){setTimeout(()=>{el.scrollIntoView({block:"start",behavior:"smooth"});el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash")},matchMedia("(min-width:900px)").matches?0:320)}}else p2.scrollTop=0};
-$("#exbtn").onclick=()=>showEx();
+$("#exbtn").onclick=()=>{const pn=$("#panes");if(pn.scrollLeft>$("#p2").offsetLeft/2)pn.scrollTo({left:0,behavior:"smooth"});else showEx()};
+$("#panes").addEventListener("scroll",()=>{const pn=$("#panes"),on=pn.scrollLeft>$("#p2").offsetLeft/2,b=$("#exbtn");b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);b.setAttribute("aria-label",on?"본문으로 돌아가기":"해설 보기")},{passive:true});
 $("#edgetab").onclick=()=>showEx();
 $("#panes").addEventListener("scroll",()=>{const pn=$("#panes"),on=pn.scrollLeft>pn.clientWidth*.5;$("#edgetab").style.visibility=on?"hidden":"";if(on&&!S.swiped){S.swiped=1;save("plan")}},{passive:true});
 $("#reader").addEventListener("click",e=>{const t=e.target;
@@ -1348,7 +1351,7 @@ addEventListener("keydown",e=>{if(e.key==="Escape"){if(sheetOn)closeSheet();else
 function verseSheet(v){
   SV=v;const {b,c}=R,vk=`${b}-${c}-${v}`,t=TEXT[b][c-1][v-1],mk=S.marks[vk]||0,n=chapterNotes(b,c).filter(x=>v>=x.a&&v<=x.z);
   openSheet(`<p class="small" style="margin:0 0 4px;color:var(--lapis);font-weight:700">${BN(b)} ${c}:${v}</p><p class="sv">${esc(t)}</p>
-   ${n.map(x=>`<div class="note"><h4>${esc(x.t)}</h4><p>${linkRefs(esc(x.d))}</p><button class="chip" data-shownote="${x.i}" style="margin-top:8px">설명 칸에서 보기</button></div>`).join("")}
+   ${n.map(x=>`<div class="note"><h4>${esc(x.t)}</h4><p>${linkRefs(esc(x.d))}</p><button class="chip" data-shownote="${x.i}" style="margin-top:8px">해설 칸에서 보기</button></div>`).join("")}
    <div class="row"><span class="small muted" style="width:3em">마크</span>${[1,2,3,4].map(k=>`<button class="dot${mk===k?" on":""}" data-mk="${k}" style="background:var(--m${k})" aria-label="색 ${k}"></button>`).join("")}<button class="chip" data-mk="0">지우기</button></div>
    <label class="small muted" for="mt">메모</label><textarea id="mt" placeholder="이 구절에 대한 생각, 질문, 기도…">${esc(S.memos[vk]?.t||"")}</textarea>
    <div class="row"><button class="btn" id="msave">메모 저장</button>${memoOn(vk)?`<button class="btn ghost" id="mdel">메모 삭제</button>`:""}<button class="btn ghost" id="vcopy">구절 복사</button><button class="btn ghost" data-close style="margin-left:auto">닫기</button></div>`);
@@ -1382,7 +1385,7 @@ function doSearch(){const box=$("#sr");if(!box)return;const q=sq.trim();if(q==="
     const g=GLOSS.filter(x=>x[0].includes(q)||x[1].includes(q)).slice(0,20);
     if(g.length)h+=`<div class="sh">낱말 풀이 ${g.length}</div>`+g.map(x=>`<div class="gw"><b>${hl(x[0],q)}</b><span>${hl(x[1],q)}</span></div>`).join("");
     const ns=NOTES.filter(n=>n[3].includes(q)||n[4].includes(q)).slice(0,30);
-    if(ns.length)h+=`<div class="sh">구절 설명 ${ns.length}</div><ul class="res">`+ns.map(n=>`<li><button data-go="${n[0]}.${n[1]}.${parseInt(n[2])}"><span class="rf">${BA(n[0])} ${n[1]}:${n[2]} · ${esc(n[3])}</span><div class="small">${hl(n[4],q)}</div></button></li>`).join("")+"</ul>";
+    if(ns.length)h+=`<div class="sh">구절 해설 ${ns.length}</div><ul class="res">`+ns.map(n=>`<li><button data-go="${n[0]}.${n[1]}.${parseInt(n[2])}"><span class="rf">${BA(n[0])} ${n[1]}:${n[2]} · ${esc(n[3])}</span><div class="small">${hl(n[4],q)}</div></button></li>`).join("")+"</ul>";
     const ib=[];for(const b in INTRO){if(BN(+b).includes(q)||INTRO[b].some(s=>s.includes(q)))ib.push(+b)}
     if(ib.length)h+=`<div class="sh">책 해설 ${ib.length}</div><div class="links" style="margin-top:4px">`+ib.map(b=>`<button class="chip" data-sb="${b}">${BN(b)}</button>`).join("")+"</div>";
     const ms=Object.keys(S.memos).filter(k=>S.memos[k].t&&S.memos[k].t.includes(q));
@@ -1411,7 +1414,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.139</b> <span class="muted">· 2026년 11월 26일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.140</b> <span class="muted">· 2026년 11월 26일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
