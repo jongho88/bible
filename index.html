@@ -137,6 +137,14 @@ button.chip{min-height:36px}
 .tlA .bcad span:first-child{right:5px}.tlA .bcad span:last-child{left:5px}
 .tlab{display:flex;justify-content:center;align-items:baseline;gap:8px;margin-top:10px;color:#fff;min-height:22px}
 .tlab b{font:700 16px "Noto Serif KR",serif}.tlab span{font-size:12.5px;opacity:.8}
+.card .hd{display:flex;align-items:center;justify-content:space-between}
+.cnav{display:flex;gap:2px;margin:-6px -12px -6px 0}
+.cnav button{width:38px;height:34px;min-height:0;border-radius:10px;color:#fff;font:400 24px/1 var(--sans);display:flex;align-items:center;justify-content:center;padding:0 0 3px}
+.cnav button:active{background:rgba(255,255,255,.18)}
+.cnav button:disabled{opacity:.3}
+.track.peek>.slide{animation:speek 1.1s cubic-bezier(.4,0,.2,1)}
+@keyframes speek{0%{transform:none}35%,55%{transform:translateX(-56px)}100%{transform:none}}
+@media(prefers-reduced-motion:reduce){.track.peek>.slide{animation:none}}
 .deckbar{display:flex;align-items:center;gap:8px;margin-top:14px}
 .deckbar .sp{flex:1;text-align:center;font-size:14px;color:var(--sub)}
 .tapnote{font-size:13px;color:var(--sub);text-align:center;margin-top:6px}
@@ -1026,7 +1034,7 @@ if((S.pv|0)<2){const read=new Set();for(const d in S.done)if(S.done[d]){const i=
   const nd={};DAYS.forEach(d=>{let all=true;for(let k=d.f;k<=d.t;k++)if(!read.has(k)){all=false;break}if(all&&read.size)nd[d.n]=1});S.done=nd;S.pv=2;try{localStorage.setItem("mac-bible-v1",JSON.stringify(S))}catch(e){}}
 let DB=null,BASE="",sync="이 기기의 브라우저에만 저장돼요";
 const W={},D={},T={};
-function payload(n){return n==="marks"?{m:S.marks}:n==="memos"?{m:S.memos}:{done:S.done,last:S.last,fs:S.fs,story:S.story,pv:S.pv,peek:S.peek,swiped:S.swiped}}
+function payload(n){return n==="marks"?{m:S.marks}:n==="memos"?{m:S.memos}:{done:S.done,last:S.last,fs:S.fs,story:S.story,pv:S.pv,peek:S.peek,swiped:S.swiped,speek:S.speek,sswiped:S.sswiped}}
 async function push(n){if(!DB)return;if(W[n]){D[n]=1;return}W[n]=1;
   try{await DB.doc(BASE+"/"+n).set(payload(n))}catch(e){if(e&&(e.code==="invalid_argument"||e.code==="revoked"||e.code==="not_granted")){DB=null;sync="이 기기의 브라우저에만 저장돼요";}}
   W[n]=0;if(D[n]){D[n]=0;push(n)}}
@@ -1104,7 +1112,7 @@ const N1=ERAS.length-1,BCAD=12;// 13장면(예수의 생애)부터 AD
 function storyRibbon(i){const e=ERAS[i];
   return `<div class="tlA" role="group" aria-label="시대 바로 가기"><div class="ln"><i id="tlfill" style="width:${i/N1*100}%"></i></div><div class="bcad" style="left:${(BCAD-.5)/N1*100}%"><span>BC</span><span>AD</span></div>${ERAS.map((x,j)=>`<button data-si="${j}" class="${j===i?"on":""}" style="left:${j/N1*100}%;--c:${x.c}" aria-label="${j+1}. ${esc(x.t)}"${j===i?' aria-current="true"':""}></button>`).join("")}</div><div class="tlab" id="tlab"><b>${esc(e.t)}</b><span>${esc(e.y)}</span></div>`}
 function storyCard(e,i){return `<article class="card" data-ci="${i}" aria-roledescription="장면" aria-label="${i+1}장면 ${esc(e.t)}">
-    <div class="hd" style="background:${e.c}"><div class="n">맥락보기 ${i+1}장면</div></div>
+    <div class="hd" style="background:${e.c}"><div class="n">맥락보기 ${i+1}장면</div><div class="cnav"><button data-step="-1" aria-label="이전 장면"${i?"":" disabled"}>‹</button><button data-step="1" aria-label="다음 장면"${i<ERAS.length-1?"":" disabled"}>›</button></div></div>
     <div class="bd"><h2 class="et">${esc(e.t)}</h2><div class="ey" style="color:${e.c}">${esc(e.y)}</div><p class="lead">${esc(e.lead)}</p>${e.p.map(p=>`<p>${linkRefs(esc(p))}</p>`).join("")}
      ${e.who?`<h3>주요 인물</h3><p class="small" style="margin:0">${esc(e.who)}</p>`:""}
      ${e.ev.length?`<h3>핵심 사건</h3>${evList(e)}`:""}
@@ -1118,10 +1126,11 @@ function rStory(){
    <div class="ph"><div><h2>맥락보기</h2><div class="small" style="opacity:.9;margin-top:4px">성경 전체 흐름을 ${ERAS.length}장면으로</div></div><div class="pn"><b id="stn">${i+1}</b><span>/${ERAS.length}장면</span></div></div>
    ${storyRibbon(i)}</div>
    <div class="track" id="track">${ERAS.map((e,j)=>`<div class="slide">${storyCard(e,j)}</div>`).join("")}</div>
-   <div class="deckbar"><button class="btn ghost" id="sp" ${i?"":"disabled"}>‹ 이전</button><span class="sp">옆으로 밀어서 넘기기</span><button class="btn" id="sn" ${i<ERAS.length-1?"":"disabled"}>다음 ›</button></div>
    </div>`;
   const T=$("#track");T._i=i;$("#v-story").classList.add("storyv");
   requestAnimationFrame(()=>{T.scrollLeft=i*T.clientWidth;markStory(i,1)});
+  if(!S.sswiped&&(S.speek|0)<3){setTimeout(()=>{T.classList.add("peek");S.speek=(S.speek|0)+1;save("plan")},400);T.addEventListener("animationend",()=>T.classList.remove("peek"),{once:true})}
+  T.addEventListener("touchmove",()=>{if(!S.sswiped){S.sswiped=1}},{passive:true,once:true});
   let tm=0;T.addEventListener("scroll",()=>{const k=Math.round(T.scrollLeft/T.clientWidth);if(k!==T._i)markStory(k);clearTimeout(tm);tm=setTimeout(()=>{if(T._i!==S.story){S.story=T._i;save("plan")}},150)},{passive:true});
   addEventListener("resize",()=>{T.scrollLeft=T._i*T.clientWidth},{passive:true});
 }
@@ -1138,7 +1147,7 @@ function stepStory(d){const T=$("#track");const cur0=T?T._i:(S.story|0);const n=
 $("#v-story").addEventListener("click",e=>{
   const t=e.target;
   const si=t.closest("[data-si]");if(si){const T=$("#track");stepStory(+si.dataset.si-(T?T._i:S.story|0));return}
-  if(t.closest("#sp"))return stepStory(-1);if(t.closest("#sn"))return stepStory(1);
+  const stp=t.closest("[data-step]");if(stp)return stepStory(+stp.dataset.step);
   const bk=t.closest("[data-book]");if(bk){openBook(+bk.dataset.book);return}
   if(t.closest("[data-t2]"))return go("plan");
 });
@@ -1401,7 +1410,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.136</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.137</b> <span class="muted">· 2026년 11월 25일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
