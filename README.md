@@ -10,7 +10,7 @@
 | bible.json | 개역한글 본문 (31,101절) |
 | sw.js | 인터넷 없이도 열리게 해 주는 파일 |
 | manifest.webmanifest | 홈 화면에 앱처럼 설치하게 해 주는 파일 |
-| sb2-icon-192.png, sb2-icon-512.png, sb2-touch-180.png | 홈 화면 아이콘 |
+| sb3-icon-192.png, sb3-icon-512.png, sb3-touch-180.png | 홈 화면 아이콘 |
 | thumb.png | 링크 공유 시 미리보기 그림 |
 
 파일 이름과 위치를 바꾸지 말고, 모두 같은 폴더에 그대로 올려 주세요.
