@@ -1,4 +1,4 @@
-name: Build sherpa-onnx Korean TTS HQ (wasm, fp32 vocoder)
+name: Build sherpa-onnx Korean TTS HQ (fp32 vocoder)
 
 on:
   workflow_dispatch:
