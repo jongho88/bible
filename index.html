@@ -1593,7 +1593,8 @@ $("#sheet").addEventListener("click",async e=>{const t=e.target;
 });
 
 // 소리 내어 읽기 (sherpa-onnx · Supertonic 3, 휴대폰 안에서 음성 생성)
-const TTS_BASE="https://jongho88.github.io/bible/tts-sherpa/",TTS_PARTS=["sherpa-onnx-wasm-main-tts.data.part0","sherpa-onnx-wasm-main-tts.data.part1"],TTS_CACHE="stepbible-sherpa-v1";
+const TTS_BASE="https://jongho88.github.io/bible/tts-sherpa-hq/",TTS_PARTS=["sherpa-onnx-wasm-main-tts.data.part0","sherpa-onnx-wasm-main-tts.data.part1","sherpa-onnx-wasm-main-tts.data.part2"],TTS_CACHE="stepbible-sherpa-hq-v1";
+try{caches.delete("stepbible-sherpa-v1")}catch(e){}
 const TT={w:null,ready:false,loading:false,ctx:null,src:null,q:[],buf:{},want:0,cur:0,gen:null,run:false,paused:false,tok:0};
 const tbar=$("#ttsbar"),tbtn=$("#ttsbtn");
 const IC_PAUSE=`<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>`,IC_PLAY=`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>`,IC_X=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>`;
@@ -1602,7 +1603,7 @@ function tHide(){tbar.classList.remove("on");tbar.innerHTML="";tbtn.classList.re
 async function ttsCached(){try{const c=await caches.open(TTS_CACHE);for(const n of TTS_PARTS)if(!(await c.match(TTS_BASE+n)))return false;return true}catch(e){return false}}
 function ttsWorkerSrc(){return `
 const B=${JSON.stringify(TTS_BASE)},P=${JSON.stringify(TTS_PARTS)},C=${JSON.stringify(TTS_CACHE)};let tts=null;
-self.Module={locateFile:p=>B+p,setStatus:()=>{},onRuntimeInitialized(){try{tts=createOfflineTts(self.Module);postMessage({type:"ready",n:tts.numSpeakers})}catch(e){postMessage({type:"error",message:"초기화 실패: "+e.message})}}};
+self.Module={locateFile:p=>B+p,setStatus:()=>{},onRuntimeInitialized(){try{tts=createOfflineTts(self.Module);try{const F=self.FS||self.Module.FS;for(const f of F.readdir("/"))if(/\\.(onnx|bin)$/.test(f))F.unlink("/"+f)}catch(e){}postMessage({type:"ready",n:tts.numSpeakers})}catch(e){postMessage({type:"error",message:"초기화 실패: "+e.message})}}};
 async function load(){let c=null;try{c=await caches.open(C)}catch(e){}
  const bufs=[];for(let i=0;i<P.length;i++){const u=B+P[i];let r=c?await c.match(u):null,a;
   if(r){a=new Uint8Array(await r.arrayBuffer());postMessage({type:"prog",i,n:P.length,f:1})}
@@ -1612,11 +1613,11 @@ async function load(){let c=null;try{c=await caches.open(C)}catch(e){}
    if(c){try{await c.put(u,new Response(a))}catch(e){}}postMessage({type:"prog",i,n:P.length,f:1})}
   bufs.push(a)}
  let n=0;for(const b of bufs)n+=b.length;const all=new Uint8Array(n);let o=0;for(const b of bufs){all.set(b,o);o+=b.length}return all.buffer}
-load().then(buf=>{postMessage({type:"init"});self.Module.getPreloadedPackage=()=>buf;importScripts(B+"sherpa-onnx-wasm-main-tts.js",B+"sherpa-onnx-tts.js")}).catch(e=>postMessage({type:"error",message:"모델 다운로드 실패: "+e.message}));
+load().then(b0=>{let buf=b0;postMessage({type:"init"});self.Module.getPreloadedPackage=()=>{const b=buf;buf=null;return b};importScripts(B+"sherpa-onnx-wasm-main-tts.js",B+"sherpa-onnx-tts.js")}).catch(e=>postMessage({type:"error",message:"모델 다운로드 실패: "+e.message}));
 onmessage=e=>{const d=e.data;if(d.type!=="gen"||!tts)return;try{const a=tts.generateWithConfig(d.text,{sid:d.sid,speed:d.speed,numSteps:d.steps,extra:{lang:"ko"}});postMessage({type:"res",id:d.id,tok:d.tok,s:a.samples,sr:a.sampleRate},[a.samples.buffer])}catch(err){postMessage({type:"error",id:d.id,message:String(err&&err.message||err)})}};`}
 function ttsLoad(){
   if(TT.w||TT.loading)return;TT.loading=true;
-  tShow(`<div class="tm">목소리 준비 중…<small>처음 한 번만 받아요 (약 140MB)</small><div class="pg"><i id="tpg"></i></div></div><button class="ic" id="tstop" aria-label="그만">${IC_X}</button>`);
+  tShow(`<div class="tm">목소리 준비 중…<small>처음 한 번만 받아요 (약 210MB)</small><div class="pg"><i id="tpg"></i></div></div><button class="ic" id="tstop" aria-label="그만">${IC_X}</button>`);
   try{TT.w=new Worker(URL.createObjectURL(new Blob([ttsWorkerSrc()],{type:"text/javascript"})))}catch(e){TT.loading=false;tShow(`<div class="tm">이 브라우저에서는 읽어주기를 쓸 수 없어요.</div><button class="ic" id="tstop" aria-label="닫기">${IC_X}</button>`);return}
   TT.w.onmessage=e=>{const d=e.data;
     if(d.type==="prog"){const p=$("#tpg");if(p)p.style.width=((d.i+d.f)/d.n*100).toFixed(1)+"%"}
@@ -1629,7 +1630,7 @@ function ttsLoad(){
 function ttsClean(t){return t.replace(/[\[\]{}<>()（）]/g," ").replace(/\s+/g," ").trim()}
 function ttsPump(){ // 지금 절 + 앞으로 2절까지 미리 만들기
   if(!TT.ready||!TT.run||TT.gen!=null)return;
-  for(let i=TT.cur;i<Math.min(TT.q.length,TT.cur+3);i++)if(!TT.buf[i]){TT.gen=i;TT.w.postMessage({type:"gen",id:i,tok:TT.tok,text:ttsClean(TT.q[i].t),sid:S.ttsv|0,speed:1,steps:5});return}
+  for(let i=TT.cur;i<Math.min(TT.q.length,TT.cur+3);i++)if(!TT.buf[i]){TT.gen=i;TT.w.postMessage({type:"gen",id:i,tok:TT.tok,text:ttsClean(TT.q[i].t),sid:S.ttsv|0,speed:1,steps:8});return}
 }
 function ttsMark(){$$("#txt .v.say").forEach(p=>p.classList.remove("say"));const it=TT.q[TT.cur];if(!it)return;const p=document.getElementById("v"+it.v);if(p){p.classList.add("say");const pn=$("#p1"),r=p.getBoundingClientRect(),pr=pn.getBoundingClientRect();if(r.top<pr.top+20||r.bottom>pr.bottom-20)pn.scrollTo({top:pn.scrollTop+r.top-pr.top-pr.height*0.3,behavior:"smooth"})}}
 function ttsUI(){const it=TT.q[TT.cur];if(!it)return;
@@ -1659,7 +1660,7 @@ tbtn.onclick=async()=>{
   if(TT.run||tbar.classList.contains("on")&&!TT.loading){stopTts();tHide();return}
   if(!TT.ready&&!(await ttsCached())){
     tbtn.classList.add("on");
-    tShow(`<div class="tm">휴대폰 안에서 성경을 읽어 줘요.<small>처음 한 번 목소리 모델(약 140MB)을 받아요. 와이파이에서 받으세요.</small></div><button class="go" id="tok">받고 듣기</button><button class="ic" id="tstop" aria-label="취소">${IC_X}</button>`);return}
+    tShow(`<div class="tm">휴대폰 안에서 성경을 읽어 줘요.<small>처음 한 번 목소리 모델(약 210MB)을 받아요. 와이파이에서 받으세요.</small></div><button class="go" id="tok">받고 듣기</button><button class="ic" id="tstop" aria-label="취소">${IC_X}</button>`);return}
   ttsStart(firstVisibleVerse())};
 tbar.addEventListener("click",e=>{const t=e.target;
   if(t.closest("#tok")){ttsStart(firstVisibleVerse());return}
@@ -1714,7 +1715,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.150</b> <span class="muted">· 2026년 11월 28일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.151</b> <span class="muted">· 2026년 11월 28일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
