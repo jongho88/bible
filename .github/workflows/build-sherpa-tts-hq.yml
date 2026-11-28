@@ -1,0 +1,70 @@
+name: Build sherpa-onnx Korean TTS HQ (wasm, fp32 vocoder)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/build-sherpa-tts-hq.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 4.0.23
+          actions-cache-folder: 'emsdk-cache'
+
+      - name: Clone sherpa-onnx
+        run: git clone --depth 1 https://github.com/k2-fsa/sherpa-onnx.git /tmp/sherpa
+
+      - name: Download Supertonic 3 int8 model (31 languages incl. Korean)
+        run: |
+          cd /tmp/sherpa/wasm/tts/assets
+          m=sherpa-onnx-supertonic-3-tts-int8-2026-05-11
+          curl -SL -O https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/$m.tar.bz2
+          tar xf $m.tar.bz2 && rm $m.tar.bz2
+          mv $m/duration_predictor.int8.onnx $m/text_encoder.int8.onnx $m/vector_estimator.int8.onnx \
+             $m/vocoder.int8.onnx $m/tts.json $m/unicode_indexer.bin $m/voice.bin .
+          rm -rf $m
+          # better sound: full-precision vocoder from Supertone (fp32)
+          rm vocoder.int8.onnx
+          curl -SL -o vocoder.onnx https://huggingface.co/Supertone/supertonic-3/resolve/main/onnx/vocoder.onnx
+          ls -lh
+          sed -i 's/let modelType = 0/let modelType = 7/' ../sherpa-onnx-tts.js
+          sed -i "s#'./vocoder.int8.onnx'#'./vocoder.onnx'#" ../sherpa-onnx-tts.js
+          grep -n "vocoder" ../sherpa-onnx-tts.js
+
+      - name: Build
+        run: |
+          cd /tmp/sherpa
+          emcc -v
+          ./build-wasm-simd-tts.sh
+          ls -lh build-wasm-simd-tts/install/bin/wasm/tts
+
+      - name: Copy to tts-sherpa-hq/
+        run: |
+          rm -rf tts-sherpa-hq && mkdir tts-sherpa-hq
+          cp -r /tmp/sherpa/build-wasm-simd-tts/install/bin/wasm/tts/* tts-sherpa-hq/
+          cd tts-sherpa-hq
+          split -b 80M -d -a 1 sherpa-onnx-wasm-main-tts.data sherpa-onnx-wasm-main-tts.data.part
+          rm sherpa-onnx-wasm-main-tts.data
+          python3 -c "import glob,json;print(json.dumps(sorted(glob.glob('sherpa-onnx-wasm-main-tts.data.part*'))))" > parts.json
+          cat parts.json
+          cd ..
+          ls -lh tts-sherpa-hq
+          big=$(find tts-sherpa-hq -size +99M)
+          if [ -n "$big" ]; then echo "File over 99MB (GitHub limit): $big"; exit 1; fi
+
+      - name: Commit
+        run: |
+          git config user.name "jongho88"
+          git config user.email "352164435+jongho88@users.noreply.github.com"
+          git add tts-sherpa-hq
+          git commit -m "sherpa-onnx 한국어 읽어주기 시험 빌드 HQ (Supertonic 3, fp32 vocoder)" || exit 0
+          git pull --rebase -q && git push
