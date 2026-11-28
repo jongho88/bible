@@ -1,0 +1,61 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StepBible 읽어주기 시험</title>
+<style>
+:root{--ink:#1b1a17;--sub:#6b665c;--line:#e8e1d3;--brown:#92400e;--bg:#fffdf8}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--ink);background:var(--bg)}
+.w{max-width:640px;margin:0 auto;padding:22px 18px 60px}
+h1{font-family:"Noto Serif KR",serif;font-size:24px;margin:0 0 4px}h1 b{color:var(--brown)}
+p.s{color:var(--sub);font-size:14px;margin:0 0 18px;line-height:1.6}
+.box{border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;background:#fff}
+label{display:block;font-size:13px;color:var(--sub);margin:10px 0 6px}
+select,textarea,input[type=range]{width:100%;box-sizing:border-box;font:inherit}
+select,textarea{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;font-size:16px}
+textarea{min-height:150px;line-height:1.7;font-family:"Noto Serif KR",serif}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:13px 16px;min-height:46px;width:100%;margin-top:10px;background:var(--brown);color:#fff;font-size:16px}
+button.g{background:#eee6d8;color:var(--ink)}button:disabled{opacity:.45}
+.st{font-size:14px;line-height:1.6;color:var(--sub);white-space:pre-line}
+.bar{height:8px;border-radius:4px;background:#eee6d8;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;width:0;background:var(--brown);transition:width .2s}
+.row{display:flex;gap:8px}.row>*{flex:1}
+audio{width:100%;margin-top:12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chips button{width:auto;flex:none;min-height:36px;padding:6px 12px;font-size:14px;margin:0;background:#eee6d8;color:var(--ink);font-weight:600}
+.res{font-size:14px;color:var(--sub);margin-top:6px}
+</style></head><body><div class="w">
+<h1><b>Step</b>Bible 읽어주기 시험</h1>
+<p class="s">Supertonic 3 음성 모델이 이 휴대폰 안에서 직접 개역한글을 읽어 줘요. 처음 한 번 <b>약 400MB</b>를 내려받아요(Wi-Fi 권장). 한 번 받으면 이 휴대폰에 저장돼서 다음부터는 바로 열려요.</p>
+<div class="box"><button id="load">1. 음성 모델 받기</button><div class="st" id="st">아직 받지 않았어요.</div><div class="bar"><i id="pb"></i></div></div>
+<div class="box">
+<label>목소리</label><select id="voice">
+<option value="F1">여성 1</option><option value="F2">여성 2</option><option value="F3">여성 3</option><option value="F4">여성 4</option><option value="F5">여성 5</option>
+<option value="M1">남성 1</option><option value="M2">남성 2</option><option value="M3">남성 3</option><option value="M4">남성 4</option><option value="M5">남성 5</option></select>
+<label>읽는 속도 <span id="spv">1.0</span></label><input type="range" id="speed" min="0.7" max="1.4" step="0.05" value="1.0">
+<label>품질 <span id="stv">8</span> (높을수록 자연스럽지만 느려요)</label><input type="range" id="steps" min="2" max="16" step="1" value="8">
+<label>읽을 본문</label><div class="chips"><button data-t="gen">창세기 1:1–5</button><button data-t="ps">시편 23편</button></div>
+<textarea id="text" style="margin-top:8px">태초에 하나님이 천지를 창조하시니라. 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 신은 수면에 운행하시니라. 하나님이 가라사대 빛이 있으라 하시매 빛이 있었고. 그 빛이 하나님의 보시기에 좋았더라 하나님이 빛과 어두움을 나누사. 빛을 낮이라 칭하시고 어두움을 밤이라 칭하시니라 저녁이 되며 아침이 되니 이는 첫째 날이니라.</textarea>
+<button id="go" disabled>2. 읽기</button><div class="res" id="res"></div><audio id="au" controls></audio></div>
+<p class="s">이 시험 페이지는 StepBible 앱에 넣기 전에 음질과 속도를 확인하려는 것이에요. 음성 모델: Supertone Supertonic 3 (OpenRAIL-M). 본문: 성경전서 개역한글판.</p>
+</div>
+<script type="module">
+import {loadTextToSpeech,loadVoiceStyle,writeWavFile,setOnBytes,cachedFetch} from './helper.js';
+const HF='https://huggingface.co/Supertone/supertonic-3/resolve/main';
+const T={gen:`태초에 하나님이 천지를 창조하시니라. 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 신은 수면에 운행하시니라. 하나님이 가라사대 빛이 있으라 하시매 빛이 있었고. 그 빛이 하나님의 보시기에 좋았더라 하나님이 빛과 어두움을 나누사. 빛을 낮이라 칭하시고 어두움을 밤이라 칭하시니라 저녁이 되며 아침이 되니 이는 첫째 날이니라.`,ps:`여호와는 나의 목자시니 내가 부족함이 없으리로다. 그가 나를 푸른 초장에 누이시며 쉴만한 물 가으로 인도하시는도다. 내 영혼을 소생시키시고 자기 이름을 위하여 의의 길로 인도하시는도다. 내가 사망의 음침한 골짜기로 다닐찌라도 해를 두려워하지 않을 것은 주께서 나와 함께 하심이라 주의 지팡이와 막대기가 나를 안위하시나이다. 주께서 내 원수의 목전에서 내게 상을 베푸시고 기름으로 내 머리에 바르셨으니 내 잔이 넘치나이다. 나의 평생에 선하심과 인자하심이 정녕 나를 따르리니 내가 여호와의 집에 영원히 거하리로다.`};
+const $=s=>document.querySelector(s);let tts=null,styles={},ep='';
+const sizes={'duration_predictor.onnx':3.7,'text_encoder.onnx':36.4,'vector_estimator.onnx':257,'vocoder.onnx':101};const totalMB=398;let doneMB=0;
+setOnBytes((url,got,total)=>{const f=url.split('/').pop();const cur=doneMB+got/1048576;$('#pb').style.width=Math.min(100,cur/totalMB*100)+'%';$('#st').textContent=`내려받는 중… ${cur.toFixed(0)} / ${totalMB} MB\n(${f})`});
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>$('#text').value=T[b.dataset.t]);
+$('#speed').oninput=e=>$('#spv').textContent=(+e.target.value).toFixed(2);$('#steps').oninput=e=>$('#stv').textContent=e.target.value;
+async function getStyle(v){if(!styles[v]){const buf=await cachedFetch(`${HF}/voice_styles/${v}.json`);const url=URL.createObjectURL(new Blob([buf],{type:'application/json'}));styles[v]=await loadVoiceStyle([url])}return styles[v]}
+$('#load').onclick=async()=>{const b=$('#load');b.disabled=true;
+  try{let opts;const tryLoad=async prov=>{doneMB=0;return await loadTextToSpeech(HF+'/onnx',{executionProviders:[prov],graphOptimizationLevel:'all'},(name,i,n)=>{if(i>1){const k=Object.keys(sizes)[i-2];doneMB+=sizes[k]}$('#st').textContent=`모델 준비 중 (${i}/${n})`})};
+    // tts.json·unicode_indexer.json도 캐시 경유
+    const of=window.fetch;window.fetch=async(u,o)=>{if(typeof u==='string'&&u.startsWith(HF)&&u.endsWith('.json')){const buf=await cachedFetch(u);return new Response(buf)}return of(u,o)};
+    try{if(!navigator.gpu)throw 0;const r=await tryLoad('webgpu');tts=r.textToSpeech;ep='WebGPU'}catch(e){const r=await tryLoad('wasm');tts=r.textToSpeech;ep='WASM'}
+    await getStyle($('#voice').value);$('#pb').style.width='100%';$('#st').textContent=`준비 완료! (${ep}로 실행)`;$('#go').disabled=false;b.textContent='모델 준비됨';
+  }catch(e){console.error(e);$('#st').textContent='오류: '+(e.message||e);b.disabled=false}};
+$('#go').onclick=async()=>{const b=$('#go');b.disabled=true;$('#res').textContent='읽을 준비 중…';
+  try{const st=await getStyle($('#voice').value);const t0=performance.now();
+    const {wav,duration}=await tts.call($('#text').value.trim(),'ko',st,+$('#steps').value,+$('#speed').value,0.35,(s,n)=>$('#res').textContent=`만드는 중… ${s}/${n}`);
+    const len=Math.floor(tts.sampleRate*duration[0]);const blob=new Blob([writeWavFile(wav.slice(0,len),tts.sampleRate)],{type:'audio/wav'});
+    const au=$('#au');au.src=URL.createObjectURL(blob);au.play().catch(()=>{});
+    $('#res').textContent=`만드는 데 ${((performance.now()-t0)/1000).toFixed(1)}초 · 음성 길이 ${duration[0].toFixed(1)}초`;
+  }catch(e){console.error(e);$('#res').textContent='오류: '+(e.message||e)}b.disabled=false};
+</script></body></html>

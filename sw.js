@@ -1,13 +1,13 @@
 // StepBible — 오프라인 지원
 // 앱 내용을 고쳐서 다시 올릴 때는 아래 버전 숫자를 하나 올려 주세요 (v1 → v2).
-const VERSION = "bible-v146";
+const VERSION = "bible-v147";
 const CORE = ["./", "./index.html", "./bible.json", "./manifest.webmanifest", "./sb4-icon-192.png", "./sb4-icon-512.png", "./sb4-touch-180.png", "./thumb.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
 });
 self.addEventListener("activate", e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("bible-v") && k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 self.addEventListener("fetch", e => {
   const r = e.request;
