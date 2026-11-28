@@ -22,7 +22,7 @@ audio{width:100%;margin-top:12px}
 </style></head><body><div class="w">
 <h1><b>Step</b>Bible 읽어주기 시험</h1>
 <p class="s">Supertonic 3 음성 모델이 이 휴대폰 안에서 직접 개역한글을 읽어 줘요. 처음 한 번 <b>약 400MB</b>를 내려받아요(Wi-Fi 권장). 한 번 받으면 이 휴대폰에 저장돼서 다음부터는 바로 열려요.</p>
-<div class="box"><button id="load">1. 음성 모델 받기</button><div class="st" id="st">아직 받지 않았어요.</div><div class="bar"><i id="pb"></i></div></div>
+<div class="box"><label style="margin-top:0">실행 방식</label><select id="ep"><option value="wasm">CPU (WASM) — 안정적</option><option value="webgpu">그래픽칩 (WebGPU) — 빠르지만 아이폰에서 불안정할 수 있음</option></select><button id="load">1. 음성 모델 받기</button><div class="st" id="st">아직 받지 않았어요.</div><div class="bar"><i id="pb"></i></div></div>
 <div class="box">
 <label>목소리</label><select id="voice">
 <option value="F1">여성 1</option><option value="F2">여성 2</option><option value="F3">여성 3</option><option value="F4">여성 4</option><option value="F5">여성 5</option>
@@ -31,14 +31,16 @@ audio{width:100%;margin-top:12px}
 <label>품질 <span id="stv">8</span> (높을수록 자연스럽지만 느려요)</label><input type="range" id="steps" min="2" max="16" step="1" value="8">
 <label>읽을 본문</label><div class="chips"><button data-t="gen">창세기 1:1–5</button><button data-t="ps">시편 23편</button></div>
 <textarea id="text" style="margin-top:8px">태초에 하나님이 천지를 창조하시니라. 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 신은 수면에 운행하시니라. 하나님이 가라사대 빛이 있으라 하시매 빛이 있었고. 그 빛이 하나님의 보시기에 좋았더라 하나님이 빛과 어두움을 나누사. 빛을 낮이라 칭하시고 어두움을 밤이라 칭하시니라 저녁이 되며 아침이 되니 이는 첫째 날이니라.</textarea>
-<button id="go" disabled>2. 읽기</button><div class="res" id="res"></div><audio id="au" controls></audio></div>
+<button id="go" disabled>2. 읽기</button><div class="res" id="res"></div><button id="play" class="g" disabled>▶ 들어 보기</button><audio id="au" controls playsinline></audio><div class="res" id="diag"></div></div>
+<div class="box" id="errbox" style="display:none;color:#b3362f;font-size:13px;white-space:pre-wrap"></div>
 <p class="s">이 시험 페이지는 StepBible 앱에 넣기 전에 음질과 속도를 확인하려는 것이에요. 음성 모델: Supertone Supertonic 3 (OpenRAIL-M). 본문: 성경전서 개역한글판.</p>
 </div>
 <script type="module">
 import {loadTextToSpeech,loadVoiceStyle,writeWavFile,setOnBytes,cachedFetch} from './helper.js';
 const HF='https://huggingface.co/Supertone/supertonic-3/resolve/main';
 const T={gen:`태초에 하나님이 천지를 창조하시니라. 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 신은 수면에 운행하시니라. 하나님이 가라사대 빛이 있으라 하시매 빛이 있었고. 그 빛이 하나님의 보시기에 좋았더라 하나님이 빛과 어두움을 나누사. 빛을 낮이라 칭하시고 어두움을 밤이라 칭하시니라 저녁이 되며 아침이 되니 이는 첫째 날이니라.`,ps:`여호와는 나의 목자시니 내가 부족함이 없으리로다. 그가 나를 푸른 초장에 누이시며 쉴만한 물 가으로 인도하시는도다. 내 영혼을 소생시키시고 자기 이름을 위하여 의의 길로 인도하시는도다. 내가 사망의 음침한 골짜기로 다닐찌라도 해를 두려워하지 않을 것은 주께서 나와 함께 하심이라 주의 지팡이와 막대기가 나를 안위하시나이다. 주께서 내 원수의 목전에서 내게 상을 베푸시고 기름으로 내 머리에 바르셨으니 내 잔이 넘치나이다. 나의 평생에 선하심과 인자하심이 정녕 나를 따르리니 내가 여호와의 집에 영원히 거하리로다.`};
-const $=s=>document.querySelector(s);let tts=null,styles={},ep='';
+const $=s=>document.querySelector(s);
+const showErr=m=>{const b=$('#errbox');b.style.display='block';b.textContent+=m+'\n'};addEventListener('error',e=>showErr('오류: '+e.message));addEventListener('unhandledrejection',e=>showErr('오류: '+(e.reason&&(e.reason.message||e.reason))));let tts=null,styles={},ep='';
 const sizes={'duration_predictor.onnx':3.7,'text_encoder.onnx':36.4,'vector_estimator.onnx':257,'vocoder.onnx':101};const totalMB=398;let doneMB=0;
 setOnBytes((url,got,total)=>{const f=url.split('/').pop();const cur=doneMB+got/1048576;$('#pb').style.width=Math.min(100,cur/totalMB*100)+'%';$('#st').textContent=`내려받는 중… ${cur.toFixed(0)} / ${totalMB} MB\n(${f})`});
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>$('#text').value=T[b.dataset.t]);
@@ -48,14 +50,18 @@ $('#load').onclick=async()=>{const b=$('#load');b.disabled=true;
   try{let opts;const tryLoad=async prov=>{doneMB=0;return await loadTextToSpeech(HF+'/onnx',{executionProviders:[prov],graphOptimizationLevel:'all'},(name,i,n)=>{if(i>1){const k=Object.keys(sizes)[i-2];doneMB+=sizes[k]}$('#st').textContent=`모델 준비 중 (${i}/${n})`})};
     // tts.json·unicode_indexer.json도 캐시 경유
     const of=window.fetch;window.fetch=async(u,o)=>{if(typeof u==='string'&&u.startsWith(HF)&&u.endsWith('.json')){const buf=await cachedFetch(u);return new Response(buf)}return of(u,o)};
-    try{if(!navigator.gpu)throw 0;const r=await tryLoad('webgpu');tts=r.textToSpeech;ep='WebGPU'}catch(e){const r=await tryLoad('wasm');tts=r.textToSpeech;ep='WASM'}
+    if($('#ep').value==='webgpu'&&navigator.gpu){try{const r=await tryLoad('webgpu');tts=r.textToSpeech;ep='WebGPU'}catch(e){showErr('WebGPU 실패, CPU로 바꿔요: '+(e.message||e))}}
+    if(!tts){const r=await tryLoad('wasm');tts=r.textToSpeech;ep='CPU(WASM)'}
     await getStyle($('#voice').value);$('#pb').style.width='100%';$('#st').textContent=`준비 완료! (${ep}로 실행)`;$('#go').disabled=false;b.textContent='모델 준비됨';
   }catch(e){console.error(e);$('#st').textContent='오류: '+(e.message||e);b.disabled=false}};
+$('#play').onclick=()=>{const au=$('#au');au.currentTime=0;au.play().catch(e=>showErr('재생 실패: '+e.message))};
 $('#go').onclick=async()=>{const b=$('#go');b.disabled=true;$('#res').textContent='읽을 준비 중…';
   try{const st=await getStyle($('#voice').value);const t0=performance.now();
     const {wav,duration}=await tts.call($('#text').value.trim(),'ko',st,+$('#steps').value,+$('#speed').value,0.35,(s,n)=>$('#res').textContent=`만드는 중… ${s}/${n}`);
     const len=Math.floor(tts.sampleRate*duration[0]);const blob=new Blob([writeWavFile(wav.slice(0,len),tts.sampleRate)],{type:'audio/wav'});
-    const au=$('#au');au.src=URL.createObjectURL(blob);au.play().catch(()=>{});
+    const au=$('#au');au.src=URL.createObjectURL(blob);au.load();$('#play').disabled=false;
+    let pk=0,nan=0;const w=wav.slice(0,len);for(let i=0;i<w.length;i++){const v=w[i];if(Number.isNaN(v))nan++;else if(Math.abs(v)>pk)pk=Math.abs(v)}
+    $('#diag').textContent=`점검: 소리 크기 ${pk.toFixed(3)}${nan?` · 잘못된 값 ${nan}개`:''} · ${w.length}개 샘플 · ${tts.sampleRate}Hz`+(pk<0.001?' → 소리가 비어 있어요. 실행 방식을 바꿔 보세요.':'');
     $('#res').textContent=`만드는 데 ${((performance.now()-t0)/1000).toFixed(1)}초 · 음성 길이 ${duration[0].toFixed(1)}초`;
   }catch(e){console.error(e);$('#res').textContent='오류: '+(e.message||e)}b.disabled=false};
 </script></body></html>
