@@ -298,8 +298,9 @@ textarea{min-height:96px;resize:vertical}
 @media(max-width:899px){#p1{padding-right:38px}}
 .edgetab b{writing-mode:horizontal-tb;font-size:16px;line-height:1}
 #ttsbtn.on{background:var(--lapis);color:#fff}
-.ttsbar{display:none;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--line);background:var(--panel);font-family:var(--sans);font-size:14px}
+.ttsbar{display:none;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel);animation:tdrop .2s ease-out;font-family:var(--sans);font-size:14px}
 .ttsbar.on{display:flex}
+@keyframes tdrop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .ttsbar .tm{flex:1;min-width:0;line-height:1.35}
 .ttsbar .tm small{display:block;color:var(--sub);font-size:12px}
 .ttsbar .pg{height:4px;border-radius:2px;background:var(--line);margin-top:5px;overflow:hidden}
@@ -505,13 +506,13 @@ textarea{min-height:96px;resize:vertical}
   <button id="rfont" aria-label="글자 크기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 19 8 5l5 14M4.8 14h6.4M14 19l3.5-9 3.5 9M15 16h5"/></svg></button>
   <button id="exbtn" aria-label="해설 보기" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M13 4v16M15.5 9h3M15.5 13h3"/></svg></button>
  </div>
+ <div class="ttsbar" id="ttsbar" aria-live="polite"></div>
  <div class="ectx" id="ectx"></div>
  <div class="panes" id="panes">
   <div class="pane" id="p1"><div class="in" id="txt"></div></div>
   <div class="pane" id="p2"><div class="in" id="ex"></div></div>
  </div>
  <button class="edgetab" id="edgetab" aria-label="해설 보기"><b>‹</b>해설</button>
- <div class="ttsbar" id="ttsbar" aria-live="polite"></div>
  <div class="rft">
   <button class="btn ghost" id="rprev">‹ 이전 장</button>
   <div class="mid" id="rmid"></div>
@@ -1713,7 +1714,7 @@ function rMe(){
    <div class="sh">백업</div><p class="small muted" style="margin:0 0 8px">마크·메모·읽은 날을 글자로 복사해 두었다가, 다른 브라우저에서 붙여 넣어 되살릴 수 있어요.</p>
    <div class="links" style="margin-top:0"><button class="btn ghost" id="bk1">기록 복사하기</button><button class="btn ghost" id="bk2">붙여 넣어 되살리기</button></div>
    <div id="bkbox"></div>
-   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.149</b> <span class="muted">· 2026년 11월 28일 업데이트</span></p>
+   <div class="sh">앱 정보</div><p class="small" style="margin:0">StepBible <b id="ver" style="cursor:default">버전 1.150</b> <span class="muted">· 2026년 11월 28일 업데이트</span></p>
    <div class="sh">출처</div><p class="small muted" style="margin:0">본문: 성경전서 개역한글판 (대한성서공회). 1961년판으로 2012년 저작권이 만료되어 퍼블릭 도메인이에요. 본문은 바꾸지 않고 그대로 실었어요. 데이터: bible-db 프로젝트의 holybible.or.kr 수집본.<br>해설, 시대 설명, 낱말 풀이, 읽기표는 이 앱을 위해 새로 쓴 것으로, 교파와 학자마다 견해가 다른 부분은 그렇다고 밝혀 두었어요.</p></div>`;
 }
 $("#v-me").addEventListener("click",async e=>{const t=e.target;
